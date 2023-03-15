@@ -1,0 +1,14 @@
+{
+    "manifest_version": 3,
+    "name": "DRAW",
+    "description": "Google Drive folder management browser extension",
+    "version": "0.0.1",
+    "action": {
+        "default_popup": "index.html"
+    },
+    "host_permissions": [
+        "http://*/*",
+        "https://*/*",
+        "*://*/*"
+    ]
+}
