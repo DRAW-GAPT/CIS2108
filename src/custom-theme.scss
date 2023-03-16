@@ -22,9 +22,9 @@ $GAPT-warn: mat.define-palette(mat.$red-palette);
 // theming systems such as "color" or "typography".
 $GAPT-theme: mat.define-light-theme((
   color: (
-    primary: $GAPT-primary,
-    accent: $GAPT-accent,
-    warn: $GAPT-warn,
+    "primary": $GAPT-primary,
+    "accent": $GAPT-accent,
+    "warn": $GAPT-warn,
   )
 ));
 
@@ -32,4 +32,5 @@ $GAPT-theme: mat.define-light-theme((
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include mat.all-component-themes($GAPT-theme);
+
 

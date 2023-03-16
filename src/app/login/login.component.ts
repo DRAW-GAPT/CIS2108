@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { GoogleAPIService } from '../google-api.service';
 
-
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',

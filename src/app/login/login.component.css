@@ -1,2 +1,19 @@
-@import '~@angular/material/theming';
-@import './app.theme';
+.container{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: space-around;  
+}
+.google-logo{
+    height: auto;
+    width: 10%;
+}
+
+.draw-logo{
+    height: auto;
+    width: 30%;
+}
+
