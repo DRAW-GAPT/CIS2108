@@ -1,11 +1,14 @@
 .google-logo{
+    position: relative;
     height: auto;
     width: 10%;
 }
 
 .draw-logo{
+    position: relative;
     height: auto;
-    width: 40%;
+    width: 30%;
+    padding-bottom: 5%;
 }
 
 .container{
@@ -16,4 +19,25 @@
     flex-wrap: nowrap;
     align-items: center;
     justify-content: center;
+}
+
+.login-button{
+    position: relative;
+    width: 15%;
+}
+
+h2{
+    position: relative;
+    font-size: 200%;
+    padding-bottom: 5%;
+    transform: translateY(-60%);
+}
+
+button{
+    position: relative;
+    margin-bottom: 5%;
+    font-size: 200%;
+    padding: 2% 5%;
+    white-space: nowrap;
+    transform: translateY(-60%);
 }
