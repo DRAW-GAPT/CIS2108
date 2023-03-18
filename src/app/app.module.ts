@@ -8,6 +8,7 @@ import { ListComponent } from './list/list.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatButtonModule} from '@angular/material/button';
 import { FileListComponent } from './file-list/file-list.component';
+import {MatTableModule} from '@angular/material/table'
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { FileListComponent } from './file-list/file-list.component';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MatButtonModule
+    MatButtonModule,
+    MatTableModule
   ],
   providers: [],
   bootstrap: [AppComponent]
