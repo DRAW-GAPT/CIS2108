@@ -13,13 +13,18 @@ const googleAPIKey:string = environment.googleAPIKey;
 const googleClientID:string = environment.googleClientID;
 
 
-let gapiInited:boolean = false;
-let gisInited:boolean = false;
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class GoogleAPIService {
+
+  gapiInited: Promise<boolean>;
+  gisInited: Promise<boolean>;
+
+
+  allInited: Promise<boolean>
 
 
 
@@ -27,44 +32,61 @@ export class GoogleAPIService {
   
 
   constructor() {
-    this.gapiLoaded();
-    this.gisLoaded();
+    this.gapiInited = new Promise<boolean>((resolve)=>{
+      this.gapiLoaded(resolve);
+    });
+
+    this.gisInited = new Promise<boolean>((resolve)=>{
+      this.gisLoaded(resolve);
+    });
+
+
+    //promise that returns true when both gapi and gis are loaded
+    this.allInited = new Promise(async (resolve)=>{
+      var a = await this.gapiInited;
+      var b = await this.gisInited;
+      resolve(a && b);
+    })
+    
   }
 
   /**
    * Callback after api.js is loaded.
    */
-  gapiLoaded() {
-    gapi.load('client', this.initializeGapiClient);
+  gapiLoaded(resolve: (value: boolean | PromiseLike<boolean>) => void) {
+    gapi.load('client', ()=>this.initializeGapiClient(resolve));
   }
 
   /**
    * Callback after the API client is loaded. Loads the
    * discovery doc to initialize the API.
    */
-  async initializeGapiClient() {
+  async initializeGapiClient(resolve: (value: boolean | PromiseLike<boolean>) => void) {
     await gapi.client.init({
        apiKey: googleAPIKey,
       discoveryDocs: [DISCOVERY_DOC],
     });
-    gapiInited = true;
+    resolve(true);
   }
 
   /**
    * Callback after Google Identity Services are loaded.
    */
-  gisLoaded() {
+  gisLoaded(resolve: (value: boolean | PromiseLike<boolean>) => void) {
     this.tokenClient = google.accounts.oauth2.initTokenClient({
       client_id: googleClientID,
       scope: SCOPES,
-      callback: ()=>{}, // defined later
+      callback: ()=>{},
     });
-    gisInited = true;
+    resolve(true)
   }
 
 
 
-  login(onSuccess:()=>void){
+  async login(onSuccess:()=>void){
+
+    await this.allInited;
+
     this.tokenClient.callback = async (resp:any) => {
       if (resp.error !== undefined) {
         throw (resp);
@@ -83,6 +105,9 @@ export class GoogleAPIService {
   }
 
   async getAllFiles():Promise<gapi.client.drive.File[]>{
+    
+    await this.allInited;
+
     let response;
     try {
       response = await gapi.client.drive.files.list({
