@@ -26,33 +26,33 @@
 </mat-chip-listbox>
 
 <div class="filter-input-container">
-    <div class="selected-div" *ngIf="ownerSelected">
-        <mat-form-field>
+    <div class="selected-div" >
+        <mat-form-field *ngIf="ownerSelected">
             <input matInput class="input">
         </mat-form-field>
     </div>
 
-    <div class="selected-div" *ngIf="permissionsSelected">
-        <mat-form-field>
+    <div class="selected-div" >
+        <mat-form-field *ngIf="permissionsSelected">
             <input matInput class="input">
         </mat-form-field>
     </div>
 
-    <div class="datepicker-container" *ngIf="dateSelected">
-        <mat-form-field>
+    <div class="datepicker-container" >
+        <mat-form-field *ngIf="dateSelected">
             <input matInput class="input" [matDatepicker]="picker">
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
     </div>
-    <div class="selected-div" *ngIf="typeSelected">
-        <mat-form-field>
+    <div class="selected-div" >
+        <mat-form-field *ngIf="typeSelected">
             <input matInput class="input">
         </mat-form-field>
     </div>
 
-    <div class="selected-div" *ngIf="sharedWithSelected">
-        <mat-form-field>
+    <div class="selected-div" >
+        <mat-form-field *ngIf="sharedWithSelected">
             <input matInput class="input">
         </mat-form-field>
     </div>
