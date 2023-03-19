@@ -6,4 +6,10 @@ import { Component } from '@angular/core';
   styleUrls: ['./filter-chips.component.scss']
 })
 export class FilterChipsComponent {
+  ownerSelected = false;
+  permissionsSelected = false;
+  dateSelected = false;
+  typeSelected = false;
+  sharedWithSelected = false;
 }
+

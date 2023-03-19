@@ -1,3 +1,17 @@
 mat-icon{
     vertical-align: bottom;
 }
+
+mat-form-field, mat-datepicker{
+    width: 15vh;
+    height: 7vh;
+}
+.selected-div{
+    width: 20vh;
+    height: 20vh;
+}
+
+.filter-input-container{
+    display: flex;
+    flex-direction: row;
+}

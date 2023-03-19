@@ -1,36 +1,62 @@
-<mat-form-field>
-    <input matInput [matDatepicker]="picker">
-    <mat-datepicker #picker></mat-datepicker>
-  </mat-form-field>
-
 <mat-chip-listbox multiple>
-    <mat-chip-option>
+    <mat-chip (click)="ownerSelected = !ownerSelected">
         Owner
         <mat-icon>keyboard_arrow_down</mat-icon>
-    </mat-chip-option>
+    </mat-chip>
     
-    <mat-chip-option>
+    <mat-chip (click)="permissionsSelected = !permissionsSelected">
         Permissions
         <mat-icon>keyboard_arrow_down</mat-icon>
-    </mat-chip-option>
+    </mat-chip>
     
-    <mat-chip-option>
+    <mat-chip (click)="dateSelected = !dateSelected">
         Date
-        <button (click)="picker.open()">
-            <mat-icon>keyboard_arrow_down</mat-icon>
-          </button>
-        
-    </mat-chip-option>
+        <mat-icon>keyboard_arrow_down</mat-icon>     
+    </mat-chip>
     
-    <mat-chip-option>
+    <mat-chip (click)="typeSelected = !typeSelected">
         Type
         <mat-icon>keyboard_arrow_down</mat-icon>
-    </mat-chip-option>
+    </mat-chip>
     
-    <mat-chip-option>
+    <mat-chip (click)="sharedWithSelected = !sharedWithSelected">
         Shared with User
         <mat-icon>keyboard_arrow_down</mat-icon>
-    </mat-chip-option>
+    </mat-chip>
 </mat-chip-listbox>
+
+<div class="filter-input-container">
+    <div class="selected-div" *ngIf="ownerSelected">
+        <mat-form-field>
+            <input matInput class="input">
+        </mat-form-field>
+    </div>
+
+    <div class="selected-div" *ngIf="permissionsSelected">
+        <mat-form-field>
+            <input matInput class="input">
+        </mat-form-field>
+    </div>
+
+    <div class="datepicker-container" *ngIf="dateSelected">
+        <mat-form-field>
+            <input matInput class="input" [matDatepicker]="picker">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+    </div>
+    <div class="selected-div" *ngIf="typeSelected">
+        <mat-form-field>
+            <input matInput class="input">
+        </mat-form-field>
+    </div>
+
+    <div class="selected-div" *ngIf="sharedWithSelected">
+        <mat-form-field>
+            <input matInput class="input">
+        </mat-form-field>
+    </div>
+</div>
+
 
 
