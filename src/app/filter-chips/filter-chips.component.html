@@ -1,3 +1,8 @@
+<mat-form-field>
+    <input matInput [matDatepicker]="picker">
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+
 <mat-chip-listbox multiple>
     <mat-chip-option>
         Owner
@@ -11,7 +16,10 @@
     
     <mat-chip-option>
         Date
-        <mat-icon>keyboard_arrow_down</mat-icon>
+        <button (click)="picker.open()">
+            <mat-icon>keyboard_arrow_down</mat-icon>
+          </button>
+        
     </mat-chip-option>
     
     <mat-chip-option>
