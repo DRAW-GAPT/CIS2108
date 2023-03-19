@@ -1,4 +1,4 @@
-<table mat-table [dataSource]="files" class="table">
+<table mat-table [dataSource]="paginatedData" class="table">
     <!-- HEADERS -->
     <ng-container matColumnDef="Name">
         <th mat-header-cell *matHeaderCellDef> Name </th>
@@ -22,6 +22,14 @@
     <tr mat-header-row *matHeaderRowDef="['Name', 'Owner', 'Last Modified', 'Size']"></tr>
     <tr mat-row *matRowDef="let row; columns: ['Name', 'Owner', 'Last Modified', 'Size'];"></tr>
 </table>
+
+<mat-paginator 
+    [length]="files.length"
+    [pageSize]="pageSize"
+    [pageIndex]="pageNumber"
+    [pageSizeOptions]="[5, 10, 25, 100]"
+    (page)="pageNumber = $event.pageIndex; pageSize = $event.pageSize;"
+    />
 
 
 

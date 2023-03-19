@@ -9,6 +9,16 @@ const byteSize = require('byte-size')
 })
 export class FileListComponent {
   @Input() files:gapi.client.drive.File[] = [];
+  pageSize: number = 5;
+  pageNumber: number = 0;
+
+  get paginatedData(): any[] {
+    const startIndex = this.pageNumber * this.pageSize;
+    return this.files.slice(startIndex, startIndex + this.pageSize);
+  }
+  
+  
+  
   byteSize = (size:number) => {
     if(size === null || size === undefined){
         return "---"
