@@ -10,6 +10,12 @@ import { MatTableModule } from '@angular/material/table'
 import { FileListComponent } from './file-list/file-list.component';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
+import {MatChipsModule} from '@angular/material/chips';
+import {MatIconModule} from '@angular/material/icon';
+import { FilterChipsComponent } from './filter-chips/filter-chips.component';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatFormFieldModule} from '@angular/material/form-field';
 
 
 @NgModule({
@@ -18,6 +24,7 @@ import { MatSortModule } from '@angular/material/sort';
     LoginComponent,
     ListComponent,
     FileListComponent,
+    FilterChipsComponent,
   ],
   imports: [
     BrowserModule,
@@ -26,7 +33,12 @@ import { MatSortModule } from '@angular/material/sort';
     MatButtonModule,
     MatTableModule,
     MatPaginatorModule,
-    MatSortModule
+    MatSortModule,
+    MatChipsModule,
+    MatIconModule,
+    MatMenuModule,
+    MatDatepickerModule,
+    MatFormFieldModule
   ],
   providers: [],
   bootstrap: [AppComponent]
