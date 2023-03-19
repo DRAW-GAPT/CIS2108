@@ -9,6 +9,8 @@ import {MatButtonModule} from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table'  
 import { FileListComponent } from './file-list/file-list.component';
 import {MatPaginatorModule} from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+
 
 @NgModule({
   declarations: [
@@ -23,7 +25,8 @@ import {MatPaginatorModule} from '@angular/material/paginator';
     BrowserAnimationsModule,
     MatButtonModule,
     MatTableModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatSortModule
   ],
   providers: [],
   bootstrap: [AppComponent]
