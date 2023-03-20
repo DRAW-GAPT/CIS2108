@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {FormControl} from '@angular/forms'
 
 @Component({
   selector: 'app-filter-chips',
@@ -6,10 +7,15 @@ import { Component } from '@angular/core';
   styleUrls: ['./filter-chips.component.scss']
 })
 export class FilterChipsComponent {
-  ownerSelected = false;
-  permissionsSelected = false;
-  dateSelected = false;
-  typeSelected = false;
-  sharedWithSelected = false;
+  permissions = new FormControl('');
+
+  editorSelected = false;
+  viewerSelected = false;
+  commenterSelected = false;
+
+  public toggle = (value: boolean) => {
+    value = !value;
+  }
+
 }
 

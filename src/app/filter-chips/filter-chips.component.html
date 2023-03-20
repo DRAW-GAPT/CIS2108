@@ -1,31 +1,31 @@
 <mat-chip-listbox multiple>
-    <mat-chip-option (click)="ownerSelected = !ownerSelected">
+    <mat-chip-option [matMenuTriggerFor]="menu">
         Owner
         <mat-icon>keyboard_arrow_down</mat-icon>
     </mat-chip-option>
-    
-    <mat-chip-option (click)="permissionsSelected = !permissionsSelected">
+
+    <mat-chip-option [matMenuTriggerFor]="permissions">
         Permissions
         <mat-icon>keyboard_arrow_down</mat-icon>
     </mat-chip-option>
     
-    <mat-chip-option (click)="dateSelected = !dateSelected">
+    <mat-chip-option >
         Date
         <mat-icon>keyboard_arrow_down</mat-icon>     
     </mat-chip-option>
     
-    <mat-chip-option (click)="typeSelected = !typeSelected">
+    <mat-chip-option >
         Type
         <mat-icon>keyboard_arrow_down</mat-icon>
     </mat-chip-option>
     
-    <mat-chip-option (click)="sharedWithSelected = !sharedWithSelected">
+    <mat-chip-option >
         Shared with User
         <mat-icon>keyboard_arrow_down</mat-icon>
     </mat-chip-option>
 </mat-chip-listbox>
 
-<div class="filter-input-container">
+<!-- <div class="filter-input-container">
     <div class="selected-div" >
         <mat-form-field *ngIf="ownerSelected">
             <input matInput class="input">
@@ -56,7 +56,30 @@
             <input matInput class="input">
         </mat-form-field>
     </div>
-</div>
+</div> -->
 
+<mat-menu #menu="matMenu">
+    <!-- <mat-form-field appearance="fill">
+        <mat-label>Input</mat-label>
+        <input matInput>
+      </mat-form-field> -->
+    <!-- <button mat-menu-item>
+      <mat-icon>dialpad</mat-icon>
+      <span>Redial</span>
+    </button>
+    <button mat-menu-item disabled>
+      <mat-icon>voicemail</mat-icon>
+      <span>Check voice mail</span>
+    </button>
+    <button mat-menu-item>
+      <mat-icon>notifications_off</mat-icon>
+      <span>Disable alerts</span>
+    </button> -->
+</mat-menu>
 
+<mat-menu #permissions="matMenu" multiple appearance="fill">
+        <mat-option value="option1">Editor <mat-icon>edit</mat-icon> </mat-option>
+        <mat-option value="option2" onclick="console.log()" >Viewer <mat-icon>remove_red_eye</mat-icon> </mat-option>
+        <mat-option value="option3">Commenter <mat-icon> comment</mat-icon> </mat-option>
+</mat-menu>
 
