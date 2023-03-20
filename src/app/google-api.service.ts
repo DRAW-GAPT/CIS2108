@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { CookieService } from 'ngx-cookie-service';
 import { environment } from '../environments/environment';
 
 // Discovery doc URL for APIs used by the quickstart
@@ -31,7 +32,7 @@ export class GoogleAPIService {
   tokenClient:any = null;
   
 
-  constructor() {
+  constructor(private cookie: CookieService) {
     this.gapiInited = new Promise<boolean>((resolve)=>{
       this.gapiLoaded(resolve);
     });
@@ -45,7 +46,16 @@ export class GoogleAPIService {
     this.allInited = new Promise(async (resolve)=>{
       var a = await this.gapiInited;
       var b = await this.gisInited;
+
+      if(this.cookie.get("googleAuthToken")){
+        const tokenToken = JSON.parse(this.cookie.get("googleAuthToken"));
+        // TO DO: causes null exception
+        gapi.client.setToken(tokenToken);
+        console.log(tokenToken);
+      }
       resolve(a && b);
+
+
     })
     
   }
@@ -87,6 +97,12 @@ export class GoogleAPIService {
 
     await this.allInited;
 
+    if(this.cookie.get("googleAuthToken")){
+
+
+
+
+    }
     this.tokenClient.callback = async (resp:any) => {
       if (resp.error !== undefined) {
         throw (resp);
@@ -129,5 +145,5 @@ export class GoogleAPIService {
     return files;
   }
   
-  
+
 }

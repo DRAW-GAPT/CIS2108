@@ -15,34 +15,17 @@ export class ListComponent {
 
   constructor(public googleAPIService: GoogleAPIService,  private cookie:CookieService){
 
-
     if(!this.cookie.get("googleAuthToken")){
       const token = gapi.client.getToken();
       const tokenString = JSON.stringify(token);
       const expiryDate = new Date();
       expiryDate.setDate(expiryDate.getDate() + 1);
       this.cookie.set('googleAuthToken', tokenString, expiryDate, '/');
-
-    }else{
-      const tokenToken = JSON.parse(this.cookie.get("googleAuthToken"));
-      // TO DO: causes null exception
-      // gapi.client.setToken(tokenToken);
-      console.log(tokenToken);
-
     }
-    
-
     this.init();
-    
   }
 
   async init() {
-    
     this.list = await this.googleAPIService.getAllFiles();
-
-
   }
-
-  
-
 }
