@@ -1,28 +1,28 @@
 <mat-chip-listbox multiple>
-    <mat-chip (click)="ownerSelected = !ownerSelected">
+    <mat-chip-option (click)="ownerSelected = !ownerSelected">
         Owner
         <mat-icon>keyboard_arrow_down</mat-icon>
-    </mat-chip>
+    </mat-chip-option>
     
-    <mat-chip (click)="permissionsSelected = !permissionsSelected">
+    <mat-chip-option (click)="permissionsSelected = !permissionsSelected">
         Permissions
         <mat-icon>keyboard_arrow_down</mat-icon>
-    </mat-chip>
+    </mat-chip-option>
     
-    <mat-chip (click)="dateSelected = !dateSelected">
+    <mat-chip-option (click)="dateSelected = !dateSelected">
         Date
         <mat-icon>keyboard_arrow_down</mat-icon>     
-    </mat-chip>
+    </mat-chip-option>
     
-    <mat-chip (click)="typeSelected = !typeSelected">
+    <mat-chip-option (click)="typeSelected = !typeSelected">
         Type
         <mat-icon>keyboard_arrow_down</mat-icon>
-    </mat-chip>
+    </mat-chip-option>
     
-    <mat-chip (click)="sharedWithSelected = !sharedWithSelected">
+    <mat-chip-option (click)="sharedWithSelected = !sharedWithSelected">
         Shared with User
         <mat-icon>keyboard_arrow_down</mat-icon>
-    </mat-chip>
+    </mat-chip-option>
 </mat-chip-listbox>
 
 <div class="filter-input-container">
