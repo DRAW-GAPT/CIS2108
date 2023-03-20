@@ -11,7 +11,7 @@ const byteSize = require('byte-size')
 })
 export class FileListComponent {
   @Input() files:gapi.client.drive.File[] = [];
-  pageSize: number = 5;
+  pageSize: number = 25;
   pageNumber: number = 0;
   headers: string[] = ['Name', 'Owner', 'Last Modified', 'Size']
 
