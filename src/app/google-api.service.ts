@@ -83,8 +83,19 @@ export class GoogleAPIService {
       if (resp.error !== undefined) {
         throw (resp);
       }
+
+      
+      const token = gapi.client.getToken();
+      const tokenString = JSON.stringify(token);
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + 1);
+      this.cookie.set('googleAuthToken', tokenString, expiryDate, '/');
+
+
       onSuccess();
     };
+
+    await this.getCookie();
 
     if (gapi.client.getToken() === null) {
       // Prompt the user to select a Google Account and ask for consent to share their data
@@ -123,7 +134,7 @@ export class GoogleAPIService {
 public async getCookie(): Promise<boolean>{
   await this.gapiInited;
   await this.gisInited;
-  
+
   if(this.cookie.get("googleAuthToken")){
     const tokenToken = JSON.parse(this.cookie.get("googleAuthToken"));
     gapi.client.setToken(tokenToken);
