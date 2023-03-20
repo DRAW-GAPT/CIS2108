@@ -37,6 +37,8 @@ export class GoogleAPIService {
       var a = await this.gapiInited;
       var b = await this.gisInited;    
 
+      await this.getCookie();
+
       resolve(a && b);
     })
   }
@@ -119,7 +121,9 @@ export class GoogleAPIService {
   }
   
 public async getCookie(): Promise<boolean>{
-  await this.allInited;
+  await this.gapiInited;
+  await this.gisInited;
+  
   if(this.cookie.get("googleAuthToken")){
     const tokenToken = JSON.parse(this.cookie.get("googleAuthToken"));
     gapi.client.setToken(tokenToken);
