@@ -25,7 +25,8 @@ export class ListComponent {
     this.init();
   }
 
-  async init() {
+  async init() {    
+    this.googleAPIService.getCookie();
     this.list = await this.googleAPIService.getAllFiles();
   }
 }

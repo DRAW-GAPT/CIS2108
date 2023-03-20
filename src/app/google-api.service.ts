@@ -36,7 +36,6 @@ export class GoogleAPIService {
     this.allInited = new Promise(async (resolve)=>{
       var a = await this.gapiInited;
       var b = await this.gisInited;    
-      this.getCookie();
 
       resolve(a && b);
     })
