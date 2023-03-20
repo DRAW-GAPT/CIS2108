@@ -1,0 +1,94 @@
+<mat-chip-listbox multiple>
+    <mat-chip-option [matMenuTriggerFor]="menu">
+        Owner
+        <mat-icon>keyboard_arrow_down</mat-icon>
+    </mat-chip-option>
+
+    <mat-chip-option [matMenuTriggerFor]="permissions">
+        Permissions
+        <mat-icon>keyboard_arrow_down</mat-icon>
+    </mat-chip-option>
+    
+    <mat-chip-option >
+        Date
+        <mat-icon>keyboard_arrow_down</mat-icon>     
+    </mat-chip-option>
+    
+    <mat-chip-option >
+        Type
+        <mat-icon>keyboard_arrow_down</mat-icon>
+    </mat-chip-option>
+    
+    <mat-chip-option >
+        Shared with User
+        <mat-icon>keyboard_arrow_down</mat-icon>
+    </mat-chip-option>
+</mat-chip-listbox>
+
+<!-- <div class="filter-input-container">
+    <div class="selected-div" >
+        <mat-form-field *ngIf="ownerSelected">
+            <input matInput class="input">
+        </mat-form-field>
+    </div>
+
+    <div class="selected-div" >
+        <mat-form-field *ngIf="permissionsSelected">
+            <input matInput class="input">
+        </mat-form-field>
+    </div>
+
+    <div class="selected-div" >
+        <mat-form-field *ngIf="dateSelected">
+            <input matInput class="input" [matDatepicker]="picker">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+    </div>
+    <div class="selected-div" >
+        <mat-form-field *ngIf="typeSelected">
+            <input matInput class="input">
+        </mat-form-field>
+    </div>
+
+    <div class="selected-div" >
+        <mat-form-field *ngIf="sharedWithSelected">
+            <input matInput class="input">
+        </mat-form-field>
+    </div>
+</div> -->
+
+<mat-menu #menu="matMenu">
+    <!-- <mat-form-field appearance="fill">
+        <mat-label>Input</mat-label>
+        <input matInput>
+      </mat-form-field> -->
+    <!-- <button mat-menu-item>
+      <mat-icon>dialpad</mat-icon>
+      <span>Redial</span>
+    </button>
+    <button mat-menu-item disabled>
+      <mat-icon>voicemail</mat-icon>
+      <span>Check voice mail</span>
+    </button>
+    <button mat-menu-item>
+      <mat-icon>notifications_off</mat-icon>
+      <span>Disable alerts</span>
+    </button> -->
+</mat-menu>
+
+<mat-menu #permissions="matMenu" multiple appearance="fill">
+        <mat-checkbox value="option1"><span class="drop-down-item1">Editor</span>
+            <mat-icon class="drop-down-icon">edit</mat-icon> 
+        </mat-checkbox><br>
+        <mat-checkbox value="option2"><span class="drop-down-item2">Viewer</span>
+            <mat-icon class="drop-down-icon">remove_red_eye</mat-icon> 
+        </mat-checkbox><br>
+        <mat-checkbox value="option3"><span class="drop-down-item3">Commenter</span>
+            <mat-icon class="drop-down-icon"> comment</mat-icon> &nbsp;&nbsp;
+        </mat-checkbox>
+</mat-menu>
+
+<mat-menu #date="matMenu" multiple appearance="fill">
+       
+</mat-menu>
