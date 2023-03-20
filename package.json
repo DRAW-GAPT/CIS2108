@@ -25,6 +25,7 @@
     "@types/gapi.client.drive": "^3.0.15",
     "@types/google.accounts": "^0.0.7",
     "byte-size": "^8.1.0",
+    "ngx-cookie-service": "^15.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.12.0"

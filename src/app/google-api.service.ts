@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { CookieService } from 'ngx-cookie-service';
 import { environment } from '../environments/environment';
 
 // Discovery doc URL for APIs used by the quickstart
@@ -7,70 +8,94 @@ const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/res
 // Authorization scopes required by the API; multiple scopes can be
 // included, separated by spaces.
 const SCOPES = 'https://www.googleapis.com/auth/drive.metadata.readonly';
-
-
 const googleAPIKey:string = environment.googleAPIKey;
 const googleClientID:string = environment.googleClientID;
-
-
-let gapiInited:boolean = false;
-let gisInited:boolean = false;
 
 @Injectable({
   providedIn: 'root'
 })
 export class GoogleAPIService {
 
-
+  gapiInited: Promise<boolean>;
+  gisInited: Promise<boolean>;
+  allInited: Promise<boolean>;
 
   tokenClient:any = null;
   
+  constructor(private cookie: CookieService) {
+    this.gapiInited = new Promise<boolean>((resolve)=>{
+      this.gapiLoaded(resolve);
+    });
 
-  constructor() {
-    this.gapiLoaded();
-    this.gisLoaded();
+    this.gisInited = new Promise<boolean>((resolve)=>{
+      this.gisLoaded(resolve);
+    });
+
+
+    //promise that returns true when both gapi and gis are loaded
+    this.allInited = new Promise(async (resolve)=>{
+      var a = await this.gapiInited;
+      var b = await this.gisInited;    
+
+      await this.getCookie();
+
+      resolve(a && b);
+    })
   }
 
   /**
    * Callback after api.js is loaded.
    */
-  gapiLoaded() {
-    gapi.load('client', this.initializeGapiClient);
+  gapiLoaded(resolve: (value: boolean | PromiseLike<boolean>) => void) {
+    gapi.load('client', ()=>this.initializeGapiClient(resolve));
   }
 
   /**
    * Callback after the API client is loaded. Loads the
    * discovery doc to initialize the API.
    */
-  async initializeGapiClient() {
+  async initializeGapiClient(resolve: (value: boolean | PromiseLike<boolean>) => void) {
     await gapi.client.init({
        apiKey: googleAPIKey,
       discoveryDocs: [DISCOVERY_DOC],
     });
-    gapiInited = true;
+    resolve(true);
   }
 
   /**
    * Callback after Google Identity Services are loaded.
    */
-  gisLoaded() {
+  gisLoaded(resolve: (value: boolean | PromiseLike<boolean>) => void) {
     this.tokenClient = google.accounts.oauth2.initTokenClient({
       client_id: googleClientID,
       scope: SCOPES,
-      callback: ()=>{}, // defined later
+      callback: ()=>{},
     });
-    gisInited = true;
+    resolve(true)
   }
 
 
 
-  login(onSuccess:()=>void){
+  async login(onSuccess:()=>void){
+    await this.allInited;
+
     this.tokenClient.callback = async (resp:any) => {
       if (resp.error !== undefined) {
         throw (resp);
       }
+
+      
+      const token = gapi.client.getToken();
+      const tokenString = JSON.stringify(token);
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + 1);
+      this.cookie.set('googleAuthToken', tokenString, expiryDate, '/');
+
+
       onSuccess();
     };
+
+    await this.getCookie();
 
     if (gapi.client.getToken() === null) {
       // Prompt the user to select a Google Account and ask for consent to share their data
@@ -83,6 +108,8 @@ export class GoogleAPIService {
   }
 
   async getAllFiles():Promise<gapi.client.drive.File[]>{
+    await this.allInited;
+
     let response;
     try {
       response = await gapi.client.drive.files.list({
@@ -104,5 +131,15 @@ export class GoogleAPIService {
     return files;
   }
   
-  
+public async getCookie(): Promise<boolean>{
+  await this.gapiInited;
+  await this.gisInited;
+
+  if(this.cookie.get("googleAuthToken")){
+    const tokenToken = JSON.parse(this.cookie.get("googleAuthToken"));
+    gapi.client.setToken(tokenToken);
+    return true;
+  }
+  return false;
+}
 }
