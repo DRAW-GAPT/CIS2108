@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { CookieService } from 'ngx-cookie-service';
 import { environment } from '../environments/environment';
 
 // Discovery doc URL for APIs used by the quickstart
@@ -7,13 +8,8 @@ const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/res
 // Authorization scopes required by the API; multiple scopes can be
 // included, separated by spaces.
 const SCOPES = 'https://www.googleapis.com/auth/drive.metadata.readonly';
-
-
 const googleAPIKey:string = environment.googleAPIKey;
 const googleClientID:string = environment.googleClientID;
-
-
-
 
 @Injectable({
   providedIn: 'root'
@@ -22,16 +18,11 @@ export class GoogleAPIService {
 
   gapiInited: Promise<boolean>;
   gisInited: Promise<boolean>;
-
-
-  allInited: Promise<boolean>
-
-
+  allInited: Promise<boolean>;
 
   tokenClient:any = null;
   
-
-  constructor() {
+  constructor(private cookie: CookieService) {
     this.gapiInited = new Promise<boolean>((resolve)=>{
       this.gapiLoaded(resolve);
     });
@@ -44,10 +35,12 @@ export class GoogleAPIService {
     //promise that returns true when both gapi and gis are loaded
     this.allInited = new Promise(async (resolve)=>{
       var a = await this.gapiInited;
-      var b = await this.gisInited;
+      var b = await this.gisInited;    
+
+      await this.getCookie();
+
       resolve(a && b);
     })
-    
   }
 
   /**
@@ -84,7 +77,6 @@ export class GoogleAPIService {
 
 
   async login(onSuccess:()=>void){
-
     await this.allInited;
 
     this.tokenClient.callback = async (resp:any) => {
@@ -105,7 +97,6 @@ export class GoogleAPIService {
   }
 
   async getAllFiles():Promise<gapi.client.drive.File[]>{
-    
     await this.allInited;
 
     let response;
@@ -129,5 +120,15 @@ export class GoogleAPIService {
     return files;
   }
   
+public async getCookie(): Promise<boolean>{
+  await this.gapiInited;
+  await this.gisInited;
   
+  if(this.cookie.get("googleAuthToken")){
+    const tokenToken = JSON.parse(this.cookie.get("googleAuthToken"));
+    gapi.client.setToken(tokenToken);
+    return true;
+  }
+  return false;
+}
 }
