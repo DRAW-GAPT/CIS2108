@@ -78,8 +78,18 @@
 </mat-menu>
 
 <mat-menu #permissions="matMenu" multiple appearance="fill">
-        <mat-option value="option1">Editor <mat-icon>edit</mat-icon> </mat-option>
-        <mat-option value="option2" onclick="console.log()" >Viewer <mat-icon>remove_red_eye</mat-icon> </mat-option>
-        <mat-option value="option3">Commenter <mat-icon> comment</mat-icon> </mat-option>
+        <mat-checkbox value="option1">Editor 
+            <mat-icon>edit</mat-icon> 
+        </mat-checkbox><br>
+        <mat-checkbox value="option2" onclick="console.log()" >Viewer 
+            <mat-icon>remove_red_eye</mat-icon> 
+        </mat-checkbox><br>
+        <mat-checkbox value="option3">Commenter 
+            <mat-icon> comment</mat-icon> 
+        </mat-checkbox>
+</mat-menu>
+
+<mat-menu #date="matMenu" multiple appearance="fill">
+    
 </mat-menu>
 
