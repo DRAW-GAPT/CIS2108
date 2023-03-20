@@ -9,6 +9,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table'  
 import { FileListComponent } from './file-list/file-list.component';
 import { CookieService } from 'ngx-cookie-service';
+import {MatPaginatorModule} from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
 
 
 @NgModule({
@@ -24,7 +26,8 @@ import { CookieService } from 'ngx-cookie-service';
     BrowserAnimationsModule,
     MatButtonModule,
     MatTableModule,
-
+    MatPaginatorModule,
+    MatSortModule
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]
