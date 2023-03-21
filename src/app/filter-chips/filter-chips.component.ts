@@ -8,6 +8,7 @@ import {FormControl} from '@angular/forms'
 })
 export class FilterChipsComponent {
   searchText!: string;
+  // SET TO AN ARRAY OF OWNERS IN THE TABLE
   owners = ['Andrea Borg', 'Rianne Azzopardi', 'David Briffa', 'Wayne Borg', 'Ema Grech'];
   filteredOptions = this.owners;
 
