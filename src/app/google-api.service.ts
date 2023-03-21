@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { environment } from '../environments/environment';
 
@@ -22,7 +23,7 @@ export class GoogleAPIService {
 
   tokenClient:any = null;
   
-  constructor(private cookie: CookieService) {
+  constructor(private cookie: CookieService, private router: Router) {
     this.gapiInited = new Promise<boolean>((resolve)=>{
       this.gapiLoaded(resolve);
     });
@@ -75,6 +76,11 @@ export class GoogleAPIService {
   }
 
 
+  async confirmLogin(){
+    if(gapi.client.getToken() == null || JSON.parse(gapi.client.getToken().expires_in) < 0){
+      this.router.navigate(['login']);
+    }
+  }
 
   async login(onSuccess:()=>void){
     await this.allInited;
@@ -93,7 +99,7 @@ export class GoogleAPIService {
       onSuccess();
     };
 
-    if (gapi.client.getToken() === null || JSON.parse(gapi.client.getToken().expires_in) < 0) {
+    if (gapi.client.getToken() === null) {
       // Prompt the user to select a Google Account and ask for consent to share their data
       // when establishing a new session.
       this.tokenClient.requestAccessToken({prompt: 'consent'});
@@ -107,7 +113,7 @@ export class GoogleAPIService {
   async getAllFiles():Promise<gapi.client.drive.File[]>{
     await this.allInited;
 
-    await this.login(()=>{});
+    await this.confirmLogin();
 
     let response;
     try {
