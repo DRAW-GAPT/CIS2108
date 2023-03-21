@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import {FormControl} from '@angular/forms'
+import {FormGroup, FormControl} from '@angular/forms';
+
 
 @Component({
   selector: 'app-filter-chips',
