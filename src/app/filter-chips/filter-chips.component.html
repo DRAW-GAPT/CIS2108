@@ -27,13 +27,20 @@
 
 <!---INPUT FOR OWNER-->>
 <mat-menu #menu="matMenu" multiple>
-    <input (click)="$event.stopPropagation()" /><br>
-    <div class="checkbox-container">
-      <mat-checkbox *ngFor="let option of options" [value]="option">
-        {{option}}
-      </mat-checkbox>
-    </div>
-  </mat-menu>
+        <input type="text"
+           matInput
+           [matAutocomplete]="auto"
+           (click)="$event.stopPropagation()"
+           [(ngModel)]="searchText"
+           (input)="filterOptions()">
+        
+        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete"/>
+        <div class="checkbox-container">
+            <mat-checkbox *ngFor="let option of filteredOptions" [value]="option">
+                {{option}}
+            </mat-checkbox>
+        </div>
+</mat-menu>
 
   
 <!---INPUT FOR PERMISSIONS-->>
