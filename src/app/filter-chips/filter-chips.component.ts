@@ -7,15 +7,6 @@ import {FormControl} from '@angular/forms'
   styleUrls: ['./filter-chips.component.scss']
 })
 export class FilterChipsComponent {
-  permissions = new FormControl('');
-
-  editorSelected = false;
-  viewerSelected = false;
-  commenterSelected = false;
-
-  public toggle = (value: boolean) => {
-    value = !value;
-  }
-
+  options: string[] = ['One', 'Two', 'Three'];
 }
 

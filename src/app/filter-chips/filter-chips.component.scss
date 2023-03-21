@@ -28,3 +28,8 @@ mat-form-field, mat-datepicker{
     margin-right: 10px;
     vertical-align: bottom;
 }
+
+.checkbox-container {
+    display: flex;
+    flex-direction: column;
+}
