@@ -25,8 +25,9 @@
     </mat-chip-option>
 </mat-chip-listbox>
 
-<!---INPUT FOR OWNER-->>
+<!---INPUT FOR OWNER-->
 <mat-menu #menu="matMenu" multiple>
+        <mat-icon>search</mat-icon>
         <input type="text"
            matInput
            [matAutocomplete]="auto"
@@ -43,7 +44,7 @@
 </mat-menu>
 
   
-<!---INPUT FOR PERMISSIONS-->>
+<!---INPUT FOR PERMISSIONS-->
 <mat-menu #permissions="matMenu" multiple appearance="fill">
         <mat-checkbox value="option1"><span class="drop-down-item1">Editor</span>
             <mat-icon class="drop-down-icon">edit</mat-icon> 
