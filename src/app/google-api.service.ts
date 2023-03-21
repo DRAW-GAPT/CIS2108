@@ -84,20 +84,16 @@ export class GoogleAPIService {
         throw (resp);
       }
 
-      
       const token = gapi.client.getToken();
       const tokenString = JSON.stringify(token);
       const expiryDate = new Date();
       expiryDate.setDate(expiryDate.getDate() + 1);
       this.cookie.set('googleAuthToken', tokenString, expiryDate, '/');
 
-
       onSuccess();
     };
 
-    await this.getCookie();
-
-    if (gapi.client.getToken() === null) {
+    if (gapi.client.getToken() === null || JSON.parse(gapi.client.getToken().expires_in) < 0) {
       // Prompt the user to select a Google Account and ask for consent to share their data
       // when establishing a new session.
       this.tokenClient.requestAccessToken({prompt: 'consent'});
@@ -105,10 +101,13 @@ export class GoogleAPIService {
       // Skip display of account chooser and consent dialog for an existing session.
       this.tokenClient.requestAccessToken({prompt: ''});
     }
+
   }
 
   async getAllFiles():Promise<gapi.client.drive.File[]>{
     await this.allInited;
+
+    await this.login(()=>{});
 
     let response;
     try {
