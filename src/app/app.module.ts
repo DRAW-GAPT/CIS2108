@@ -22,6 +22,8 @@ import { MatInputModule } from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -49,7 +51,9 @@ import {MatButtonToggleModule} from '@angular/material/button-toggle';
     MatInputModule,
     MatSelectModule,
     MatCheckboxModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    MatAutocompleteModule,
+    FormsModule
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]
