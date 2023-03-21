@@ -8,12 +8,12 @@ import {FormControl} from '@angular/forms'
 })
 export class FilterChipsComponent {
   searchText!: string;
-  options = ['Option 1', 'Option 2', 'Option 3', 'Option 4', 'Option 5'];
-  filteredOptions = this.options;
+  owners = ['Andrea Borg', 'Rianne Azzopardi', 'David Briffa', 'Wayne Borg', 'Ema Grech'];
+  filteredOptions = this.owners;
 
   filterOptions() {
-    this.filteredOptions = this.options.filter(option => {
-      return option.toLowerCase().includes(this.searchText.toLowerCase());
+    this.filteredOptions = this.owners.filter(owner => {
+      return owner.toLowerCase().includes(this.searchText.toLowerCase());
     });
   }
 }
