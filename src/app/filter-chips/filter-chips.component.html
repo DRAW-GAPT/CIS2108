@@ -14,13 +14,13 @@
         <mat-icon>keyboard_arrow_down</mat-icon>     
     </mat-chip-option>
     
-    <mat-chip-option >
+    <mat-chip-option [matMenuTriggerFor]="type" >
         Type
         <mat-icon>keyboard_arrow_down</mat-icon>
     </mat-chip-option>
     
-    <mat-chip-option >
-        Shared with User
+    <mat-chip-option [matMenuTriggerFor]="shared">
+        Shared with 
         <mat-icon>keyboard_arrow_down</mat-icon>
     </mat-chip-option>
 </mat-chip-listbox>
@@ -44,6 +44,43 @@
         </div>
 </mat-menu>
 
+<!---INPUT FOR TYPE -->
+<mat-menu #type="matMenu" multiple>
+    <mat-icon>search</mat-icon>
+    <input type="text"
+       matInput
+       [matAutocomplete]="auto"
+       (click)="$event.stopPropagation()"
+       [(ngModel)]="searchText"
+       (input)="filterType()">
+    
+    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete"/>
+    <div class="checkbox-container">
+        <mat-checkbox *ngFor="let type of filteredType" [value]="type">
+            <!-- Insert file type here -->
+            {{type}}
+        </mat-checkbox>
+    </div>
+</mat-menu>
+
+<!---INPUT FOR SHARED WITH -->
+<mat-menu #shared="matMenu" multiple>
+    <mat-icon>search</mat-icon>
+    <input type="text"
+       matInput
+       [matAutocomplete]="auto"
+       (click)="$event.stopPropagation()"
+       [(ngModel)]="searchText"
+       (input)="filterShared()">
+    
+    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete"/>
+    <div class="checkbox-container">
+        <mat-checkbox *ngFor="let share of filteredShared" [value]="share">
+            <!--ADD USER ICON HERE-->
+            {{share}}
+        </mat-checkbox>
+    </div>
+</mat-menu>
   
 <!---INPUT FOR PERMISSIONS-->
 <mat-menu #permissions="matMenu" multiple appearance="fill">
@@ -56,6 +93,19 @@
         <mat-checkbox value="option3"><span class="drop-down-item3">Commenter</span>
             <mat-icon class="drop-down-icon"> comment</mat-icon> &nbsp;&nbsp;
         </mat-checkbox>
+</mat-menu>
+
+<!---INPUT FOR PERMISSIONS-->
+<mat-menu #permissions="matMenu" multiple appearance="fill">
+    <mat-checkbox value="option1"><span class="drop-down-item1">Editor</span>
+        <mat-icon class="drop-down-icon">edit</mat-icon> 
+    </mat-checkbox><br>
+    <mat-checkbox value="option2"><span class="drop-down-item2">Viewer</span>
+        <mat-icon class="drop-down-icon">remove_red_eye</mat-icon> 
+    </mat-checkbox><br>
+    <mat-checkbox value="option3"><span class="drop-down-item3">Commenter</span>
+        <mat-icon class="drop-down-icon"> comment</mat-icon> &nbsp;&nbsp;
+    </mat-checkbox>
 </mat-menu>
 
 <mat-menu #date="matMenu" multiple appearance="fill">
