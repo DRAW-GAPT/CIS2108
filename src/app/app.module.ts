@@ -24,6 +24,9 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { FormsModule } from '@angular/forms';
+import {MatCardModule} from '@angular/material/card';
+import { RecentlyAccessedComponent } from './recently-accessed/recently-accessed.component';
+import {MatGridListModule} from '@angular/material/grid-list';
 
 
 @NgModule({
@@ -33,6 +36,7 @@ import { FormsModule } from '@angular/forms';
     ListComponent,
     FileListComponent,
     FilterChipsComponent,
+    RecentlyAccessedComponent,
   ],
   imports: [
     BrowserModule,
@@ -53,7 +57,9 @@ import { FormsModule } from '@angular/forms';
     MatCheckboxModule,
     MatButtonToggleModule,
     MatAutocompleteModule,
-    FormsModule
+    FormsModule,
+    MatCardModule,
+    MatGridListModule
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]
