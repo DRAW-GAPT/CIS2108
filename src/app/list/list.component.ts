@@ -19,6 +19,5 @@ export class ListComponent {
 
   async init() {    
     this.list$ = this.googleAPIService.getAllFiles();
-    console.log("got all files");
   }
 }

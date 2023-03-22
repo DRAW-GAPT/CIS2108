@@ -18,7 +18,6 @@ export class FilterChipsComponent {
 
   @Input() set unfilteredFiles(value:gapi.client.drive.File[]){
     this._unfilteredFiles = [...value];
-    console.log(value);
     this.updateDropdowns();
   }
 
