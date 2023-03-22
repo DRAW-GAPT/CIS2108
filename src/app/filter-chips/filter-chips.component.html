@@ -36,7 +36,22 @@
         
         <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete"/>
         <div class="checkbox-container">
-            <mat-checkbox *ngFor="let option of ownerOptions" [value]="option.permissionId??''">
+            
+
+            <mat-checkbox #ownerCheckbox [value]="'all'" (change)="ownerFilterSelectChange($event)" checked="{{allOwnersSelected}}" disabled="{{allOwnersSelected}}" (click)="$event.stopPropagation()">
+                select all
+            </mat-checkbox>
+
+            <mat-checkbox #ownerCheckbox [value]="'none'" (change)="ownerFilterSelectChange($event)" checked="{{noOwnersSelected}}" disabled="{{noOwnersSelected}}" (click)="$event.stopPropagation()">
+                select none
+            </mat-checkbox>
+            
+
+            <mat-checkbox #ownerCheckbox [value]="ownerOptionsMe?.permissionId??''" checked="true" (click)="$event.stopPropagation()">
+                me ({{ownerOptionsMe?.displayName}})
+            </mat-checkbox>
+
+            <mat-checkbox #ownerCheckbox *ngFor="let option of ownerOptions" [value]="option.permissionId??''" (change)="ownerFilterSelectChange($event)" checked="true" (click)="$event.stopPropagation()">
                 <!--ADD USER ICON HERE-->
                 {{option.displayName}}
             </mat-checkbox>
@@ -54,7 +69,7 @@
     
     <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete"/>
     <div class="checkbox-container">
-        <mat-checkbox *ngFor="let type of typeOptions" [value]="type">
+        <mat-checkbox *ngFor="let type of typeOptions" [value]="type" >
             <!-- Insert file type here -->
             {{type}}
         </mat-checkbox>
