@@ -47,7 +47,7 @@
             </mat-checkbox>
             
 
-            <mat-checkbox #ownerCheckbox [value]="ownerOptionsMe?.permissionId??''" checked="true" (click)="$event.stopPropagation()">
+            <mat-checkbox #ownerCheckbox [value]="ownerOptionsMe?.permissionId??''" (change)="ownerFilterSelectChange($event)" checked="true" (click)="$event.stopPropagation()">
                 me ({{ownerOptionsMe?.displayName}})
             </mat-checkbox>
 

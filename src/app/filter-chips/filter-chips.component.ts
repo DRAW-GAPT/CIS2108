@@ -1,4 +1,4 @@
-import { Component, Input, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { Component, EventEmitter, Input, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 import * as _ from 'lodash';
 
@@ -21,18 +21,24 @@ export class FilterChipsComponent {
   @Input() set unfilteredFiles(value:gapi.client.drive.File[]){
     this._unfilteredFiles = [...value];
     this.updateDropdowns();
+    this.filterFiles();
   }
 
-
-
-  @Output() filteredFiles:gapi.client.drive.File[] = [];
+  @Output() updateFilteredFiles:EventEmitter<gapi.client.drive.File[]> = new EventEmitter<gapi.client.drive.File[]>();
 
   searchText!: string;
-  // SET TO AN ARRAY OF OWNERS IN THE TABLE
+
+
+
+  //list of distinct owners (minus authenticated user)
   ownerOptions:gapi.client.drive.User[] = [];
+  //authenticated user
   ownerOptionsMe:gapi.client.drive.User|null = null;
 
+
+  //list of permissionIDs of selected owners
   selectedOwnersID:string[] = [];
+  //true if all or none of the owners are selected
   allOwnersSelected:boolean = true;
   noOwnersSelected:boolean = false;
 
@@ -91,22 +97,25 @@ export class FilterChipsComponent {
   
 
     //filter owners
-    res = res.filter(file=>{
-      if(!file.owners || file.owners.length == 0){
-        //this is an exceptional event if we ever reach here, something has probably gone wrong
-        console.warn("file has no owners",file)
-        return true; //file has no owners, to avoid it being hidden forever, its better if we show it
-      }
-      //return owners which were selected in the filter
-      return this.selectedOwnersID.includes(file.owners[0].permissionId??'');
-    })
+    if(!this.allOwnersSelected){
+      res = res.filter(file=>{
+        if(!file.owners || file.owners.length == 0){
+          //this is an exceptional event if we ever reach here, something has probably gone wrong
+          console.warn("file has no owners",file)
+          return true; //file has no owners, to avoid it being hidden forever, its better if we show it
+        }
+        //return owners which were selected in the filter
+        return this.selectedOwnersID.includes(file.owners[0].permissionId??'');
+      })
+    }
 
     console.log("filtered files: ", res);
-    this.filteredFiles = res;
+    this.updateFilteredFiles.emit(res)
   }
 
   ngAfterViewInit(){
     this.updateDropdowns();
+    this.filterFiles();
   }
 
   getSharedWith() {
@@ -180,7 +189,7 @@ export class FilterChipsComponent {
   }
 
   
-
+  
 }
 
 
