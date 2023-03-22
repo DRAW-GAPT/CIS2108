@@ -119,7 +119,7 @@ export class GoogleAPIService {
     try {
       response = await gapi.client.drive.files.list({
         'pageSize': 1000,
-        'fields': 'files(id, name, createdTime, modifiedTime, owners,size, lastModifyingUser, iconLink)',
+        'fields': 'files(id, name, createdTime, modifiedTime, owners,size, lastModifyingUser, iconLink,fileExtension,permissions)',
       });
     } catch (err) {
       //todo, error handling

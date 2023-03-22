@@ -1,5 +1,6 @@
 import { Component, Input, Output } from '@angular/core';
-import { distinct } from '../util';
+import * as _ from 'lodash';
+
 
 
 
@@ -28,52 +29,67 @@ export class FilterChipsComponent {
   searchText!: string;
   // SET TO AN ARRAY OF OWNERS IN THE TABLE
   owners:any[] = [];
-  shared = ['None','Andrea Borg', 'Rianne Azzopardi', 'David Briffa', 'Wayne Borg'];
-  types = ['.pdf','.jpg','.doc','.png'];
+  sharedOptions:any[] = [];
+  types:any[] = [];
   filteredType = this.types;
   filteredOptions = this.owners;
-  filteredShared = this.shared;
+  filteredShared = this.sharedOptions;
 
   filterOptions() {
-    console.trace("filtering owners")
     this.filteredOptions = this.owners;
   }
   filterType() {
-    this.filteredType = this.types.filter(type => {
-      return type.toLowerCase().includes(this.searchText.toLowerCase());
-    });
+    this.filteredType = this.types;
   }
 
   filterShared() {
-    this.filteredShared = this.shared.filter(share => {
-      return share.toLowerCase().includes(this.searchText.toLowerCase());
-    });
+    this.filteredShared = this.sharedOptions;
   }
 
 
   updateDropdowns(){
     this.owners = this.getOwnersList();
+    this.types = this.getTypes();
+    this.sharedOptions = this.getSharedWith();
   }
 
   
   getOwnersList() {
-
-    console.log("getting owners");
-
     let ownersList:gapi.client.drive.User[] = this._unfilteredFiles
       .map((file:gapi.client.drive.File)=>file.owners) // get owners array
       .map((owners)=> (owners && owners[0]) ? owners[0]:null) //get 0th element (usually file only has 1 anyways) - or undefined if array is null or empty
       .filter((owner): owner is gapi.client.drive.User => owner!==null && owner!==undefined); //remove nulls/undefineds
       
-      ownersList = distinct(ownersList);
+      ownersList = _.uniqWith(ownersList, _.isEqual);
 
-      //todo return object isntead of string
-      return ownersList.map((o)=>o.emailAddress??"");
+      return ownersList;
+
+  }
+
+  getTypes() {
+    let extList:string[] = this._unfilteredFiles
+      .map((file:gapi.client.drive.File)=>file.fileExtension) // get extension array
+      .filter((ext): ext is string => ext!=null && ext.length!=0); //remove nulls and empty
+      extList = _.uniq(extList);
+
+      return extList;
 
   }
 
   ngAfterViewInit(){
     this.updateDropdowns();
+  }
+
+  getSharedWith() {
+    let userList:gapi.client.drive.User[] = this._unfilteredFiles
+      .flatMap((file:gapi.client.drive.File)=>file.permissions) // get permission array
+      .filter((perm): perm is gapi.client.drive.Permission => perm!==null && perm!==undefined); //remove nulls/undefineds
+      
+      //unique by user id
+      userList = _.uniqBy(userList, 'id');
+
+      return userList;
+
   }
 
 }
