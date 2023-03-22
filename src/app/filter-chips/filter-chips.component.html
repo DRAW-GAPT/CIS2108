@@ -32,14 +32,13 @@
            matInput
            [matAutocomplete]="auto"
            (click)="$event.stopPropagation()"
-           [(ngModel)]="searchText"
-           (input)="filterOptions()">
+           [(ngModel)]="searchText">
         
         <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete"/>
         <div class="checkbox-container">
-            <mat-checkbox *ngFor="let option of filteredOptions" [value]="option">
+            <mat-checkbox *ngFor="let option of ownerOptions" [value]="option.permissionId??''">
                 <!--ADD USER ICON HERE-->
-                {{option}}
+                {{option.displayName}}
             </mat-checkbox>
         </div>
 </mat-menu>
@@ -51,12 +50,11 @@
        matInput
        [matAutocomplete]="auto"
        (click)="$event.stopPropagation()"
-       [(ngModel)]="searchText"
-       (input)="filterType()">
+       [(ngModel)]="searchText">
     
     <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete"/>
     <div class="checkbox-container">
-        <mat-checkbox *ngFor="let type of filteredType" [value]="type">
+        <mat-checkbox *ngFor="let type of typeOptions" [value]="type">
             <!-- Insert file type here -->
             {{type}}
         </mat-checkbox>
@@ -70,14 +68,13 @@
        matInput
        [matAutocomplete]="auto"
        (click)="$event.stopPropagation()"
-       [(ngModel)]="searchText"
-       (input)="filterShared()">
+       [(ngModel)]="searchText">
     
     <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete"/>
     <div class="checkbox-container">
-        <mat-checkbox *ngFor="let share of filteredShared" [value]="share">
+        <mat-checkbox *ngFor="let share of sharedOptions" [value]="share.id??''">
             <!--ADD USER ICON HERE-->
-            {{share}}
+            {{share.displayName}}
         </mat-checkbox>
     </div>
 </mat-menu>
