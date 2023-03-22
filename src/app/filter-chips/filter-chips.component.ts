@@ -28,28 +28,14 @@ export class FilterChipsComponent {
 
   searchText!: string;
   // SET TO AN ARRAY OF OWNERS IN THE TABLE
-  owners:any[] = [];
-  sharedOptions:any[] = [];
-  types:any[] = [];
-  filteredType = this.types;
-  filteredOptions = this.owners;
-  filteredShared = this.sharedOptions;
-
-  filterOptions() {
-    this.filteredOptions = this.owners;
-  }
-  filterType() {
-    this.filteredType = this.types;
-  }
-
-  filterShared() {
-    this.filteredShared = this.sharedOptions;
-  }
+  ownerOptions:gapi.client.drive.User[] = [];
+  sharedOptions:gapi.client.drive.Permission[] = [];
+  typeOptions:string[] = [];
 
 
   updateDropdowns(){
-    this.owners = this.getOwnersList();
-    this.types = this.getTypes();
+    this.ownerOptions = this.getOwnersList();
+    this.typeOptions = this.getTypes();
     this.sharedOptions = this.getSharedWith();
   }
 
@@ -81,14 +67,14 @@ export class FilterChipsComponent {
   }
 
   getSharedWith() {
-    let userList:gapi.client.drive.User[] = this._unfilteredFiles
+    let permList:gapi.client.drive.Permission[] = this._unfilteredFiles
       .flatMap((file:gapi.client.drive.File)=>file.permissions) // get permission array
       .filter((perm): perm is gapi.client.drive.Permission => perm!==null && perm!==undefined); //remove nulls/undefineds
       
       //unique by user id
-      userList = _.uniqBy(userList, 'id');
+      permList = _.uniqBy(permList, 'id');
 
-      return userList;
+      return permList;
 
   }
 
