@@ -1,6 +1,10 @@
 <app-search-bar/>
-<app-filter-chips/>
-<app-file-list [files]=list/>
+<ng-container *ngIf="list$ | async as fileList; else loading">
+    <app-filter-chips [unfilteredFiles]="fileList"/>
+    <app-file-list [files]=fileList />
+</ng-container>
+
+<ng-template #loading>Loading...</ng-template>
 
 
 

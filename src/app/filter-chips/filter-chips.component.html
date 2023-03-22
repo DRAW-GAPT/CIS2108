@@ -37,7 +37,7 @@
         
         <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete"/>
         <div class="checkbox-container">
-            <mat-checkbox *ngFor="let option of filteredOptions" [value]="option">
+            <mat-checkbox *ngFor="let option of owners" [value]="option">
                 <!--ADD USER ICON HERE-->
                 {{option}}
             </mat-checkbox>
