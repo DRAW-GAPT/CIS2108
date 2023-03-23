@@ -109,7 +109,6 @@ export class FilterChipsComponent {
       })
     }
 
-    console.log("filtered files: ", res);
     this.updateFilteredFiles.emit(res)
   }
 
