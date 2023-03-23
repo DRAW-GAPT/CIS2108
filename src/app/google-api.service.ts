@@ -148,9 +148,9 @@ public createCookie(){
   const token = gapi.client.getToken();
   const tokenString = JSON.stringify(token);
   const currentTime = new Date();
-  const expiryTime = currentTime.getMilliseconds() + (60*59*1000);
+  const expiryTime = (JSON.parse(gapi.client.getToken().expires_in) * 1000);
 
-  this.cookie.set('googleAuthToken', tokenString, 1/24, '/');
+  this.cookie.set('googleAuthToken', tokenString, expiryTime/(86400000), '/');
 
   setTimeout(() => {
     this.cookie.delete('googleAuthToken');
