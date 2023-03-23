@@ -77,7 +77,7 @@ export class GoogleAPIService {
 
 
   async confirmLogin(){
-    if(gapi.client.getToken() == null || JSON.parse(gapi.client.getToken().expires_in) < 0){
+    if(gapi.client.getToken() == null || !this.cookie.get("googleAuthToken")){
       this.router.navigate(['login']);
     }
   }
@@ -90,12 +90,7 @@ export class GoogleAPIService {
         throw (resp);
       }
 
-      const token = gapi.client.getToken();
-      const tokenString = JSON.stringify(token);
-      const expiryDate = new Date();
-      expiryDate.setDate(expiryDate.getDate() + 1);
-      this.cookie.set('googleAuthToken', tokenString, expiryDate, '/');
-
+      this.createCookie();
       onSuccess();
     };
 
@@ -147,4 +142,21 @@ public async getCookie(): Promise<boolean>{
   }
   return false;
 }
+
+
+public createCookie(){
+  const token = gapi.client.getToken();
+  const tokenString = JSON.stringify(token);
+  const currentTime = new Date();
+  const expiryTime = (JSON.parse(gapi.client.getToken().expires_in) * 1000);
+
+  this.cookie.set('googleAuthToken', tokenString, expiryTime/(86400000), '/');
+
+  setTimeout(() => {
+    this.cookie.delete('googleAuthToken');
+    this.confirmLogin();
+  }, expiryTime);
+
+  }
 }
+
