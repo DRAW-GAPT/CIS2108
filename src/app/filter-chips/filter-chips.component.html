@@ -1,5 +1,5 @@
-<mat-chip-listbox multiple>
-    <mat-chip-option [matMenuTriggerFor]="menu">
+<mat-chip-listbox multiple selectable="false">
+    <mat-chip-option [matMenuTriggerFor]="menu" selected={{!allOwnersSelected}}>
         Owner
         <mat-icon>keyboard_arrow_down</mat-icon>
     </mat-chip-option>
