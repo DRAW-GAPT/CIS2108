@@ -39,11 +39,11 @@
             
 
             <mat-checkbox #ownerCheckbox [value]="'all'" (change)="ownerFilterSelectChange($event)" checked="{{allOwnersSelected}}" disabled="{{allOwnersSelected}}" (click)="$event.stopPropagation()">
-                select all
+                Select All
             </mat-checkbox>
 
             <mat-checkbox #ownerCheckbox [value]="'none'" (change)="ownerFilterSelectChange($event)" checked="{{noOwnersSelected}}" disabled="{{noOwnersSelected}}" (click)="$event.stopPropagation()">
-                select none
+                Select None
             </mat-checkbox>
             
 
