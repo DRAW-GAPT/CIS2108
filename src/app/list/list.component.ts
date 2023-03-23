@@ -8,17 +8,20 @@ import { GoogleAPIService } from '../google-api.service';
   styleUrls: ['./list.component.css']
 })
 export class ListComponent {
-
-  
   //todo this is a temp class - need to redo with proper async
   list$:Promise<gapi.client.drive.File[]> = new Promise((resolve)=>resolve([]));
 
-  constructor(public googleAPIService: GoogleAPIService,  private cookie:CookieService){
+  filteredFiles: gapi.client.drive.File[] = [];
+
+  constructor(public googleAPIService: GoogleAPIService){
     this.init();
+  }
+
+  setFilteredFiles(filteredFiles: gapi.client.drive.File[]) {
+    this.filteredFiles = filteredFiles;
   }
 
   async init() {    
     this.list$ = this.googleAPIService.getAllFiles();
-    console.log("got all files");
   }
 }
