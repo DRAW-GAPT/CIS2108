@@ -43,6 +43,13 @@ export class FilterChipsComponent {
   noOwnersSelected:boolean = false;
 
 
+  //list of permissionIDs of selected owners
+  selectedPermissions:string[] = [];
+  //true if all or none of the owners are selected
+  allPermissionsSelected:boolean = true;
+  noPermissionsSelected:boolean = false;
+
+
   sharedOptions:gapi.client.drive.Permission[] = [];
   typeOptions:string[] = [];
 
@@ -180,6 +187,66 @@ export class FilterChipsComponent {
         this.selectedOwnersID.push(checkbox.value);
       } else{
         this.allOwnersSelected = false;
+      }
+
+    })
+
+    this.filterFiles();
+  }
+
+
+  @ViewChildren('permissionCheckbox') permissionCheckBoxes:QueryList<MatCheckbox> = new QueryList();
+
+
+  permissionFilterSelectChange($event: MatCheckboxChange) {
+    let changedValue = $event.source.value
+    let newChecked = $event.source.checked;
+
+
+    if(changedValue == 'all' && newChecked){
+      //if all was selected      
+      
+      //loop through all the fields and set them all to true
+      this.permissionCheckBoxes.forEach(checkbox => {
+        let checkboxVal = checkbox.value;
+
+        if (!['all','none'].includes(checkboxVal)){
+          checkbox.checked = true;
+        }
+
+      })
+    }
+    else if(changedValue == 'none' && newChecked){
+      //if none was selected
+      
+      
+      //loop through all the fields and set them all to true
+      this.permissionCheckBoxes.forEach(checkbox => {
+        let checkboxVal = checkbox.value;
+
+        if (!['all','none'].includes(checkboxVal)){
+          checkbox.checked = false;
+        }
+
+      })
+    }
+
+
+    //reset selected
+    this.allpermissionsSelected = true;
+    this.nopermissionsSelected = true;
+    this.selectedpermissionsID = [];
+
+    //refill selected
+    this.permissionCheckBoxes
+    .filter(checkbox=>!['all','none'].includes(checkbox.value)) // filter out all and none
+    .forEach(checkbox => {
+
+      if(checkbox.checked){
+        this.nopermissionsSelected = false; //found at least 1
+        this.selectedpermissionsID.push(checkbox.value);
+      } else{
+        this.allpermissionsSelected = false;
       }
 
     })
