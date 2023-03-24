@@ -110,21 +110,27 @@ export class GoogleAPIService {
 
     await this.confirmLogin();
 
-    let response;
+
+    let files: gapi.client.drive.File[] = [];
+
+    let nextPageToken:string|undefined;
+
+    console.log("here")
+    
     try {
-      response = await gapi.client.drive.files.list({
-        'pageSize': 1000,
-        'fields': 'files(id, name, createdTime, modifiedTime, owners,size, lastModifyingUser, iconLink,fileExtension,permissions,hasAugmentedPermissions, capabilities, ownedByMe)',
-      });
+      do{
+        let response = await gapi.client.drive.files.list({
+          'pageSize': 1000,
+          'fields': 'nextPageToken,files(id, name, createdTime, modifiedTime, owners,size)',
+        });
+        nextPageToken = response.result.nextPageToken;
+        if(response.result.files)
+          files = [...files,...response.result.files]
+
+      } while (nextPageToken != undefined)
     } catch (err) {
       //todo, error handling
       //document.getElementById('content').innerText = err.message;
-      return [];
-    }
-    const files = response.result.files;
-    if (!files || files.length == 0) {
-      //todo, error handling
-      //document.getElementById('content').innerText = 'No files found.';
       return [];
     }
     // Flatten to string to display
