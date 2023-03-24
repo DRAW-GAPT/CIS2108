@@ -47,8 +47,8 @@ export class FilterChipsComponent {
   //list of permissionIDs of selected owners
   selectedPermissions:string[] = [];
   //true if all or none of the owners are selected
-  allPermissionsSelected:boolean = true;
-  noPermissionsSelected:boolean = false;
+  allPermissionsSelected:boolean = false;
+  noPermissionsSelected:boolean = true;
 
 
   sharedOptions:gapi.client.drive.Permission[] = [];
@@ -118,8 +118,16 @@ export class FilterChipsComponent {
     }
 
     //filter permissions
-    if(!this.allPermissionsSelected){
-      for()
+    if(!this.noPermissionsSelected){
+      this.selectedPermissions.forEach(neededPermision=>{
+        if(neededPermision == 'owned')
+          res = res.filter(file=>file.ownedByMe);
+        else if (neededPermision == 'canComment'){
+          res = res.filter(file=>file.capabilities?.canComment);
+        } else if (neededPermision == 'canEdit'){
+          res = res.filter(file => file.capabilities?.canEdit);
+        }
+      })
     }
 
     this.updateFilteredFiles.emit(res)

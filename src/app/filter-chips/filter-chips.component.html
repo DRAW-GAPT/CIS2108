@@ -104,15 +104,15 @@
             Select None
         </mat-checkbox><br>
 
-        <mat-checkbox #permissionCheckbox [value]="'ownedByMe'" (change)="permissionFilterSelectChange($event)" (click)="$event.stopPropagation()">
+        <mat-checkbox #permissionCheckbox [value]="'owned'" (change)="permissionFilterSelectChange($event)" (click)="$event.stopPropagation()">
             <span class="drop-down-item0">Owner</span>
             <mat-icon class="drop-down-icon">grade</mat-icon> 
         </mat-checkbox><br>
-        <mat-checkbox #permissionCheckbox [value]="'capabilities.canEdit'" (change)="permissionFilterSelectChange($event)" (click)="$event.stopPropagation()">
+        <mat-checkbox #permissionCheckbox [value]="'canEdit'" (change)="permissionFilterSelectChange($event)" (click)="$event.stopPropagation()">
             <span class="drop-down-item1">Can Edit</span>
             <mat-icon class="drop-down-icon">edit</mat-icon> 
         </mat-checkbox><br>
-        <mat-checkbox #permissionCheckbox [value]="'capabilities.canComment'" (change)="permissionFilterSelectChange($event)" (click)="$event.stopPropagation()">
+        <mat-checkbox #permissionCheckbox [value]="'canComment'" (change)="permissionFilterSelectChange($event)" (click)="$event.stopPropagation()">
             <span class="drop-down-item3">Can Comment</span>
             <mat-icon class="drop-down-icon">comment</mat-icon> &nbsp;&nbsp;
         </mat-checkbox>
