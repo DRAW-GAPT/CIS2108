@@ -98,12 +98,16 @@
 
         <mat-checkbox #permissionCheckbox [value]="'all'" (change)="permissionFilterSelectChange($event)" checked="{{allPermissionsSelected}}" disabled="{{allPermissionsSelected}}" (click)="$event.stopPropagation()">
             Select All
-        </mat-checkbox>
+        </mat-checkbox><br>
 
         <mat-checkbox #permissionCheckbox [value]="'none'" (change)="permissionFilterSelectChange($event)" checked="{{noPermissionsSelected}}" disabled="{{noPermissionsSelected}}" (click)="$event.stopPropagation()">
             Select None
-        </mat-checkbox>
+        </mat-checkbox><br>
 
+        <mat-checkbox #permissionCheckbox [value]="'owner'" (change)="permissionFilterSelectChange($event)" (click)="$event.stopPropagation()">
+            <span class="drop-down-item0">Owner</span>
+            <mat-icon class="drop-down-icon">grade</mat-icon> 
+        </mat-checkbox><br>
         <mat-checkbox #permissionCheckbox [value]="'writer'" (change)="permissionFilterSelectChange($event)" (click)="$event.stopPropagation()">
             <span class="drop-down-item1">Editor</span>
             <mat-icon class="drop-down-icon">edit</mat-icon> 
@@ -114,7 +118,7 @@
         </mat-checkbox><br>
         <mat-checkbox #permissionCheckbox [value]="'commenter'" (change)="permissionFilterSelectChange($event)" (click)="$event.stopPropagation()">
             <span class="drop-down-item3">Commenter</span>
-            <mat-icon class="drop-down-icon"> comment</mat-icon> &nbsp;&nbsp;
+            <mat-icon class="drop-down-icon">comment</mat-icon> &nbsp;&nbsp;
         </mat-checkbox>
 </mat-menu>
 
