@@ -233,9 +233,9 @@ export class FilterChipsComponent {
 
 
     //reset selected
-    this.allpermissionsSelected = true;
-    this.nopermissionsSelected = true;
-    this.selectedpermissionsID = [];
+    this.allPermissionsSelected = true;
+    this.noPermissionsSelected = true;
+    this.selectedPermissions = [];
 
     //refill selected
     this.permissionCheckBoxes
@@ -243,10 +243,10 @@ export class FilterChipsComponent {
     .forEach(checkbox => {
 
       if(checkbox.checked){
-        this.nopermissionsSelected = false; //found at least 1
-        this.selectedpermissionsID.push(checkbox.value);
+        this.noPermissionsSelected = false; //found at least 1
+        this.selectedPermissions.push(checkbox.value);
       } else{
-        this.allpermissionsSelected = false;
+        this.allPermissionsSelected = false;
       }
 
     })

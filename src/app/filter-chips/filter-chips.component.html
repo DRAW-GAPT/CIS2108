@@ -4,7 +4,7 @@
         <mat-icon>keyboard_arrow_down</mat-icon>
     </mat-chip-option>
 
-    <mat-chip-option [matMenuTriggerFor]="permissions">
+    <mat-chip-option [matMenuTriggerFor]="permissions" selected={{!allPermissionsSelected}}>
         Permissions
         <mat-icon>keyboard_arrow_down</mat-icon>
     </mat-chip-option>
@@ -36,8 +36,6 @@
         
         <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete"/>
         <div class="checkbox-container">
-            
-
             <mat-checkbox #ownerCheckbox [value]="'all'" (change)="ownerFilterSelectChange($event)" checked="{{allOwnersSelected}}" disabled="{{allOwnersSelected}}" (click)="$event.stopPropagation()">
                 Select All
             </mat-checkbox>
@@ -98,23 +96,23 @@
 <mat-menu #permissions="matMenu" multiple appearance="fill">
 
 
-            <mat-checkbox #permissionCheckbox [value]="'all'" (change)="permissionFilterSelectChange($event)" checked="{{allOwnersSelected}}" disabled="{{allOwnersSelected}}" (click)="$event.stopPropagation()">
-                Select All
-            </mat-checkbox>
+        <mat-checkbox #permissionCheckbox [value]="'all'" (change)="permissionFilterSelectChange($event)" checked="{{allPermissionsSelected}}" disabled="{{allPermissionsSelected}}" (click)="$event.stopPropagation()">
+            Select All
+        </mat-checkbox>
 
-            <mat-checkbox #permissionCheckbox [value]="'none'" (change)="permissionFilterSelectChange($event)" checked="{{noOwnersSelected}}" disabled="{{noOwnersSelected}}" (click)="$event.stopPropagation()">
-                Select None
-            </mat-checkbox>
+        <mat-checkbox #permissionCheckbox [value]="'none'" (change)="permissionFilterSelectChange($event)" checked="{{noPermissionsSelected}}" disabled="{{noPermissionsSelected}}" (click)="$event.stopPropagation()">
+            Select None
+        </mat-checkbox>
 
-        <mat-checkbox #permissionCheckbox value="option1" [value]="'editor'" (change)="permissionFilterSelectChange($event)" (click)="$event.stopPropagation()">
+        <mat-checkbox #permissionCheckbox [value]="'editor'" (change)="permissionFilterSelectChange($event)" (click)="$event.stopPropagation()">
             <span class="drop-down-item1">Editor</span>
             <mat-icon class="drop-down-icon">edit</mat-icon> 
         </mat-checkbox><br>
-        <mat-checkbox #permissionCheckbox value="option2" [value]="'viewer'" (change)="permissionFilterSelectChange($event)" (click)="$event.stopPropagation()">
+        <mat-checkbox #permissionCheckbox [value]="'viewer'" (change)="permissionFilterSelectChange($event)" (click)="$event.stopPropagation()">
             <span class="drop-down-item2">Viewer</span>
             <mat-icon class="drop-down-icon">remove_red_eye</mat-icon> 
         </mat-checkbox><br>
-        <mat-checkbox #permissionCheckbox value="option3" [value]="'commentor'" (change)="permissionFilterSelectChange($event)" (click)="$event.stopPropagation()">
+        <mat-checkbox #permissionCheckbox [value]="'commentor'" (change)="permissionFilterSelectChange($event)" (click)="$event.stopPropagation()">
             <span class="drop-down-item3">Commenter</span>
             <mat-icon class="drop-down-icon"> comment</mat-icon> &nbsp;&nbsp;
         </mat-checkbox>
