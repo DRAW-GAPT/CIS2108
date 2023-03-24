@@ -116,6 +116,26 @@ export class FilterChipsComponent {
       })
     }
 
+    //filter permissions
+    if(!this.allPermissionsSelected){
+      res = res.filter(file=>{
+        if(!file.permissions || file.permissions.length == 0){
+          //this is an exceptional event if we ever reach here, something has probably gone wrong
+          console.warn("user has no permissions for file",file)
+          return true; //file has no owners, to avoid it being hidden forever, its better if we show it
+        }
+        //return owners which were selected in the filter
+
+        let filePermissions:string[] = file.permissions
+        .filter(perm=>perm.id == this.ownerOptionsMe?.permissionId) //get only my permissions
+        .map(perm=>perm.role??'') 
+        .filter((ext): ext is string => ext!=null && ext.length!=0); //remove nulls and empty
+
+
+        return _.intersection(filePermissions,this.selectedPermissions).length>0;
+      })
+    }
+
     this.updateFilteredFiles.emit(res)
   }
 
