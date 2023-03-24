@@ -65,8 +65,15 @@
        (click)="$event.stopPropagation()"
        [(ngModel)]="searchText">
     
-    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete"/>
     <div class="checkbox-container">
+        <mat-checkbox #typeCheckbox [value]="'allTypes'" (change)="typeFilterSelectChange($event)" checked="{{allTypesSelected}}" disabled="{{allTypesSelected}}" (click)="$event.stopPropagation()">
+            Select All
+        </mat-checkbox>
+
+        <mat-checkbox #typeCheckbox [value]="'noTypes'" (change)="typeFilterSelectChange($event)" checked="{{noTypesSelected}}" disabled="{{noTypesSelected}}" (click)="$event.stopPropagation()">
+            Select None
+        </mat-checkbox>
+
         <mat-checkbox *ngFor="let type of typeOptions" [value]="type" >
             <!-- Insert file type here -->
             {{type}}

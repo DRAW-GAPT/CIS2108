@@ -3,9 +3,6 @@ import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 import * as _ from 'lodash';
 import { userInfo } from 'os';
 
-
-
-
 @Component({
   selector: 'app-filter-chips',
   templateUrl: './filter-chips.component.html',
@@ -50,6 +47,11 @@ export class FilterChipsComponent {
   allPermissionsSelected:boolean = false;
   noPermissionsSelected:boolean = true;
 
+  //list of selected types
+  selectedTypes:string[] = [];
+  //true if all or none of the types are selected
+  allTypesSelected:boolean = false;
+  noTypesSelected:boolean = true;
 
   sharedOptions:gapi.client.drive.Permission[] = [];
   typeOptions:string[] = [];
@@ -61,7 +63,6 @@ export class FilterChipsComponent {
     this.sharedOptions = this.getSharedWith();
   }
 
-  
   getOwnersList() {
     let ownersList:gapi.client.drive.User[] = this._unfilteredFiles
       .map((file:gapi.client.drive.File)=>file.owners) // get owners array
@@ -70,10 +71,7 @@ export class FilterChipsComponent {
       
       ownersList = _.uniqWith(ownersList, _.isEqual);
 
-
       let me = _.remove(ownersList,(owner)=>owner.me);
-
-      
 
       if(me.length == 0){
         console.warn("couldn't find user in list of owners, this could either be an error or possibly mean that the owner actualy doesn't own any files");
@@ -129,6 +127,13 @@ export class FilterChipsComponent {
         }
       })
     }
+    if(!this.noTypesSelected){
+      this.getTypes().forEach(element => {
+        console.log(element)
+      });
+
+      }
+    
 
     this.updateFilteredFiles.emit(res)
   }
@@ -267,8 +272,60 @@ export class FilterChipsComponent {
     this.filterFiles();
   }
 
+  @ViewChildren('typeCheckbox') typeCheckBoxes:QueryList<MatCheckbox> = new QueryList();
+
+  typeFilterSelectChange($event: MatCheckboxChange){
+    let changedValue = $event.source.value
+    let newChecked = $event.source.checked;
+
+    if(changedValue == 'allTypes' && newChecked){
+      
+      this.typeCheckBoxes.forEach(checkbox => {
+        let checkboxVal = checkbox.value;
+
+        if (!['all','none'].includes(checkboxVal)){
+          checkbox.checked = true;
+        }
+
+      })
+    }
+    else if(changedValue == 'noTypes' && newChecked){
+      
+      this.typeCheckBoxes.forEach(checkbox => {
+        let checkboxVal = checkbox.value;
   
+        if (!['all','none'].includes(checkboxVal)){
+          checkbox.checked = false;
+        }
   
+      })
+    }
+
+
+    //reset selected
+    this.allTypesSelected = true;
+    this.noTypesSelected = true;
+    this.selectedTypes = [];
+
+    //refill selected
+    this.typeCheckBoxes
+    .filter(checkbox=>!['all','none'].includes(checkbox.value)) 
+    .forEach(checkbox => {
+
+      if(checkbox.checked){
+        this.noTypesSelected = false;
+        this.selectedTypes.push(checkbox.value);
+        console.log("cheese");
+      } else{
+        this.allTypesSelected = false;
+        console.log("egg");
+      }
+
+    })
+   
+    this.filterFiles();
+  }
+    
 }
 
 
