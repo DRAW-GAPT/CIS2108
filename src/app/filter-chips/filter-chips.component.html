@@ -57,7 +57,7 @@
 </mat-menu>
 
 <!---INPUT FOR TYPE -->
-<mat-menu #type="matMenu" multiple>
+<mat-menu #type="matMenu" multiple appearance="fill">
     <mat-icon>search</mat-icon>
     <input type="text"
        matInput
@@ -65,20 +65,18 @@
        (click)="$event.stopPropagation()"
        [(ngModel)]="searchText">
     
-    <div class="checkbox-container">
-        <mat-checkbox #typeCheckbox [value]="'allTypes'" (change)="typeFilterSelectChange($event)" checked="{{allTypesSelected}}" disabled="{{allTypesSelected}}" (click)="$event.stopPropagation()">
+        <mat-checkbox #typeCheckbox [value]="'all'" (change)="typeFilterSelectChange($event)" checked="{{allTypesSelected}}" disabled="{{allTypesSelected}}" (click)="$event.stopPropagation()">
             Select All
-        </mat-checkbox>
+        </mat-checkbox><br>
 
-        <mat-checkbox #typeCheckbox [value]="'noTypes'" (change)="typeFilterSelectChange($event)" checked="{{noTypesSelected}}" disabled="{{noTypesSelected}}" (click)="$event.stopPropagation()">
+        <mat-checkbox #typeCheckbox [value]="'none'" (change)="typeFilterSelectChange($event)" checked="{{noTypesSelected}}" disabled="{{noTypesSelected}}" (click)="$event.stopPropagation()">
             Select None
-        </mat-checkbox>
+        </mat-checkbox><br>
 
-        <mat-checkbox *ngFor="let type of typeOptions" [value]="type" >
+        <mat-checkbox #typeCheckbox *ngFor="let type of typeOptions" [value]="type" (change)="typeFilterSelectChange($event)" checked="{{type}}" disabled="{{!type}}" (click)="$event.stopPropagation()">
             <!-- Insert file type here -->
             {{type}}
         </mat-checkbox>
-    </div>
 </mat-menu>
 
 <!---INPUT FOR SHARED WITH -->

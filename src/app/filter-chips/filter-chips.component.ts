@@ -127,14 +127,17 @@ export class FilterChipsComponent {
         }
       })
     }
+    //filter types
     if(!this.noTypesSelected){
-      this.getTypes().forEach(element => {
-        console.log(element)
-      });
-
-      }
-    
-
+        res = res.filter(file =>{
+          const extension = file.fileExtension;
+          if(extension != null){
+            return this.selectedTypes.indexOf(extension) !== -1
+          }
+          return false;
+        } ) 
+   }
+      
     this.updateFilteredFiles.emit(res)
   }
 
@@ -278,10 +281,11 @@ export class FilterChipsComponent {
     let changedValue = $event.source.value
     let newChecked = $event.source.checked;
 
-    if(changedValue == 'allTypes' && newChecked){
+    if(changedValue == 'all' && newChecked){
       
       this.typeCheckBoxes.forEach(checkbox => {
         let checkboxVal = checkbox.value;
+        console.log(checkbox.value);
 
         if (!['all','none'].includes(checkboxVal)){
           checkbox.checked = true;
@@ -289,7 +293,7 @@ export class FilterChipsComponent {
 
       })
     }
-    else if(changedValue == 'noTypes' && newChecked){
+    else if(changedValue == 'none' && newChecked){
       
       this.typeCheckBoxes.forEach(checkbox => {
         let checkboxVal = checkbox.value;
@@ -315,10 +319,9 @@ export class FilterChipsComponent {
       if(checkbox.checked){
         this.noTypesSelected = false;
         this.selectedTypes.push(checkbox.value);
-        console.log("cheese");
       } else{
         this.allTypesSelected = false;
-        console.log("egg");
+
       }
 
     })
