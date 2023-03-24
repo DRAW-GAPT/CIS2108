@@ -96,15 +96,25 @@
   
 <!---INPUT FOR PERMISSIONS-->
 <mat-menu #permissions="matMenu" multiple appearance="fill">
-        <mat-checkbox value="option1">
+
+
+            <mat-checkbox #permissionCheckbox [value]="'all'" (change)="permissionFilterSelectChange($event)" checked="{{allOwnersSelected}}" disabled="{{allOwnersSelected}}" (click)="$event.stopPropagation()">
+                Select All
+            </mat-checkbox>
+
+            <mat-checkbox #permissionCheckbox [value]="'none'" (change)="permissionFilterSelectChange($event)" checked="{{noOwnersSelected}}" disabled="{{noOwnersSelected}}" (click)="$event.stopPropagation()">
+                Select None
+            </mat-checkbox>
+
+        <mat-checkbox #permissionCheckbox value="option1" [value]="'editor'" (change)="permissionFilterSelectChange($event)" (click)="$event.stopPropagation()">
             <span class="drop-down-item1">Editor</span>
             <mat-icon class="drop-down-icon">edit</mat-icon> 
         </mat-checkbox><br>
-        <mat-checkbox value="option2">
+        <mat-checkbox #permissionCheckbox value="option2" [value]="'viewer'" (change)="permissionFilterSelectChange($event)" (click)="$event.stopPropagation()">
             <span class="drop-down-item2">Viewer</span>
             <mat-icon class="drop-down-icon">remove_red_eye</mat-icon> 
         </mat-checkbox><br>
-        <mat-checkbox value="option3">
+        <mat-checkbox #permissionCheckbox value="option3" [value]="'commentor'" (change)="permissionFilterSelectChange($event)" (click)="$event.stopPropagation()">
             <span class="drop-down-item3">Commenter</span>
             <mat-icon class="drop-down-icon"> comment</mat-icon> &nbsp;&nbsp;
         </mat-checkbox>
