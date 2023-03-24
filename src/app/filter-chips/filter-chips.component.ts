@@ -239,8 +239,7 @@ export class FilterChipsComponent {
     }
     else if(changedValue == 'none' && newChecked){
       //if none was selected
-      
-      
+  
       //loop through all the fields and set them all to true
       this.permissionCheckBoxes.forEach(checkbox => {
         let checkboxVal = checkbox.value;
@@ -248,10 +247,8 @@ export class FilterChipsComponent {
         if (!['all','none'].includes(checkboxVal)){
           checkbox.checked = false;
         }
-
       })
     }
-
 
     //reset selected
     this.allPermissionsSelected = true;
@@ -269,7 +266,6 @@ export class FilterChipsComponent {
       } else{
         this.allPermissionsSelected = false;
       }
-
     })
 
     this.filterFiles();
@@ -281,16 +277,15 @@ export class FilterChipsComponent {
     let changedValue = $event.source.value
     let newChecked = $event.source.checked;
 
+    //siwtching checkboxes accordingly
     if(changedValue == 'all' && newChecked){
       
       this.typeCheckBoxes.forEach(checkbox => {
         let checkboxVal = checkbox.value;
-        console.log(checkbox.value);
 
         if (!['all','none'].includes(checkboxVal)){
           checkbox.checked = true;
         }
-
       })
     }
     else if(changedValue == 'none' && newChecked){
@@ -301,10 +296,8 @@ export class FilterChipsComponent {
         if (!['all','none'].includes(checkboxVal)){
           checkbox.checked = false;
         }
-  
       })
     }
-
 
     //reset selected
     this.allTypesSelected = true;
@@ -323,9 +316,8 @@ export class FilterChipsComponent {
         this.allTypesSelected = false;
 
       }
-
     })
-   
+
     this.filterFiles();
   }
     

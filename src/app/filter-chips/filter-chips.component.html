@@ -36,6 +36,7 @@
         
         <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete"/>
         <div class="checkbox-container">
+            
             <mat-checkbox #ownerCheckbox [value]="'all'" (change)="ownerFilterSelectChange($event)" checked="{{allOwnersSelected}}" disabled="{{allOwnersSelected}}" (click)="$event.stopPropagation()">
                 Select All
             </mat-checkbox>
@@ -65,7 +66,7 @@
        (click)="$event.stopPropagation()"
        [(ngModel)]="searchText">
     
-        <mat-checkbox #typeCheckbox [value]="'all'" (change)="typeFilterSelectChange($event)" checked="{{allTypesSelected}}" disabled="{{allTypesSelected}}" (click)="$event.stopPropagation()">
+        <mat-checkbox #typeCheckbox [checked]="true" [value]="'all'" (change)="typeFilterSelectChange($event)" checked="{{allTypesSelected}}" disabled="{{allTypesSelected}}" (click)="$event.stopPropagation()">
             Select All
         </mat-checkbox><br>
 
