@@ -127,7 +127,7 @@ export class FilterChipsComponent {
         //return owners which were selected in the filter
 
         let filePermissions:string[] = file.permissions
-        .filter(perm=>perm.id == this.ownerOptionsMe?.permissionId) //get only my permissions
+        .filter(perm=>perm.id == this.ownerOptionsMe?.permissionId) //get only permissions of authenticated user
         .map(perm=>perm.role??'') 
         .filter((ext): ext is string => ext!=null && ext.length!=0); //remove nulls and empty
 
