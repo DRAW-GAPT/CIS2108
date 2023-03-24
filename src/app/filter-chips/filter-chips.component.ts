@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 import * as _ from 'lodash';
+import { userInfo } from 'os';
 
 
 
@@ -126,12 +127,25 @@ export class FilterChipsComponent {
         }
         //return owners which were selected in the filter
 
-        let filePermissions:string[] = file.permissions
-        .filter(perm=>perm.id == this.ownerOptionsMe?.permissionId) //get only permissions of authenticated user
-        .map(perm=>perm.role??'') 
-        .filter((ext): ext is string => ext!=null && ext.length!=0); //remove nulls and empty
+        let filePermissions:string[] = file.permissions //get only permissions of authenticated user
 
-
+        .filter(perm=>{
+                       if(perm.id == this.ownerOptionsMe?.permissionId){
+                        return true;
+                       }
+                       if(perm.domain != null && this.ownerOptionsMe?.emailAddress?.endsWith(perm.domain)){
+                        return true;
+                       }
+                       if(perm.type?.includes("anyone"))  {
+                        return true;
+                       }
+                       else{
+                        return false;
+                       }
+                      } 
+                )                 
+                .map(perm=>perm.role??'') 
+                .filter((ext): ext is string => ext!=null && ext.length!=0); //remove nulls and empty
         return _.intersection(filePermissions,this.selectedPermissions).length>0;
       })
     }
