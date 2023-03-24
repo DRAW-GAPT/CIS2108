@@ -119,35 +119,7 @@ export class FilterChipsComponent {
 
     //filter permissions
     if(!this.allPermissionsSelected){
-      res = res.filter(file=>{
-        if(!file.permissions || file.permissions.length == 0){
-          //this is an exceptional event if we ever reach here, something has probably gone wrong
-          console.warn("user has no permissions for file",file)
-          return true; //file has no owners, to avoid it being hidden forever, its better if we show it
-        }
-        //return owners which were selected in the filter
-
-        let filePermissions:string[] = file.permissions //get only permissions of authenticated user
-
-        .filter(perm=>{
-                       if(perm.id == this.ownerOptionsMe?.permissionId){
-                        return true;
-                       }
-                       if(perm.domain != null && this.ownerOptionsMe?.emailAddress?.endsWith(perm.domain)){
-                        return true;
-                       }
-                       if(perm.type?.includes("anyone"))  {
-                        return true;
-                       }
-                       else{
-                        return false;
-                       }
-                      } 
-                )                 
-                .map(perm=>perm.role??'') 
-                .filter((ext): ext is string => ext!=null && ext.length!=0); //remove nulls and empty
-        return _.intersection(filePermissions,this.selectedPermissions).length>0;
-      })
+      for()
     }
 
     this.updateFilteredFiles.emit(res)
@@ -235,7 +207,6 @@ export class FilterChipsComponent {
   permissionFilterSelectChange($event: MatCheckboxChange) {
     let changedValue = $event.source.value
     let newChecked = $event.source.checked;
-
 
     if(changedValue == 'all' && newChecked){
       //if all was selected      
