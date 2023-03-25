@@ -1,9 +1,7 @@
 import { Component, EventEmitter, Input, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 import * as _ from 'lodash';
-
-
-
+import { userInfo } from 'os';
 
 @Component({
   selector: 'app-filter-chips',
@@ -43,6 +41,18 @@ export class FilterChipsComponent {
   noOwnersSelected:boolean = false;
 
 
+  //list of permissionIDs of selected owners
+  selectedPermissions:string[] = [];
+  //true if all or none of the owners are selected
+  allPermissionsSelected:boolean = false;
+  noPermissionsSelected:boolean = true;
+
+  //list of selected types
+  selectedTypes:string[] = [];
+  //true if all or none of the types are selected
+  allTypesSelected:boolean = false;
+  noTypesSelected:boolean = true;
+
   sharedOptions:gapi.client.drive.Permission[] = [];
   typeOptions:string[] = [];
 
@@ -53,7 +63,6 @@ export class FilterChipsComponent {
     this.sharedOptions = this.getSharedWith();
   }
 
-  
   getOwnersList() {
     let ownersList:gapi.client.drive.User[] = this._unfilteredFiles
       .map((file:gapi.client.drive.File)=>file.owners) // get owners array
@@ -62,10 +71,7 @@ export class FilterChipsComponent {
       
       ownersList = _.uniqWith(ownersList, _.isEqual);
 
-
       let me = _.remove(ownersList,(owner)=>owner.me);
-
-      
 
       if(me.length == 0){
         console.warn("couldn't find user in list of owners, this could either be an error or possibly mean that the owner actualy doesn't own any files");
@@ -109,6 +115,29 @@ export class FilterChipsComponent {
       })
     }
 
+    //filter permissions
+    if(!this.noPermissionsSelected){
+      this.selectedPermissions.forEach(neededPermision=>{
+        if(neededPermision == 'owned')
+          res = res.filter(file=>file.ownedByMe);
+        else if (neededPermision == 'canComment'){
+          res = res.filter(file=>file.capabilities?.canComment);
+        } else if (neededPermision == 'canEdit'){
+          res = res.filter(file => file.capabilities?.canEdit);
+        }
+      })
+    }
+    //filter types
+    if(!this.noTypesSelected){
+        res = res.filter(file =>{
+          const extension = file.fileExtension;
+          if(extension != null){
+            return this.selectedTypes.indexOf(extension) !== -1
+          }
+          return false;
+        } ) 
+   }
+      
     this.updateFilteredFiles.emit(res)
   }
 
@@ -187,8 +216,111 @@ export class FilterChipsComponent {
     this.filterFiles();
   }
 
+
+  @ViewChildren('permissionCheckbox') permissionCheckBoxes:QueryList<MatCheckbox> = new QueryList();
+
+
+  permissionFilterSelectChange($event: MatCheckboxChange) {
+    let changedValue = $event.source.value
+    let newChecked = $event.source.checked;
+
+    if(changedValue == 'all' && newChecked){
+      //if all was selected      
+      
+      //loop through all the fields and set them all to true
+      this.permissionCheckBoxes.forEach(checkbox => {
+        let checkboxVal = checkbox.value;
+
+        if (!['all','none'].includes(checkboxVal)){
+          checkbox.checked = true;
+        }
+
+      })
+    }
+    else if(changedValue == 'none' && newChecked){
+      //if none was selected
   
+      //loop through all the fields and set them all to true
+      this.permissionCheckBoxes.forEach(checkbox => {
+        let checkboxVal = checkbox.value;
+
+        if (!['all','none'].includes(checkboxVal)){
+          checkbox.checked = false;
+        }
+      })
+    }
+
+    //reset selected
+    this.allPermissionsSelected = true;
+    this.noPermissionsSelected = true;
+    this.selectedPermissions = [];
+
+    //refill selected
+    this.permissionCheckBoxes
+    .filter(checkbox=>!['all','none'].includes(checkbox.value)) // filter out all and none
+    .forEach(checkbox => {
+
+      if(checkbox.checked){
+        this.noPermissionsSelected = false; //found at least 1
+        this.selectedPermissions.push(checkbox.value);
+      } else{
+        this.allPermissionsSelected = false;
+      }
+    })
+
+    this.filterFiles();
+  }
+
+  @ViewChildren('typeCheckbox') typeCheckBoxes:QueryList<MatCheckbox> = new QueryList();
+
+  typeFilterSelectChange($event: MatCheckboxChange){
+    let changedValue = $event.source.value
+    let newChecked = $event.source.checked;
+
+    //siwtching checkboxes accordingly
+    if(changedValue == 'all' && newChecked){
+      
+      this.typeCheckBoxes.forEach(checkbox => {
+        let checkboxVal = checkbox.value;
+
+        if (!['all','none'].includes(checkboxVal)){
+          checkbox.checked = true;
+        }
+      })
+    }
+    else if(changedValue == 'none' && newChecked){
+      
+      this.typeCheckBoxes.forEach(checkbox => {
+        let checkboxVal = checkbox.value;
   
+        if (!['all','none'].includes(checkboxVal)){
+          checkbox.checked = false;
+        }
+      })
+    }
+
+    //reset selected
+    this.allTypesSelected = true;
+    this.noTypesSelected = true;
+    this.selectedTypes = [];
+
+    //refill selected
+    this.typeCheckBoxes
+    .filter(checkbox=>!['all','none'].includes(checkbox.value)) 
+    .forEach(checkbox => {
+
+      if(checkbox.checked){
+        this.noTypesSelected = false;
+        this.selectedTypes.push(checkbox.value);
+      } else{
+        this.allTypesSelected = false;
+
+      }
+    })
+
+    this.filterFiles();
+  }
+    
 }
 
 
