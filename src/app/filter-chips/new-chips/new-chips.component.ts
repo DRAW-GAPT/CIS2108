@@ -16,6 +16,7 @@ export class NewChipsComponent {
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
   owners: String[] = [];
   sharedWith: String[] = [];
+  permissionsSelected: String[] = [];
 
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
@@ -66,4 +67,15 @@ export class NewChipsComponent {
 
     return this.owners;
   }
+   //under construction
+   async filterByPermissions(){
+    const searchQuery = `trashed=false and (${this.permissionsSelected
+      .map(permissionsSelected=> `'${ permissionsSelected }' in permissions`).join(' or ')})`;
+    const response = await gapi.client.drive.files.list({
+      q: "'me' in owners and " + searchQuery,
+      fields: 'nextPageToken, files(id, name, createdTime, modifiedTime, owners,size, lastModifyingUser, iconLink, fileExtension, permissions)'
+    });
+    console.log(response.result);
+    this.owners = _.sortBy(this.owners,"displayName")
+}
 }
