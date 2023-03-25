@@ -14,6 +14,15 @@
              [matChipInputFor]="chipGrid"
              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
              [matChipInputAddOnBlur]="addOnBlur"
-             (matChipInputTokenEnd)="add($event)"/>
+             (matChipInputTokenEnd)="add($event)"
+             (change)="filterByOwner()"/>
     </mat-chip-grid>
+    
   </mat-form-field> 
+  
+  <!-- david's  friend-->
+  <button (click)="filterByOwner()">test</button>
+
+  
+  
+  

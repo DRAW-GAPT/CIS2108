@@ -1,6 +1,9 @@
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {Component} from '@angular/core';
 import {MatChipEditedEvent, MatChipInputEvent} from '@angular/material/chips';
+import * as _ from 'lodash';
+import { filter } from 'lodash';
+import { GoogleAPIService } from 'src/app/google-api.service';
 
 
 @Component({
@@ -12,6 +15,7 @@ export class NewChipsComponent {
   addOnBlur = true;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
   owners: String[] = [];
+  sharedWith: String[] = [];
 
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
@@ -23,6 +27,7 @@ export class NewChipsComponent {
 
     // Clear the input value
     event.chipInput!.clear();
+    this.filterByOwner();
   }
 
   remove(owner: String): void {
@@ -49,4 +54,16 @@ export class NewChipsComponent {
     }
   }
   
+  //filters the list by owner, called whenever a new email is added to the owner's chip
+  async filterByOwner(){
+    const searchQuery = `trashed=false and (${this.owners.map(owner => `'${owner}' in owners`).join(' or ')})`;
+    const response = await gapi.client.drive.files.list({
+      q: searchQuery,
+      fields: 'nextPageToken, files(id, name, createdTime, modifiedTime, owners,size, lastModifyingUser, iconLink,fileExtension,permissions)'
+    });
+    console.log(response.result);
+    this.owners = _.sortBy(this.owners,"displayName")
+
+    return this.owners;
+  }
 }

@@ -4,9 +4,6 @@ import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
 import * as _ from 'lodash';
 
-export interface Fruit {
-  name: string;
-}
 
 @Component({
   selector: 'app-filter-chips',
@@ -17,6 +14,7 @@ export class FilterChipsComponent {
 
 
   _unfilteredFiles:gapi.client.drive.File[] = [];
+
   get unfilteredFiles():gapi.client.drive.File[] {
     return this._unfilteredFiles;
   }
@@ -44,7 +42,6 @@ export class FilterChipsComponent {
   //true if all or none of the owners are selected
   allOwnersSelected:boolean = true;
   noOwnersSelected:boolean = false;
-
 
   sharedOptions:gapi.client.drive.Permission[] = [];
   typeOptions:string[] = [];
