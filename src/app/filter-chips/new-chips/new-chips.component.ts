@@ -16,18 +16,20 @@ export class NewChipsComponent {
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
   owners: String[] = [];
   sharedWith: String[] = [];
+  permissionsSelected: String[] = [];
 
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
-
+    this.permissionsSelected.push("reader");
     // Add our fruit
     if (value) {
       this.owners.push(value);
+      console.log(this.filterByOwner());
+
     }
 
     // Clear the input value
     event.chipInput!.clear();
-    this.filterByOwner();
   }
 
   remove(owner: String): void {
@@ -59,7 +61,21 @@ export class NewChipsComponent {
     const searchQuery = `trashed=false and (${this.owners.map(owner => `'${owner}' in owners`).join(' or ')})`;
     const response = await gapi.client.drive.files.list({
       q: searchQuery,
-      fields: 'nextPageToken, files(id, name, createdTime, modifiedTime, owners,size, lastModifyingUser, iconLink,fileExtension,permissions)'
+      fields: 'nextPageToken, files(id, name, createdTime, modifiedTime, owners,size, lastModifyingUser, iconLink, fileExtension, permissions)'
+    });
+    console.log(response.result);
+    this.owners = _.sortBy(this.owners,"displayName")
+
+    return this.owners;
+  }
+
+  //under construction
+  async filterByPermissions(){
+    const searchQuery = `trashed=false and (${this.permissionsSelected
+      .map(permissionsSelected=> `'${ permissionsSelected }' in permissions`).join(' or ')})`;
+    const response = await gapi.client.drive.files.list({
+      q: "'me' in owners and " + searchQuery,
+      fields: 'nextPageToken, files(id, name, createdTime, modifiedTime, owners,size, lastModifyingUser, iconLink, fileExtension, permissions)'
     });
     console.log(response.result);
     this.owners = _.sortBy(this.owners,"displayName")
