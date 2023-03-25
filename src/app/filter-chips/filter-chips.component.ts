@@ -31,8 +31,6 @@ export class FilterChipsComponent {
 
   addOwner(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
-    this.permissionsSelected.push("reader");
-    // Add our fruit
     if (value) {
       this.owners.push(value);
       console.log(this.filterByOwner());
@@ -69,12 +67,9 @@ export class FilterChipsComponent {
 
   addShared(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
-    this.permissionsSelected.push("reader");
-    // Add our fruit
     if (value) {
       this.sharedWith.push(value);
       console.log(this.filterByOwner());
-
     }
 
     // Clear the input value
@@ -87,6 +82,8 @@ export class FilterChipsComponent {
     if (index >= 0) {
       this.sharedWith.splice(index, 1);
     }
+
+    this.updateFilter();
   }
 
   editShared(shared: String, event: MatChipEditedEvent) {
@@ -101,6 +98,8 @@ export class FilterChipsComponent {
     if (index >= 0) {
       this.sharedWith[index] = value;
     }
+
+    this.updateFilter();
   }
   
   //filters the list by owner, called whenever a new email is added to the owner's chip
@@ -108,6 +107,7 @@ export class FilterChipsComponent {
     this.updateFilter();
   }
 
+  isCheckedOwner: boolean = false;
   isCheckedWriter: boolean = false;
   isCheckedReader: boolean = false;
   onCheckboxChange($event: MatCheckboxChange) {
@@ -115,11 +115,15 @@ export class FilterChipsComponent {
     this.permissionsSelected = [];
 
     if(this.isCheckedWriter){
-      this.permissionsSelected.push("writer");
+      this.permissionsSelected.push("writers");
     }
 
     if(this.isCheckedReader){
-      this.permissionsSelected.push("reader");
+      this.permissionsSelected.push("readers");
+    }
+
+    if(this.isCheckedOwner){
+      this.permissionsSelected.push("owners")
     }
 
     console.log(this.permissionsSelected)
@@ -132,6 +136,16 @@ export class FilterChipsComponent {
 
     if(this.owners.length > 0)
       subqueries.push(`(${this.owners.map(owner => `'${owner}' in owners`).join(' or ')})`);
+
+    if(this.permissionsSelected.length > 0)
+      subqueries.push(`${this.permissionsSelected
+        .map(permission=> `'me' in ${ permission }` ).join(' or ')}`);
+
+    if(this.sharedWith.length > 0)
+      subqueries.push(`(${this.sharedWith.map(user => `'${user}' in readers`).join(' or ')})`);
+
+
+    
 
     this.updateFilterQuery.emit(subqueries.map(s=>"("+s+")").join(" and "))
   } 

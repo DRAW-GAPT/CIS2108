@@ -95,6 +95,9 @@
   
 <!---INPUT FOR PERMISSIONS-->
 <mat-menu #permissions="matMenu" multiple appearance="fill">
+    <mat-checkbox value="owner" [(ngModel)]="isCheckedOwner" (change)="onCheckboxChange($event)"><span class="drop-down-item1">Owner</span>
+        <mat-icon class="drop-down-icon">star</mat-icon> 
+    </mat-checkbox><br>
     <mat-checkbox value="writer" [(ngModel)]="isCheckedWriter" (change)="onCheckboxChange($event)"><span class="drop-down-item1">Editor</span>
         <mat-icon class="drop-down-icon">edit</mat-icon> 
     </mat-checkbox><br>
