@@ -1,5 +1,6 @@
 <mat-form-field class="example-chip-list" appearance="fill" (click)="$event.stopPropagation()">
-    <mat-chip-grid #chipGrid aria-label="Enter email address..">
+    
+  <mat-chip-grid #chipGrid aria-label="Enter email address..">
       <mat-chip-row *ngFor="let owner of owners"
                     (removed)="remove(owner)"
                     [editable]="true"
@@ -18,10 +19,10 @@
              (change)="filterByOwner()"/>
     </mat-chip-grid>
     
-  </mat-form-field> 
+</mat-form-field> 
   
-  <!-- david's  friend-->
-  <button (click)="filterByOwner()">test</button>
+<!-- david's  friend-->
+<button (click)="filterByOwner()">test</button>
 
   
   

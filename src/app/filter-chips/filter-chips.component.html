@@ -1,5 +1,5 @@
 <mat-chip-listbox multiple>
-    <mat-chip-option [matMenuTriggerFor]="menu">
+    <mat-chip-option [matMenuTriggerFor]="ownersMenu">
         Owner
         <mat-icon>keyboard_arrow_down</mat-icon>
     </mat-chip-option>
@@ -26,8 +26,32 @@
 </mat-chip-listbox>
 
 <!---INPUT FOR OWNER-->
-<mat-menu #menu="matMenu" multiple>
-    <app-new-chips></app-new-chips>
+<mat-menu #ownersMenu="matMenu" multiple>
+    <mat-form-field class="example-chip-list" appearance="fill" (click)="$event.stopPropagation()">
+        <mat-chip-grid #ownerGrid aria-label="Enter email address..">
+            <mat-chip-row *ngFor="let owner of owners"
+                          (removed)="removeOwner(owner)"
+                          [editable]="true"
+                          (edited)="editOwner(owner, $event)"
+                          [aria-description]="'press enter to edit ' + owner">
+              {{owner}}
+              <button matChipRemove [attr.aria-label]="'remove ' + owner">
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip-row>
+            <input class="email-input" placeholder="Enter email address..."
+                   [matChipInputFor]="ownerGrid"
+                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                   [matChipInputAddOnBlur]="addOnBlur"
+                   (matChipInputTokenEnd)="addOwner($event)"
+                   (change)="filterByOwner()"/>
+        </mat-chip-grid>
+          
+    </mat-form-field> 
+        
+      <!-- david's  friend-->
+      <button (click)="filterByOwner()">test</button>
+            
 </mat-menu>
 
 <!---INPUT FOR TYPE -->
@@ -50,7 +74,30 @@
 
 <!---INPUT FOR SHARED WITH -->
 <mat-menu id="shared" #shared="matMenu" multiple>
-    <app-new-chips></app-new-chips>
+    <mat-form-field class="example-chip-list" appearance="fill" (click)="$event.stopPropagation()">
+        <mat-chip-grid #sharedGrid aria-label="Enter email address..">
+            <mat-chip-row *ngFor="let shared of sharedWith"
+                          (removed)="removeShared(shared)"
+                          [editable]="true"
+                          (edited)="editShared(shared, $event)"
+                          [aria-description]="'press enter to edit ' + shared">
+              {{shared}}
+              <button matChipRemove [attr.aria-label]="'remove ' + shared">
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip-row>
+            <input class="email-input" placeholder="Enter email address..."
+                   [matChipInputFor]="sharedGrid"
+                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                   [matChipInputAddOnBlur]="addOnBlur"
+                   (matChipInputTokenEnd)="addShared($event)"
+                   (change)="filterByOwner()"/>
+          </mat-chip-grid>
+          
+    </mat-form-field> 
+        
+    <!-- david's  friend-->
+    <button (click)="filterByOwner()">test</button>
 </mat-menu>
   
 <!---INPUT FOR PERMISSIONS-->
