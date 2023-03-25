@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
+import { PageSetting } from '../file-list/file-list.component';
 import { getFilesResult, GoogleAPIService } from '../google-api.service';
 
 @Component({
@@ -9,8 +10,13 @@ import { getFilesResult, GoogleAPIService } from '../google-api.service';
 })
 export class ListComponent {
   //todo this is a temp class - need to redo with proper async
-  list$:Promise<gapi.client.drive.File[]> = new Promise((resolve)=>resolve([]));
-  nextPageToken$:Promise<string|undefined> = new Promise((resolve)=>resolve(undefined));
+  list$:gapi.client.drive.File[] = [];
+  nextPageToken$:string|undefined=undefined;
+
+  fileList:gapi.client.drive.File[] = [];
+
+  pageSize:number = 100;
+  pageNumber:number = 1;
 
   filteredFiles: gapi.client.drive.File[] = [];
 
@@ -22,23 +28,26 @@ export class ListComponent {
     this.filteredFiles = filteredFiles;
   }
 
+  async setPageSettings($event: PageSetting) {
+    this.pageSize = $event.pageSize;
+    this.pageNumber = $event.pageNumber;
+    await this.getMoreFilesAsNeeded()
+  }
+
   async init() {    
-    let getFilesResult:Promise<getFilesResult> = this.googleAPIService.getFiles(await this.list$,500);
-    this.list$ = new Promise(async (resolve)=>{
-      resolve ((await getFilesResult).files);
-    })
-    this.nextPageToken$ = new Promise(async (resolve)=>{
-      resolve ((await getFilesResult).nextPageToken);
-    })
+    await this.getMoreFilesAsNeeded();
+  }
+
+  async getMoreFilesAsNeeded(){
+    let filesNeeded:number = (this.pageNumber+2) * this.pageSize;
+    console.log("need "+filesNeeded + " files")
+    await this.getMoreFiles(filesNeeded);      
   }
 
   async getMoreFiles(limit:number) {    
-    let getFilesResult:Promise<getFilesResult> = this.googleAPIService.getFiles(await this.list$,limit);
-    this.list$ = new Promise(async (resolve)=>{
-      resolve ((await getFilesResult).files);
-    })
-    this.nextPageToken$ = new Promise(async (resolve)=>{
-      resolve ((await getFilesResult).nextPageToken);
-    })
+    console.log("getting more files")
+    let getFilesResult:getFilesResult = await this.googleAPIService.getFiles(await this.list$,limit);
+    this.nextPageToken$ = getFilesResult.nextPageToken;
+    this.list$ = getFilesResult.files;
   }
 }

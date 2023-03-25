@@ -1,7 +1,13 @@
 import {LiveAnnouncer} from '@angular/cdk/a11y';
-import {AfterViewInit, Component, ViewChild, Input} from '@angular/core';
+import {AfterViewInit, Component, ViewChild, Input, EventEmitter, Output} from '@angular/core';
+import { PageEvent } from '@angular/material/paginator';
 import {MatSort, Sort} from '@angular/material/sort';
 const byteSize = require('byte-size')
+
+export interface PageSetting{
+  pageSize:number
+  pageNumber:number
+}
 
 
 @Component({
@@ -10,12 +16,28 @@ const byteSize = require('byte-size')
   styleUrls: ['./file-list.component.scss'],
 })
 export class FileListComponent {
+
   @Input() files:gapi.client.drive.File[] = [];
+
+
+
+  
+  @Output() notifyPageSettingsChanged:EventEmitter<PageSetting> = new EventEmitter<PageSetting>();
+
+
   pageSize: number = 25;
   pageNumber: number = 0;
   headers: string[] = ['Name', 'Owner', 'Last Modified', 'Size']
 
   constructor(private _liveAnnouncer: LiveAnnouncer) {}
+
+
+  onPageSettingsChange($event: PageEvent) {
+    this.pageNumber = $event.pageIndex; 
+    this.pageSize = $event.pageSize;
+
+    this.notifyPageSettingsChanged.emit({pageNumber:this.pageNumber,pageSize:this.pageSize});
+  }
 
   @ViewChild(MatSort) sort!: MatSort;
   ngAfterViewInit() {

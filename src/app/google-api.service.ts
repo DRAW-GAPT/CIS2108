@@ -116,22 +116,25 @@ export class GoogleAPIService {
 
     await this.confirmLogin();
 
-    console.log("here")
-    
-    try {
-      do{
-        let response = await gapi.client.drive.files.list({
-          'pageSize': 1000,
-          'fields': 'nextPageToken, files(id, name, createdTime, modifiedTime, owners,size, lastModifyingUser, iconLink,fileExtension,permissions,hasAugmentedPermissions, capabilities, ownedByMe)',
-        });
-        nextPageToken = response.result.nextPageToken;
-        if(response.result.files)
-          files = [...files,...response.result.files]
+    console.log(limit);
 
-      } while (nextPageToken != undefined && files.length < limit)
-    } catch (err) {
-      //todo, error handling
-      return {nextPageToken:undefined,files:[]} ;
+    if(limit > files.length){
+    
+      try {
+        do{
+          let response = await gapi.client.drive.files.list({
+            'pageSize': 1000,
+            'fields': 'nextPageToken, files(id, name, createdTime, modifiedTime, owners,size, lastModifyingUser, iconLink,fileExtension,permissions,hasAugmentedPermissions, capabilities, ownedByMe)',
+          });
+          nextPageToken = response.result.nextPageToken;
+          if(response.result.files)
+            files = [...files,...response.result.files]
+
+        } while (nextPageToken != undefined && files.length < limit)
+      } catch (err) {
+        //todo, error handling
+        return {nextPageToken:undefined,files:[]} ;
+      }
     }
     
     //return the nextpagetoken in case we need more files in the future
