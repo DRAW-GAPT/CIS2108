@@ -15,7 +15,7 @@
              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
              [matChipInputAddOnBlur]="addOnBlur"
              (matChipInputTokenEnd)="add($event)"
-            />
+             (change)="filterByOwner()"/>
     </mat-chip-grid>
     
   </mat-form-field> 
