@@ -1,10 +1,10 @@
 <mat-chip-listbox multiple selectable="false">
-    <mat-chip-option [matMenuTriggerFor]="ownersMenu">
+    <mat-chip-option [matMenuTriggerFor]="ownersMenu" selected="{{this.owners.length > 0}}">
         Owner
         <mat-icon>keyboard_arrow_down</mat-icon>
     </mat-chip-option>
 
-    <mat-chip-option [matMenuTriggerFor]="permissions">
+    <mat-chip-option [matMenuTriggerFor]="permissions" selected="{{this.permissionsSelected.length > 0}}">
         Permissions
         <mat-icon>keyboard_arrow_down</mat-icon>
     </mat-chip-option>
@@ -19,7 +19,7 @@
         <mat-icon>keyboard_arrow_down</mat-icon>
     </mat-chip-option>
     
-    <mat-chip-option [matMenuTriggerFor]="shared">
+    <mat-chip-option [matMenuTriggerFor]="shared" selected="{{this.sharedWith.length > 0}}">
         Shared with 
         <mat-icon>keyboard_arrow_down</mat-icon>
     </mat-chip-option>
@@ -95,18 +95,18 @@
   
 <!---INPUT FOR PERMISSIONS-->
 <mat-menu #permissions="matMenu" multiple appearance="fill">
-    <mat-checkbox value="owner" [(ngModel)]="isCheckedOwner" (change)="onCheckboxChange($event)"><span class="drop-down-item1">Owner</span>
+    <mat-checkbox value="owner" [(ngModel)]="isCheckedOwner" (change)="onCheckboxChange($event)" (click)="$event.stopPropagation()">
+        <span class="drop-down-item1">Owner</span>
         <mat-icon class="drop-down-icon">star</mat-icon> 
     </mat-checkbox><br>
-    <mat-checkbox value="writer" [(ngModel)]="isCheckedWriter" (change)="onCheckboxChange($event)"><span class="drop-down-item1">Editor</span>
+    <mat-checkbox value="writer" [(ngModel)]="isCheckedWriter" (change)="onCheckboxChange($event)" (click)="$event.stopPropagation()">
+        <span class="drop-down-item1">Editor</span>
         <mat-icon class="drop-down-icon">edit</mat-icon> 
     </mat-checkbox><br>
-    <mat-checkbox value="reader" [(ngModel)]="isCheckedReader"(change)="onCheckboxChange($event)"><span class="drop-down-item2">Viewer</span>
+    <mat-checkbox value="reader" [(ngModel)]="isCheckedReader"(change)="onCheckboxChange($event)" (click)="$event.stopPropagation()">
+        <span class="drop-down-item2">Viewer</span>
         <mat-icon class="drop-down-icon">remove_red_eye</mat-icon> 
     </mat-checkbox><br>
-        
-      <!-- david's  friend-->
-      <button (click)="filterByOwner()">test</button>
 </mat-menu>
 
 <mat-menu #date="matMenu" multiple appearance="fill">
