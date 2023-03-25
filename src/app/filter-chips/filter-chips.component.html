@@ -27,35 +27,26 @@
 
 <!---INPUT FOR OWNER-->
 <mat-menu #menu="matMenu" multiple>
-        <mat-icon>search</mat-icon>
-        <input type="text"
-           matInput
-           [matAutocomplete]="auto"
-           (click)="$event.stopPropagation()"
-           [(ngModel)]="searchText">
-        
-        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete"/>
-        <div class="checkbox-container">
-            
-
-            <mat-checkbox #ownerCheckbox [value]="'all'" (change)="ownerFilterSelectChange($event)" checked="{{allOwnersSelected}}" disabled="{{allOwnersSelected}}" (click)="$event.stopPropagation()">
-                Select All
-            </mat-checkbox>
-
-            <mat-checkbox #ownerCheckbox [value]="'none'" (change)="ownerFilterSelectChange($event)" checked="{{noOwnersSelected}}" disabled="{{noOwnersSelected}}" (click)="$event.stopPropagation()">
-                Select None
-            </mat-checkbox>
-            
-
-            <mat-checkbox #ownerCheckbox [value]="ownerOptionsMe?.permissionId??''" (change)="ownerFilterSelectChange($event)" checked="true" (click)="$event.stopPropagation()">
-                me ({{ownerOptionsMe?.displayName}})
-            </mat-checkbox>
-
-            <mat-checkbox #ownerCheckbox *ngFor="let option of ownerOptions" [value]="option.permissionId??''" (change)="ownerFilterSelectChange($event)" checked="true" (click)="$event.stopPropagation()">
-                <!--ADD USER ICON HERE-->
-                {{option.displayName}}
-            </mat-checkbox>
-        </div>
+      <mat-form-field class="example-chip-list" appearance="fill" (click)="$event.stopPropagation()">
+  <mat-label>Owner</mat-label>
+  <mat-chip-grid #chipGrid aria-label="Enter email address..">
+    <mat-chip-row *ngFor="let owner of owners"
+                  (removed)="remove(owner)"
+                  [editable]="true"
+                  (edited)="edit(owner, $event)"
+                  [aria-description]="'press enter to edit ' + owner">
+      {{owner}}
+      <button matChipRemove [attr.aria-label]="'remove ' + owner">
+        <mat-icon>cancel</mat-icon>
+      </button>
+    </mat-chip-row>
+    <input placeholder="Enter email address..."
+           [matChipInputFor]="chipGrid"
+           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+           [matChipInputAddOnBlur]="addOnBlur"
+           (matChipInputTokenEnd)="add($event)"/>
+  </mat-chip-grid>
+</mat-form-field> 
 </mat-menu>
 
 <!---INPUT FOR TYPE -->
