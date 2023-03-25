@@ -25,6 +25,7 @@ import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { FormsModule } from '@angular/forms';
 import { SearchBarComponent } from './search-bar/search-bar.component';
+import { NewChipsComponent } from './filter-chips/new-chips/new-chips.component';
 
 
 @NgModule({
@@ -35,6 +36,7 @@ import { SearchBarComponent } from './search-bar/search-bar.component';
     FileListComponent,
     FilterChipsComponent,
     SearchBarComponent,
+    NewChipsComponent,
   ],
   imports: [
     BrowserModule,
