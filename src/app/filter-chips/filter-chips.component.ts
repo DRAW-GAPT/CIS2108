@@ -129,65 +129,6 @@ export class FilterChipsComponent {
 
   }
 
-  @ViewChildren('ownerCheckbox') ownerCheckBoxes:QueryList<MatCheckbox> = new QueryList();
-
-  ownerFilterSelectChange($event: MatCheckboxChange) {
-    let changedValue = $event.source.value
-    let newChecked = $event.source.checked;
-
-
-    if(changedValue == 'all' && newChecked){
-      //if all was selected      
-      
-      //loop through all the fields and set them all to true
-      this.ownerCheckBoxes.forEach(checkbox => {
-        let checkboxVal = checkbox.value;
-
-        if (!['all','none'].includes(checkboxVal)){
-          checkbox.checked = true;
-        }
-
-      })
-    }
-    else if(changedValue == 'none' && newChecked){
-      //if none was selected
-      
-      
-      //loop through all the fields and set them all to true
-      this.ownerCheckBoxes.forEach(checkbox => {
-        let checkboxVal = checkbox.value;
-
-        if (!['all','none'].includes(checkboxVal)){
-          checkbox.checked = false;
-        }
-
-      })
-    }
-
-
-    //reset selected
-    this.allOwnersSelected = true;
-    this.noOwnersSelected = true;
-    this.selectedOwnersID = [];
-
-    //refill selected
-    this.ownerCheckBoxes
-    .filter(checkbox=>!['all','none'].includes(checkbox.value)) // filter out all and none
-    .forEach(checkbox => {
-
-      if(checkbox.checked){
-        this.noOwnersSelected = false; //found at least 1
-        this.selectedOwnersID.push(checkbox.value);
-      } else{
-        this.allOwnersSelected = false;
-      }
-
-    })
-
-    this.filterFiles();
-  }
-
-  
 
 
 //new chips functionality
