@@ -17,11 +17,12 @@ export class ListComponent {
     this.init();
   }
 
-  setFilteredFiles(filteredFiles: gapi.client.drive.File[]) {
-    this.filteredFiles = filteredFiles;
+  updateQuery(filter: string){
+    console.log(filter);
   }
 
   async init() {    
     this.list$ = this.googleAPIService.getAllFiles();
   }
+
 }

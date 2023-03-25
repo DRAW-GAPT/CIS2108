@@ -48,9 +48,7 @@
         </mat-chip-grid>
           
     </mat-form-field> 
-        
-      <!-- david's  friend-->
-      <button (click)="filterByOwner()">test</button>
+
             
 </mat-menu>
 
@@ -65,10 +63,7 @@
     
     <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete"/>
     <div class="checkbox-container">
-        <mat-checkbox *ngFor="let type of typeOptions" [value]="type" >
-            <!-- Insert file type here -->
-            {{type}}
-        </mat-checkbox>
+        
     </div>
 </mat-menu>
 
@@ -91,7 +86,7 @@
                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                    [matChipInputAddOnBlur]="addOnBlur"
                    (matChipInputTokenEnd)="addShared($event)"
-                   (change)="filterByOwner()"/>
+                   (change)="filterByOwner()"/> <!--TODO should call re-display method instead, which would itself call filter by owner--> 
           </mat-chip-grid>
           
     </mat-form-field> 
@@ -100,15 +95,15 @@
   
 <!---INPUT FOR PERMISSIONS-->
 <mat-menu #permissions="matMenu" multiple appearance="fill">
-    <mat-checkbox value="option1"><span class="drop-down-item1">Editor</span>
+    <mat-checkbox value="writer" [(ngModel)]="isCheckedWriter" (change)="onCheckboxChange($event)"><span class="drop-down-item1">Editor</span>
         <mat-icon class="drop-down-icon">edit</mat-icon> 
     </mat-checkbox><br>
-    <mat-checkbox value="option2"><span class="drop-down-item2">Viewer</span>
+    <mat-checkbox value="reader" [(ngModel)]="isCheckedReader"(change)="onCheckboxChange($event)"><span class="drop-down-item2">Viewer</span>
         <mat-icon class="drop-down-icon">remove_red_eye</mat-icon> 
     </mat-checkbox><br>
-    <mat-checkbox value="option3"><span class="drop-down-item3">Commenter</span>
-        <mat-icon class="drop-down-icon"> comment</mat-icon> &nbsp;&nbsp;
-    </mat-checkbox>
+        
+      <!-- david's  friend-->
+      <button (click)="filterByOwner()">test</button>
 </mat-menu>
 
 <mat-menu #date="matMenu" multiple appearance="fill">
