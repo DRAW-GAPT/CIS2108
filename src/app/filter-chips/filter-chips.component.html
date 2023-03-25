@@ -1,5 +1,5 @@
-<mat-chip-listbox multiple>
-    <mat-chip-option [matMenuTriggerFor]="ownersMenu">
+<mat-chip-listbox multiple selectable="false">
+    <mat-chip-option [matMenuTriggerFor]="menu">
         Owner
         <mat-icon>keyboard_arrow_down</mat-icon>
     </mat-chip-option>
@@ -53,7 +53,7 @@
 </mat-menu>
 
 <!---INPUT FOR TYPE -->
-<mat-menu #type="matMenu" multiple>
+<mat-menu #type="matMenu" multiple appearance="fill">
     <mat-icon>search</mat-icon>
     <input type="text"
        matInput

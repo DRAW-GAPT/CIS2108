@@ -1,10 +1,5 @@
 <app-search-bar/>
-<ng-container *ngIf="list$ | async as fileList; else loading">
-    <app-filter-chips (updateFilterQuery)="updateQuery($event)"/>
-    <app-file-list [files]=filteredFiles />
-</ng-container>
+    <app-filter-chips [unfilteredFiles]="list$" (updateFilteredFiles)="setFilteredFiles($event)"/>
+    <app-file-list [files]=filteredFiles (notifyPageSettingsChanged)="setPageSettings($event)"/>
 
 <ng-template #loading>Loading...</ng-template>
-
-
-

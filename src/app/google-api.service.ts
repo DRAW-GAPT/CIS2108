@@ -12,6 +12,12 @@ const SCOPES = 'https://www.googleapis.com/auth/drive.metadata.readonly';
 const googleAPIKey:string = environment.googleAPIKey;
 const googleClientID:string = environment.googleClientID;
 
+export interface getFilesResult{
+  files:gapi.client.drive.File[]
+  nextPageToken:string|undefined;
+}
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -105,30 +111,34 @@ export class GoogleAPIService {
 
   }
 
-  async getAllFiles():Promise<gapi.client.drive.File[]>{
+  async getFiles(files:gapi.client.drive.File[],limit:number,q:string="",nextPageToken:string|undefined = undefined):Promise<getFilesResult>{
     await this.allInited;
 
     await this.confirmLogin();
 
-    let response;
-    try {
-      response = await gapi.client.drive.files.list({
-        'pageSize': 1000,
-        'fields': 'files(id, name, createdTime, modifiedTime, owners,size, lastModifyingUser, iconLink,fileExtension,permissions)',
-      });
-    } catch (err) {
-      //todo, error handling
-      //document.getElementById('content').innerText = err.message;
-      return [];
+    console.log(limit);
+
+    if(limit > files.length){
+    
+      try {
+        do{
+          let response = await gapi.client.drive.files.list({
+            'pageSize': 1000,
+            'fields': 'nextPageToken, files(id, name, createdTime, modifiedTime, owners,size, lastModifyingUser, iconLink,fileExtension,permissions,hasAugmentedPermissions, capabilities, ownedByMe)',
+          });
+          nextPageToken = response.result.nextPageToken;
+          if(response.result.files)
+            files = [...files,...response.result.files]
+
+        } while (nextPageToken != undefined && files.length < limit)
+      } catch (err) {
+        //todo, error handling
+        return {nextPageToken:undefined,files:[]} ;
+      }
     }
-    const files = response.result.files;
-    if (!files || files.length == 0) {
-      //todo, error handling
-      //document.getElementById('content').innerText = 'No files found.';
-      return [];
-    }
-    // Flatten to string to display
-    return files;
+    
+    //return the nextpagetoken in case we need more files in the future
+    return {nextPageToken:nextPageToken,files:files};
   }
   
 public async getCookie(): Promise<boolean>{
