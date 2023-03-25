@@ -1,5 +1,5 @@
 <mat-chip-listbox multiple selectable="false">
-    <mat-chip-option [matMenuTriggerFor]="menu">
+    <mat-chip-option [matMenuTriggerFor]="ownersMenu">
         Owner
         <mat-icon>keyboard_arrow_down</mat-icon>
     </mat-chip-option>
@@ -44,7 +44,7 @@
                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                    [matChipInputAddOnBlur]="addOnBlur"
                    (matChipInputTokenEnd)="addOwner($event)"
-                   (change)="filterByOwner()"/>
+                   (change)="updateFilter()"/>
         </mat-chip-grid>
           
     </mat-form-field> 
@@ -86,7 +86,7 @@
                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                    [matChipInputAddOnBlur]="addOnBlur"
                    (matChipInputTokenEnd)="addShared($event)"
-                   (change)="filterByOwner()"/> <!--TODO should call re-display method instead, which would itself call filter by owner--> 
+                   (change)="updateFilter()"/> <!--TODO should call re-display method instead, which would itself call filter by owner--> 
           </mat-chip-grid>
           
     </mat-form-field> 

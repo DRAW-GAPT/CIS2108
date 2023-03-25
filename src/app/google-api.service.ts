@@ -125,6 +125,7 @@ export class GoogleAPIService {
           let response = await gapi.client.drive.files.list({
             'pageSize': 1000,
             'fields': 'nextPageToken, files(id, name, createdTime, modifiedTime, owners,size, lastModifyingUser, iconLink,fileExtension,permissions,hasAugmentedPermissions, capabilities, ownedByMe)',
+            'q': q
           });
           nextPageToken = response.result.nextPageToken;
           if(response.result.files)

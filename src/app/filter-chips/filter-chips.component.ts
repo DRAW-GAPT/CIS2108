@@ -105,47 +105,36 @@ export class FilterChipsComponent {
   
   //filters the list by owner, called whenever a new email is added to the owner's chip
   async filterByOwner(){
-    const searchQuery = `trashed=false and (${this.owners.map(owner => `'${owner}' in owners`).join(' or ')})`;
-    const response = await gapi.client.drive.files.list({
-      q: searchQuery,
-      fields: 'nextPageToken, files(id, name, createdTime, modifiedTime, owners,size, lastModifyingUser, iconLink, fileExtension, permissions)'
-    });
-    console.log(response.result);
-    this.owners = _.sortBy(this.owners,"displayName")
-
-    return this.owners;
+    this.updateFilter();
   }
 
-  test(){
-     console.log(this.filterByPermissions())
-  }
   isCheckedWriter: boolean = false;
   isCheckedReader: boolean = false;
   onCheckboxChange($event: MatCheckboxChange) {
-   if(this.isCheckedReader){
-    this.isCheckedReader = true;
-   }
-   else if(this.isCheckedWriter){
-    this.isCheckedWriter = true;
-   }
-   return false;
+
+    this.permissionsSelected = [];
+
+    if(this.isCheckedWriter){
+      this.permissionsSelected.push("writer");
+    }
+
+    if(this.isCheckedReader){
+      this.permissionsSelected.push("reader");
+    }
+
+    console.log(this.permissionsSelected)
+    this.updateFilter();
   }
 
-  //TODO: under construction
-  async filterByPermissions(){
-    const searchQuery = `trashed=false and 'me' in (${this.permissionsSelected
-      .map(permission=> `'${ permission }` ).join(' or ')})`;
-    const response = await gapi.client.drive.files.list({
-      q: "'me' in owners and " + searchQuery,
-      fields: 'nextPageToken, files(id, name, createdTime, modifiedTime, owners,size, lastModifyingUser, iconLink, fileExtension, permissions)'
-    });
-    console.log(response.result);
-    this.permissionsSelected = _.sortBy(this.permissionsSelected,"displayName")
+  updateFilter(){
+    let subqueries:string[] = ["trashed=false"];
+    
 
-    return this.permissionsSelected;
-  }
-  
-  
+    if(this.owners.length > 0)
+      subqueries.push(`(${this.owners.map(owner => `'${owner}' in owners`).join(' or ')})`);
+
+    this.updateFilterQuery.emit(subqueries.map(s=>"("+s+")").join(" and "))
+  } 
 }
 
 

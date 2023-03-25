@@ -18,13 +18,19 @@ export class ListComponent {
   pageSize:number = 100;
   pageNumber:number = 1;
 
-  filteredFiles: gapi.client.drive.File[] = [];
+  filterQuery:string = "";
 
   constructor(public googleAPIService: GoogleAPIService){
     this.init();
   }
 
   updateQuery(filter: string){
+    this.filterQuery = filter;
+    this.list$=[];
+    this.nextPageToken$=undefined;
+
+    this.getMoreFilesAsNeeded();
+
     console.log(filter);
   }
 
@@ -46,7 +52,7 @@ export class ListComponent {
 
   async getMoreFiles(limit:number) {    
     console.log("getting more files")
-    let getFilesResult:getFilesResult = await this.googleAPIService.getFiles(await this.list$,limit);
+    let getFilesResult:getFilesResult = await this.googleAPIService.getFiles(await this.list$,limit,this.filterQuery);
     this.nextPageToken$ = getFilesResult.nextPageToken;
     this.list$ = getFilesResult.files;
   }
