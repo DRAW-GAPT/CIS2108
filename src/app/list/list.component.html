@@ -1,5 +1,5 @@
 <app-search-bar/>
     <app-filter-chips (updateFilterQuery)="updateQuery($event)"/>
-    <app-file-list [files]=list$ (notifyPageSettingsChanged)="setPageSettings($event)"/>
+    <app-file-list [files]=list$ (notifyPageSettingsChanged)="setPageSettings($event)" (notifySortChanged)="setSort($event)"/>
 
 <ng-template #loading>Loading...</ng-template>

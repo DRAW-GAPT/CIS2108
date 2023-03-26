@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Sort } from '@angular/material/sort';
 import { CookieService } from 'ngx-cookie-service';
 import { PageSetting } from '../file-list/file-list.component';
 import { getFilesResult, GoogleAPIService } from '../google-api.service';
@@ -9,6 +10,7 @@ import { getFilesResult, GoogleAPIService } from '../google-api.service';
   styleUrls: ['./list.component.css']
 })
 export class ListComponent {
+
   //todo this is a temp class - need to redo with proper async
   list$:gapi.client.drive.File[] = [];
   nextPageToken$:string|undefined=undefined;
@@ -19,6 +21,7 @@ export class ListComponent {
 
   pageSize:number = 100;
   pageNumber:number = 1;
+  sortSettings:string|undefined = undefined;
 
   filterQuery:string = "";
 
@@ -40,6 +43,33 @@ export class ListComponent {
     await this.getMoreFilesAsNeeded();
   }
 
+
+  columnNameToSortMap = new Map<string, string>([
+    ["Name", "name"],
+    ["Owner", ""],
+    ["Last Modified", "modifiedTime"],
+    ["Size", "quotaBytesUsed"]
+  ]);
+
+  async setSort($event: Sort) {
+
+    console.log("here")
+
+    let s = this.columnNameToSortMap.get($event.active);
+    if(s == undefined){
+      s = "recency";
+    }
+    else if($event.direction == "desc")
+      s = s + " desc"
+
+    this.sortSettings = s;
+
+    this.list$=[];
+    this.nextPageToken$=undefined;
+
+    await this.getMoreFilesAsNeeded();
+  }
+
   async init() {    
     await this.getMoreFilesAsNeeded();
   }
@@ -51,7 +81,7 @@ export class ListComponent {
 
   async getMoreFiles(limit:number) {    
     let r = Math.random();
-    console.log(this.filterQuery,r)
+    console.log(this.sortSettings,r)
 
     console.log("getting more files",r)
 
@@ -59,7 +89,7 @@ export class ListComponent {
     //get the id of the current request
     let requestID = this.getMoreFilesRequestID;
 
-    let getFilesResult:getFilesResult = await this.googleAPIService.getFiles(this.list$,limit,this.filterQuery);
+    let getFilesResult:getFilesResult = await this.googleAPIService.getFiles(this.list$,limit,this.filterQuery,this.sortSettings);
     if(requestID == this.getMoreFilesRequestID){
       //only store the results from the last request that was sent.
       //if requestID != getMoreFilesRequestID, it means that the opeartion has been
