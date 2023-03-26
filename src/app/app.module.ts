@@ -26,6 +26,7 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { FormsModule } from '@angular/forms';
 import { SearchBarComponent } from './search-bar/search-bar.component';
 import { NewChipsComponent } from './filter-chips/new-chips/new-chips.component';
+import { MomentDateModule } from '@angular/material-moment-adapter';
 
 
 @NgModule({
@@ -57,7 +58,8 @@ import { NewChipsComponent } from './filter-chips/new-chips/new-chips.component'
     MatCheckboxModule,
     MatButtonToggleModule,
     MatAutocompleteModule,
-    FormsModule
+    FormsModule,
+    MomentDateModule
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]

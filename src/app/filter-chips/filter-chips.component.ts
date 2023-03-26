@@ -4,12 +4,28 @@ import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
 import * as _ from 'lodash';
 import { filter } from 'lodash';
+import { MAT_DATE_FORMATS } from '@angular/material/core';
+
+export const DATE_FORMAT = {
+  parse: {
+    dateInput: 'DD/MM/YYYY',
+  },
+  display: {
+    dateInput: 'DD/MM/YYYY',
+    monthYearLabel: 'MMMM YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'MMMM YYYY'
+  },
+};
 
 
 @Component({
   selector: 'app-filter-chips',
   templateUrl: './filter-chips.component.html',
-  styleUrls: ['./filter-chips.component.scss']
+  styleUrls: ['./filter-chips.component.scss'],
+  providers:[
+    {provide: MAT_DATE_FORMATS, useValue:DATE_FORMAT}
+  ]
 })
 export class FilterChipsComponent {
 
