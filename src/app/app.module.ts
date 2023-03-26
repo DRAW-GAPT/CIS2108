@@ -59,7 +59,7 @@ import { MomentDateModule } from '@angular/material-moment-adapter';
     MatButtonToggleModule,
     MatAutocompleteModule,
     FormsModule,
-    MomentDateModule
+    MomentDateModule,
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]

@@ -1,10 +1,11 @@
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import { Component, EventEmitter, Input, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, LOCALE_ID, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
 import * as _ from 'lodash';
 import { filter } from 'lodash';
-import { MAT_DATE_FORMATS } from '@angular/material/core';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { DateRange } from '@angular/material/datepicker';
 
 export const DATE_FORMAT = {
   parse: {
@@ -24,19 +25,20 @@ export const DATE_FORMAT = {
   templateUrl: './filter-chips.component.html',
   styleUrls: ['./filter-chips.component.scss'],
   providers:[
-    {provide: MAT_DATE_FORMATS, useValue:DATE_FORMAT}
+    {provide: MAT_DATE_FORMATS, useValue:DATE_FORMAT},
+    {provide: MAT_DATE_LOCALE, useValue: navigator.language}
   ]
 })
 export class FilterChipsComponent {
 
-
+  constructor(private _adapter: DateAdapter<any>,
+    @Inject(MAT_DATE_LOCALE) private _locale: string,
+  ) {}
 
 
   @Output() updateFilterQuery:EventEmitter<string> = new EventEmitter<string>();
 
   searchText!: string;
-
-
 
 //new chips functionality
   addOnBlur = true;
@@ -44,6 +46,8 @@ export class FilterChipsComponent {
   owners: String[] = [];
   sharedWith: String[] = [];
   permissionsSelected: String[] = [];
+  startDate:  Date | null = null;
+  endDate : Date | null = null;
 
   addOwner(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
@@ -85,7 +89,6 @@ export class FilterChipsComponent {
     const value = (event.value || '').trim();
     if (value) {
       this.sharedWith.push(value);
-      console.log(this.filterByOwner());
     }
 
     // Clear the input value
@@ -160,11 +163,27 @@ export class FilterChipsComponent {
     if(this.sharedWith.length > 0)
       subqueries.push(`(${this.sharedWith.map(user => `'${user}' in readers`).join(' or ')})`);
 
+    if(this.startDate && this.endDate){
 
-    
+      subqueries.push(`modifiedTime > '${this.startDate.toISOString()}' and modifiedTime < '${this.endDate.toISOString()}'` );
 
+    }
     this.updateFilterQuery.emit(subqueries.map(s=>"("+s+")").join(" and "))
   } 
+  
+  onDateChange(): void {
+
+    console.log("test");
+    console.log(this.startDate);
+    console.log(this.endDate);
+    this.updateFilter();
+ 
+  }
+
 }
 
+
+function filterFilesByDate(startDate: Date, endDate: Date) {
+  
+}
 
