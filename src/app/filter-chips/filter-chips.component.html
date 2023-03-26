@@ -13,12 +13,7 @@
         Date
         <mat-icon>keyboard_arrow_down</mat-icon>     
     </mat-chip-option>
-    
-    <mat-chip-option [matMenuTriggerFor]="type" >
-        Type
-        <mat-icon>keyboard_arrow_down</mat-icon>
-    </mat-chip-option>
-    
+
     <mat-chip-option [matMenuTriggerFor]="shared" selected="{{this.sharedWith.length > 0}}">
         Shared with 
         <mat-icon>keyboard_arrow_down</mat-icon>
@@ -45,26 +40,8 @@
                    [matChipInputAddOnBlur]="addOnBlur"
                    (matChipInputTokenEnd)="addOwner($event)"
                    (change)="updateFilter()"/>
-        </mat-chip-grid>
-          
-    </mat-form-field> 
-
-            
-</mat-menu>
-
-<!---INPUT FOR TYPE -->
-<mat-menu #type="matMenu" multiple appearance="fill">
-    <mat-icon>search</mat-icon>
-    <input type="text"
-       matInput
-       [matAutocomplete]="auto"
-       (click)="$event.stopPropagation()"
-       [(ngModel)]="searchText">
-    
-    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete"/>
-    <div class="checkbox-container">
-        
-    </div>
+        </mat-chip-grid>   
+    </mat-form-field>      
 </mat-menu>
 
 <!---INPUT FOR SHARED WITH -->
@@ -88,15 +65,13 @@
                    (matChipInputTokenEnd)="addShared($event)"
                    (change)="updateFilter()"/> <!--TODO should call re-display method instead, which would itself call filter by owner--> 
           </mat-chip-grid>
-          
     </mat-form-field> 
-        
 </mat-menu>
   
 <!---INPUT FOR PERMISSIONS-->
 <mat-menu #permissions="matMenu" multiple appearance="fill">
     <mat-checkbox value="owner" [(ngModel)]="isCheckedOwner" (change)="onCheckboxChange($event)" (click)="$event.stopPropagation()">
-        <span class="drop-down-item1">Owner</span>
+        <span class="drop-down-item0">Owner</span>
         <mat-icon class="drop-down-icon">star</mat-icon> 
     </mat-checkbox><br>
     <mat-checkbox value="writer" [(ngModel)]="isCheckedWriter" (change)="onCheckboxChange($event)" (click)="$event.stopPropagation()">
@@ -112,15 +87,13 @@
 <mat-menu #date="matMenu" multiple appearance="fill">
     <mat-form-field appearance="fill" (click)="$event.stopPropagation()">
         <mat-label>Enter a date range</mat-label>
-        <mat-date-range-input [rangePicker]="picker" (dateChange)="onDateChange()">
+        <mat-date-range-input [rangePicker]="picker" >
             <input matStartDate placeholder="Start date" [(ngModel)]="startDate" (dateChange)="onDateChange()">
-            <input matEndDate placeholder="End date" [(ngModel)]="endDate"(dateChange)="onDateChange()">
+            <input matEndDate placeholder="End date" [(ngModel)]="endDate" (dateChange)="onDateChange()">
         </mat-date-range-input>
         <mat-hint>DD/MM/YYYY – DD/MM/YYYY</mat-hint>
         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-date-range-picker #picker></mat-date-range-picker>
-
     </mat-form-field>
-    
 </mat-menu>
 
