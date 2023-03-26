@@ -1,3 +1,8 @@
+<mat-form-field>
+    <mat-icon matPrefix>search</mat-icon>
+    <input matInput placeholder="Search" [(ngModel)]="searchTerm" (change)="onSearch()">
+</mat-form-field>
+
 <mat-chip-listbox multiple selectable="false">
     <mat-chip-option [matMenuTriggerFor]="ownersMenu" selected="{{this.owners.length > 0}}">
         Owner

@@ -1,4 +1,4 @@
-import {COMMA, ENTER} from '@angular/cdk/keycodes';
+import {COMMA, ENTER, S} from '@angular/cdk/keycodes';
 import { Component, EventEmitter, Inject, Input, LOCALE_ID, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
@@ -38,9 +38,6 @@ export class FilterChipsComponent {
 
   @Output() updateFilterQuery:EventEmitter<string> = new EventEmitter<string>();
 
-  searchText!: string;
-
-//new chips functionality
   addOnBlur = true;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
   owners: String[] = [];
@@ -48,6 +45,7 @@ export class FilterChipsComponent {
   permissionsSelected: String[] = [];
   startDate:  Date | null = null;
   endDate : Date | null = null;
+  searchTerm: string | undefined;
 
   addOwner(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
@@ -171,6 +169,12 @@ export class FilterChipsComponent {
   
   onDateChange(): void {
     this.updateFilter();
+  }
+
+  onSearch():void {
+    console.log(this.searchTerm);
+    
+
   }
 }
 

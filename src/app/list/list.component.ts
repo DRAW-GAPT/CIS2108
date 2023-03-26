@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { Sort } from '@angular/material/sort';
 import { CookieService } from 'ngx-cookie-service';
 import { PageSetting } from '../file-list/file-list.component';
@@ -101,4 +101,6 @@ export class ListComponent {
     }
 
   }
-}
+ 
+  }
+
