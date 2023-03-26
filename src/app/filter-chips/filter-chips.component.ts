@@ -3,7 +3,7 @@ import { Component, EventEmitter, Inject, Input, LOCALE_ID, Output, QueryList, V
 import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
 import * as _ from 'lodash';
-import { filter } from 'lodash';
+import { filter, update } from 'lodash';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { DateRange } from '@angular/material/datepicker';
 
@@ -163,7 +163,10 @@ export class FilterChipsComponent {
     if(this.startDate && this.endDate){
       subqueries.push(`modifiedTime > '${this.startDate.toISOString()}' and modifiedTime < '${this.endDate.toISOString()}'` );
     }
-
+    if(this.searchTerm != undefined && this.searchTerm?.length  > 0){
+      subqueries.push("name contains '" + this.searchTerm + "'");
+      console.log(this.searchTerm)
+    }
     this.updateFilterQuery.emit(subqueries.map(s=>"("+s+")").join(" and "))
   } 
   
@@ -172,9 +175,7 @@ export class FilterChipsComponent {
   }
 
   onSearch():void {
-    console.log(this.searchTerm);
-    
-
+    this.updateFilter();
   }
 }
 
