@@ -111,7 +111,7 @@ export class GoogleAPIService {
 
   }
 
-  async getFiles(files:gapi.client.drive.File[],limit:number,q:string="",nextPageToken:string|undefined = undefined):Promise<getFilesResult>{
+  async getFiles(files:gapi.client.drive.File[],limit:number,q:string="",sort:string="",nextPageToken:string|undefined = undefined):Promise<getFilesResult>{
     await this.allInited;
 
     await this.confirmLogin();
@@ -125,6 +125,8 @@ export class GoogleAPIService {
           let response = await gapi.client.drive.files.list({
             'pageSize': 1000,
             'fields': 'nextPageToken, files(id, name, createdTime, modifiedTime, owners,size, lastModifyingUser, iconLink,fileExtension,permissions,hasAugmentedPermissions, capabilities, ownedByMe)',
+            'q': q,
+            'orderBy': sort
           });
           nextPageToken = response.result.nextPageToken;
           if(response.result.files)
