@@ -144,7 +144,7 @@ export class FilterChipsComponent {
     if(this.isCheckedOwner){
       this.permissionsSelected.push("owners")
     }
-
+    
     console.log(this.permissionsSelected)
     this.updateFilter();
   }
@@ -152,7 +152,6 @@ export class FilterChipsComponent {
   updateFilter(){
     let subqueries:string[] = ["trashed=false"];
     
-
     if(this.owners.length > 0)
       subqueries.push(`(${this.owners.map(owner => `'${owner}' in owners`).join(' or ')})`);
 
@@ -164,26 +163,19 @@ export class FilterChipsComponent {
       subqueries.push(`(${this.sharedWith.map(user => `'${user}' in readers`).join(' or ')})`);
 
     if(this.startDate && this.endDate){
-
       subqueries.push(`modifiedTime > '${this.startDate.toISOString()}' and modifiedTime < '${this.endDate.toISOString()}'` );
-
     }
+
     this.updateFilterQuery.emit(subqueries.map(s=>"("+s+")").join(" and "))
   } 
   
   onDateChange(): void {
-
+   
     console.log("test");
     console.log(this.startDate);
     console.log(this.endDate);
     this.updateFilter();
- 
+
   }
-
-}
-
-
-function filterFilesByDate(startDate: Date, endDate: Date) {
-  
 }
 
