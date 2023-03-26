@@ -170,12 +170,7 @@ export class FilterChipsComponent {
   } 
   
   onDateChange(): void {
-   
-    console.log("test");
-    console.log(this.startDate);
-    console.log(this.endDate);
     this.updateFilter();
-
   }
 }
 
