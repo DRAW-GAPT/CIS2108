@@ -12,6 +12,8 @@ export class ListComponent {
   //todo this is a temp class - need to redo with proper async
   list$:gapi.client.drive.File[] = [];
   nextPageToken$:string|undefined=undefined;
+  //store the id of the latest request
+  getMoreFilesRequestID:number = 0;
 
   fileList:gapi.client.drive.File[] = [];
 
@@ -30,14 +32,12 @@ export class ListComponent {
     this.nextPageToken$=undefined;
 
     this.getMoreFilesAsNeeded();
-
-    console.log(filter);
   }
 
   async setPageSettings($event: PageSetting) {
     this.pageSize = $event.pageSize;
     this.pageNumber = $event.pageNumber;
-    await this.getMoreFilesAsNeeded()
+    await this.getMoreFilesAsNeeded();
   }
 
   async init() {    
@@ -46,15 +46,29 @@ export class ListComponent {
 
   async getMoreFilesAsNeeded(){
     let filesNeeded:number = (this.pageNumber+2) * this.pageSize;
-    console.log("need "+filesNeeded + " files")
     await this.getMoreFiles(filesNeeded);      
   }
 
   async getMoreFiles(limit:number) {    
-    console.log("getting more files")
-    let getFilesResult:getFilesResult = await this.googleAPIService.getFiles(await this.list$,limit,this.filterQuery);
-    this.nextPageToken$ = getFilesResult.nextPageToken;
-    this.list$ = getFilesResult.files;
-  }
+    let r = Math.random();
+    console.log(this.filterQuery,r)
 
+    console.log("getting more files",r)
+
+    this.getMoreFilesRequestID++;
+    //get the id of the current request
+    let requestID = this.getMoreFilesRequestID;
+
+    let getFilesResult:getFilesResult = await this.googleAPIService.getFiles(this.list$,limit,this.filterQuery);
+    if(requestID == this.getMoreFilesRequestID){
+      //only store the results from the last request that was sent.
+      //if requestID != getMoreFilesRequestID, it means that the opeartion has been
+      //superseded and thus the results of this operation are no longer needed.
+      //therefore we only store the result of the last request that was started
+      this.nextPageToken$ = getFilesResult.nextPageToken;
+      this.list$ = getFilesResult.files;
+      console.log("finished get more files",r)
+    }
+
+  }
 }
