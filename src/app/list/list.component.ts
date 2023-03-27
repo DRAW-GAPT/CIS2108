@@ -82,17 +82,13 @@ export class ListComponent {
     await this.getMoreFiles(filesNeeded);      
   }
 
-  async getMoreFiles(limit:number) {    
-    let r = Math.random();
-    console.log(this.sortSettings,r)
-
-    console.log("getting more files",r)
+  async getMoreFiles(limit:number) {
 
     this.getMoreFilesRequestID++;
     //get the id of the current request
     let requestID = this.getMoreFilesRequestID;
 
-    let getFilesResult:getFilesResult = await this.googleAPIService.getFiles(this.list$,limit,this.filterQuery,this.sortSettings);
+    let getFilesResult:getFilesResult = await this.googleAPIService.getFiles(this.list$,limit,this.filterQuery,this.sortSettings,this.nextPageToken$);
     if(requestID == this.getMoreFilesRequestID){
       //only store the results from the last request that was sent.
       //if requestID != getMoreFilesRequestID, it means that the opeartion has been
@@ -100,7 +96,6 @@ export class ListComponent {
       //therefore we only store the result of the last request that was started
       this.nextPageToken$ = getFilesResult.nextPageToken;
       this.list$ = getFilesResult.files;
-      console.log("finished get more files",r)
     }
 
   }
