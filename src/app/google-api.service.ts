@@ -116,8 +116,6 @@ export class GoogleAPIService {
 
     await this.confirmLogin();
 
-    console.log(limit);
-
     if(limit > files.length){
     
       try {
@@ -126,7 +124,8 @@ export class GoogleAPIService {
             'pageSize': 1000,
             'fields': 'nextPageToken, files(id, name, createdTime, modifiedTime, owners,size, lastModifyingUser, iconLink,fileExtension,permissions,hasAugmentedPermissions, capabilities, ownedByMe)',
             'q': q,
-            'orderBy': sort
+            'orderBy': sort,
+            'pageToken': nextPageToken
           });
           nextPageToken = response.result.nextPageToken;
           if(response.result.files)
