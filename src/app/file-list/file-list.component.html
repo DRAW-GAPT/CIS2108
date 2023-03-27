@@ -22,8 +22,10 @@
     <tr mat-header-row *matHeaderRowDef="headers"></tr>
     <tr mat-row *matRowDef="let row; columns: headers;"></tr>
 </table>
+<div class="spinner">
+    <mat-spinner *ngIf="tableLoading"></mat-spinner>
+</div>
 
-<mat-spinner *ngIf="tableLoading"></mat-spinner>
 
 
 <div class="paginatorDiv">
