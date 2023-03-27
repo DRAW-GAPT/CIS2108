@@ -18,8 +18,6 @@ export const DATE_FORMAT = {
     monthYearA11yLabel: 'MMMM YYYY'
   },
 };
-
-
 @Component({
   selector: 'app-filter-chips',
   templateUrl: './filter-chips.component.html',
@@ -52,9 +50,7 @@ export class FilterChipsComponent {
     if (value) {
       this.owners.push(value);
       console.log(this.filterByOwner());
-
     }
-
     // Clear the input value
     event.chipInput!.clear();
   }
@@ -65,17 +61,16 @@ export class FilterChipsComponent {
     if (index >= 0) {
       this.owners.splice(index, 1);
     }
+    this.updateFilter();
   }
 
   editOwner(owner: String, event: MatChipEditedEvent) {
     const value = event.value.trim();
-
     // Remove fruit if it no longer has a name
     if (!value) {
       this.removeOwner(owner);
       return;
     }
-
     // Edit existing owner
     const index = this.owners.indexOf(owner);
     if (index >= 0) {
@@ -88,14 +83,12 @@ export class FilterChipsComponent {
     if (value) {
       this.sharedWith.push(value);
     }
-
     // Clear the input value
     event.chipInput!.clear();
   }
-
+  
   removeShared(shared: String): void {
     const index = this.sharedWith.indexOf(shared);
-
     if (index >= 0) {
       this.sharedWith.splice(index, 1);
     }
