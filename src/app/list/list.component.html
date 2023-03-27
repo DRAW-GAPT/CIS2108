@@ -1,6 +1,10 @@
 <app-search-bar/>
 <app-filter-chips (updateFilterQuery)="updateQuery($event)"/>
-<app-file-list [tableLoading]="1<2" [nextPageLoading]="1<2" [files]=list$ (notifyPageSettingsChanged)="setPageSettings($event)" (notifySortChanged)="setSort($event)"/>
+<app-file-list [tableLoading]="list$.length < (Math.max(pageNumber,1) * pageSize)" [nextPageLoading]="1<2" [files]=list$ (notifyPageSettingsChanged)="setPageSettings($event)" (notifySortChanged)="setSort($event)"/>
+{{list$.length < (Math.max(pageNumber,1) * pageSize)}}
+{{list$.length}}
+
+{{(Math.max(pageNumber,1) * pageSize)}}
 
 
 
