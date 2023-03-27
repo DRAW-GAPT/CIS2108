@@ -1,9 +1,9 @@
-import {COMMA, ENTER} from '@angular/cdk/keycodes';
+import {COMMA, ENTER, S} from '@angular/cdk/keycodes';
 import { Component, EventEmitter, Inject, Input, LOCALE_ID, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
 import * as _ from 'lodash';
-import { filter } from 'lodash';
+import { filter, update } from 'lodash';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { DateRange } from '@angular/material/datepicker';
 
@@ -18,8 +18,6 @@ export const DATE_FORMAT = {
     monthYearA11yLabel: 'MMMM YYYY'
   },
 };
-
-
 @Component({
   selector: 'app-filter-chips',
   templateUrl: './filter-chips.component.html',
@@ -38,9 +36,6 @@ export class FilterChipsComponent {
 
   @Output() updateFilterQuery:EventEmitter<string> = new EventEmitter<string>();
 
-  searchText!: string;
-
-//new chips functionality
   addOnBlur = true;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
   owners: String[] = [];
@@ -48,15 +43,14 @@ export class FilterChipsComponent {
   permissionsSelected: String[] = [];
   startDate:  Date | null = null;
   endDate : Date | null = null;
+  searchTerm: string | undefined;
 
   addOwner(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
     if (value) {
       this.owners.push(value);
       console.log(this.filterByOwner());
-
     }
-
     // Clear the input value
     event.chipInput!.clear();
   }
@@ -67,17 +61,16 @@ export class FilterChipsComponent {
     if (index >= 0) {
       this.owners.splice(index, 1);
     }
+    this.updateFilter();
   }
 
   editOwner(owner: String, event: MatChipEditedEvent) {
     const value = event.value.trim();
-
     // Remove fruit if it no longer has a name
     if (!value) {
       this.removeOwner(owner);
       return;
     }
-
     // Edit existing owner
     const index = this.owners.indexOf(owner);
     if (index >= 0) {
@@ -90,14 +83,12 @@ export class FilterChipsComponent {
     if (value) {
       this.sharedWith.push(value);
     }
-
     // Clear the input value
     event.chipInput!.clear();
   }
-
+  
   removeShared(shared: String): void {
     const index = this.sharedWith.indexOf(shared);
-
     if (index >= 0) {
       this.sharedWith.splice(index, 1);
     }
@@ -165,11 +156,18 @@ export class FilterChipsComponent {
     if(this.startDate && this.endDate){
       subqueries.push(`modifiedTime > '${this.startDate.toISOString()}' and modifiedTime < '${this.endDate.toISOString()}'` );
     }
-
+    if(this.searchTerm != undefined && this.searchTerm?.length  > 0){
+      subqueries.push("name contains '" + this.searchTerm + "'");
+      console.log(this.searchTerm)
+    }
     this.updateFilterQuery.emit(subqueries.map(s=>"("+s+")").join(" and "))
   } 
   
   onDateChange(): void {
+    this.updateFilter();
+  }
+
+  onSearch():void {
     this.updateFilter();
   }
 }

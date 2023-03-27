@@ -1,7 +1,2 @@
-<app-search-bar/>
 <app-filter-chips (updateFilterQuery)="updateQuery($event)"/>
 <app-file-list [tableLoading]="list$.length < (Math.max(pageNumber,1) * pageSize)" [nextPageLoading]="this.list$.length <= ((this.pageNumber+1) * this.pageSize)" [files]=list$ (notifyPageSettingsChanged)="setPageSettings($event)" (notifySortChanged)="setSort($event)"/>
-    {{list$.length}} less than {{pageNumber+1}} * {{pageSize}}
-<br/>
-
-
