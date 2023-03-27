@@ -46,7 +46,6 @@ export class ListComponent {
     await this.getMoreFilesAsNeeded();
   }
 
-
   columnNameToSortMap = new Map<string, string>([
     ["Name", "name"],
     ["Owner", ""],
@@ -63,7 +62,6 @@ export class ListComponent {
       s = s + " desc"
 
     this.sortSettings = s;
-
     this.list$=[];
     this.nextPageToken$=undefined;
 

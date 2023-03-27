@@ -9,7 +9,6 @@ export interface PageSetting{
   pageNumber:number
 }
 
-
 @Component({
   selector: 'app-file-list',
   templateUrl: './file-list.component.html',
@@ -21,21 +20,15 @@ export class FileListComponent {
   @Input() tableLoading = true;
   @Input() nextPageLoading = true;
 
-
-
-
-  
   @Output() notifyPageSettingsChanged:EventEmitter<PageSetting> = new EventEmitter<PageSetting>();
   @Output() notifySortChanged:EventEmitter<Sort> = new EventEmitter<Sort>();
 
-
-
+  //Pagination and Headers, variables change depending on user choices, reloads page accordingly.
   pageSize: number = 25;
   pageNumber: number = 0;
   headers: string[] = ['Name', 'Owner', 'Last Modified', 'Size']
 
   constructor(private _liveAnnouncer: LiveAnnouncer) {}
-
 
   onPageSettingsChange($event: PageEvent) {
     this.pageNumber = $event.pageIndex; 
@@ -52,6 +45,7 @@ export class FileListComponent {
 
   get paginatedData(): any[] {
     const startIndex = this.pageNumber * this.pageSize;
+
     return this.files.slice(startIndex, startIndex + this.pageSize);
   }
   
@@ -77,10 +71,10 @@ export class FileListComponent {
     let user = file.lastModifyingUser?.displayName;
     let options : any = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     let dateTime: string = ""
+
     if(file.modifiedTime){
       dateTime = new Date(file.modifiedTime).toLocaleDateString(undefined, options);
     }
-
     if (user) return user + "; " + dateTime;
     else return dateTime
   }

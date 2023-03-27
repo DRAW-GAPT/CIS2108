@@ -17,7 +17,6 @@ export interface getFilesResult{
   nextPageToken:string|undefined;
 }
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -37,7 +36,6 @@ export class GoogleAPIService {
     this.gisInited = new Promise<boolean>((resolve)=>{
       this.gisLoaded(resolve);
     });
-
 
     //promise that returns true when both gapi and gis are loaded
     this.allInited = new Promise(async (resolve)=>{
@@ -81,7 +79,6 @@ export class GoogleAPIService {
     resolve(true)
   }
 
-
   async confirmLogin(){
     if(gapi.client.getToken() == null || !this.cookie.get("googleAuthToken")){
       this.router.navigate(['login']);
@@ -108,12 +105,11 @@ export class GoogleAPIService {
       // Skip display of account chooser and consent dialog for an existing session.
       this.tokenClient.requestAccessToken({prompt: ''});
     }
-
   }
 
   async getFiles(files:gapi.client.drive.File[],limit:number,q:string="",sort:string="",nextPageToken:string|undefined = undefined):Promise<getFilesResult>{
-    await this.allInited;
 
+    await this.allInited;
     await this.confirmLogin();
 
     if(limit > files.length){
@@ -141,33 +137,31 @@ export class GoogleAPIService {
     //return the nextpagetoken in case we need more files in the future
     return {nextPageToken:nextPageToken,files:files};
   }
-  
-public async getCookie(): Promise<boolean>{
-  await this.gapiInited;
-  await this.gisInited;
+  //uses the cookie storing the google auth token to appease the API
+  public async getCookie(): Promise<boolean>{
+    await this.gapiInited;
+    await this.gisInited;
 
-  if(this.cookie.get("googleAuthToken")){
-    const tokenToken = JSON.parse(this.cookie.get("googleAuthToken"));
-    gapi.client.setToken(tokenToken);
-    return true;
+    if(this.cookie.get("googleAuthToken")){
+      const tokenToken = JSON.parse(this.cookie.get("googleAuthToken"));
+      gapi.client.setToken(tokenToken);
+      return true;
+    }
+    return false;
   }
-  return false;
-}
 
+  //used to check validation of Google Authentication token by synchronizing cookie expiry with token expiry
+  public createCookie(){
+    const token = gapi.client.getToken();
+    const tokenString = JSON.stringify(token);
+    const expiryTime = (JSON.parse(gapi.client.getToken().expires_in) * 1000);
 
-public createCookie(){
-  const token = gapi.client.getToken();
-  const tokenString = JSON.stringify(token);
-  const currentTime = new Date();
-  const expiryTime = (JSON.parse(gapi.client.getToken().expires_in) * 1000);
+    this.cookie.set('googleAuthToken', tokenString, expiryTime/(86400000), '/');
 
-  this.cookie.set('googleAuthToken', tokenString, expiryTime/(86400000), '/');
-
-  setTimeout(() => {
-    this.cookie.delete('googleAuthToken');
-    this.confirmLogin();
-  }, expiryTime);
-
+    setTimeout(() => {
+      this.cookie.delete('googleAuthToken');
+      this.confirmLogin();
+    }, expiryTime);
   }
 }
 

@@ -5,7 +5,6 @@ import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
 import * as _ from 'lodash';
 import { filter, update } from 'lodash';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
-import { DateRange } from '@angular/material/datepicker';
 
 export const DATE_FORMAT = {
   parse: {
@@ -33,7 +32,6 @@ export class FilterChipsComponent {
     @Inject(MAT_DATE_LOCALE) private _locale: string,
   ) {}
 
-
   @Output() updateFilterQuery:EventEmitter<string> = new EventEmitter<string>();
 
   addOnBlur = true;
@@ -45,6 +43,7 @@ export class FilterChipsComponent {
   endDate : Date | null = null;
   searchTerm: string | undefined;
 
+  //methods to handle input received from the 'Owner' filter
   addOwner(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
     if (value) {
@@ -65,18 +64,19 @@ export class FilterChipsComponent {
 
   editOwner(owner: String, event: MatChipEditedEvent) {
     const value = event.value.trim();
-    // Remove fruit if it no longer has a name
+    //Remove email if reduced to nothing
     if (!value) {
       this.removeOwner(owner);
       return;
     }
-    // Edit existing owner
+    //For when users double click and edit the input
     const index = this.owners.indexOf(owner);
     if (index >= 0) {
       this.owners[index] = value;
     }
   }
-
+  
+  //methods to handle the input received from the 'Shared with' filter
   addShared(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
     if (value) {
@@ -91,66 +91,65 @@ export class FilterChipsComponent {
     if (index >= 0) {
       this.sharedWith.splice(index, 1);
     }
-
     this.updateFilter();
   }
 
   editShared(shared: String, event: MatChipEditedEvent) {
     const value = event.value.trim();
-
+    //Remove email if reduced to nothing
     if (!value) {
       this.removeShared(shared);
       return;
     }
-
+    //for when users double click and edit the input
     const index = this.sharedWith.indexOf(shared);
     if (index >= 0) {
       this.sharedWith[index] = value;
     }
-
     this.updateFilter();
   }
   
-  //filters the list by owner, called whenever a new email is added to the owner's chip
-  async filterByOwner(){
-    this.updateFilter();
-  }
-
+  //Methods to handle filters being changed
   isCheckedOwner: boolean = false;
   isCheckedWriter: boolean = false;
   isCheckedReader: boolean = false;
   onCheckboxChange($event: MatCheckboxChange) {
-
     this.permissionsSelected = [];
 
     if(this.isCheckedWriter){
       this.permissionsSelected.push("writers");
     }
-
     if(this.isCheckedReader){
       this.permissionsSelected.push("readers");
     }
-
     if(this.isCheckedOwner){
       this.permissionsSelected.push("owners")
     }
-    
+    this.updateFilter();
+  }
+   //filters the list by owner, called whenever a new email is added to the owner's chip
+  async filterByOwner(){
+    this.updateFilter();
+  }
+  onDateChange(): void {
+    this.updateFilter();
+  }
+
+  onSearch():void {
     this.updateFilter();
   }
 
   updateFilter(){
     let subqueries:string[] = ["trashed=false"];
-    
-    if(this.owners.length > 0)
+    if(this.owners.length > 0){
       subqueries.push(`(${this.owners.map(owner => `'${owner}' in owners`).join(' or ')})`);
-
-    if(this.permissionsSelected.length > 0)
-      subqueries.push(`${this.permissionsSelected
-        .map(permission=> `'me' in ${ permission }` ).join(' or ')}`);
-
-    if(this.sharedWith.length > 0)
+    }
+    if(this.permissionsSelected.length > 0){
+      subqueries.push(`${this.permissionsSelected.map(permission=> `'me' in ${ permission }` ).join(' or ')}`);
+    }
+    if(this.sharedWith.length > 0){
       subqueries.push(`(${this.sharedWith.map(user => `'${user}' in readers`).join(' or ')})`);
-
+    }
     if(this.startDate && this.endDate){
       subqueries.push(`modifiedTime > '${this.startDate.toISOString()}' and modifiedTime < '${this.endDate.toISOString()}'` );
     }
@@ -159,13 +158,5 @@ export class FilterChipsComponent {
     }
     this.updateFilterQuery.emit(subqueries.map(s=>"("+s+")").join(" and "))
   } 
-  
-  onDateChange(): void {
-    this.updateFilter();
-  }
-
-  onSearch():void {
-    this.updateFilter();
-  }
 }
 
