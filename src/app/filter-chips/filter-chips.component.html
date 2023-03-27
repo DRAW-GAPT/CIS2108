@@ -1,3 +1,8 @@
+<mat-form-field>
+    <mat-icon matPrefix>search</mat-icon>
+    <input matInput placeholder="Search" [(ngModel)]="searchTerm" (input)="onSearch()">
+</mat-form-field>
+
 <mat-chip-listbox multiple selectable="false">
     <mat-chip-option [matMenuTriggerFor]="ownersMenu" selected="{{this.owners.length > 0}}">
         Owner
@@ -9,7 +14,7 @@
         <mat-icon>keyboard_arrow_down</mat-icon>
     </mat-chip-option>
     
-    <mat-chip-option  [matMenuTriggerFor]="date">
+    <mat-chip-option  [matMenuTriggerFor]="date" selected="{{this.startDate != null && this.endDate != null}}">
         Date
         <mat-icon>keyboard_arrow_down</mat-icon>     
     </mat-chip-option>
@@ -69,7 +74,7 @@
 </mat-menu>
   
 <!---INPUT FOR PERMISSIONS-->
-<mat-menu #permissions="matMenu" multiple appearance="fill">
+<mat-menu #permissions="matMenu" multiple appearance="fill" class="permissionbox">
     <mat-checkbox value="owner" [(ngModel)]="isCheckedOwner" (change)="onCheckboxChange($event)" (click)="$event.stopPropagation()">
         <span class="drop-down-item0">Owner</span>
         <mat-icon class="drop-down-icon">star</mat-icon> 
@@ -85,13 +90,13 @@
 </mat-menu>
 
 <mat-menu #date="matMenu" multiple appearance="fill">
-    <mat-form-field appearance="fill" (click)="$event.stopPropagation()">
+    <mat-form-field appearance="fill" (click)="$event.stopPropagation()" class="picker-form">
         <mat-label>Enter a date range</mat-label>
         <mat-date-range-input [rangePicker]="picker" >
             <input matStartDate placeholder="Start date" [(ngModel)]="startDate" (dateChange)="onDateChange()">
             <input matEndDate placeholder="End date" [(ngModel)]="endDate" (dateChange)="onDateChange()">
         </mat-date-range-input>
-        <mat-hint>DD/MM/YYYY – DD/MM/YYYY</mat-hint>
+        <mat-hint class="hint">DD/MM/YYYY – DD/MM/YYYY</mat-hint>
         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-date-range-picker #picker></mat-date-range-picker>
     </mat-form-field>
