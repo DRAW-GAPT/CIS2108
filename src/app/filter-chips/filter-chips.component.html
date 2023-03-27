@@ -14,7 +14,7 @@
         <mat-icon>keyboard_arrow_down</mat-icon>
     </mat-chip-option>
     
-    <mat-chip-option  [matMenuTriggerFor]="date">
+    <mat-chip-option  [matMenuTriggerFor]="date" selected="{{this.startDate != null && this.endDate != null}}">
         Date
         <mat-icon>keyboard_arrow_down</mat-icon>     
     </mat-chip-option>
