@@ -1,7 +1,13 @@
 import {LiveAnnouncer} from '@angular/cdk/a11y';
-import {AfterViewInit, Component, ViewChild, Input} from '@angular/core';
+import {AfterViewInit, Component, ViewChild, Input, EventEmitter, Output} from '@angular/core';
+import { PageEvent } from '@angular/material/paginator';
 import {MatSort, Sort} from '@angular/material/sort';
 const byteSize = require('byte-size')
+
+export interface PageSetting{
+  pageSize:number
+  pageNumber:number
+}
 
 
 @Component({
@@ -10,38 +16,38 @@ const byteSize = require('byte-size')
   styleUrls: ['./file-list.component.scss'],
 })
 export class FileListComponent {
+
   @Input() files:gapi.client.drive.File[] = [];
-  pageSize: number = 5;
+  @Input() tableLoading = true;
+  @Input() nextPageLoading = true;
+
+
+
+
+  
+  @Output() notifyPageSettingsChanged:EventEmitter<PageSetting> = new EventEmitter<PageSetting>();
+  @Output() notifySortChanged:EventEmitter<Sort> = new EventEmitter<Sort>();
+
+
+
+  pageSize: number = 25;
   pageNumber: number = 0;
   headers: string[] = ['Name', 'Owner', 'Last Modified', 'Size']
 
   constructor(private _liveAnnouncer: LiveAnnouncer) {}
 
+
+  onPageSettingsChange($event: PageEvent) {
+    this.pageNumber = $event.pageIndex; 
+    this.pageSize = $event.pageSize;
+
+    this.notifyPageSettingsChanged.emit({pageNumber:this.pageNumber,pageSize:this.pageSize});
+  }
+
   @ViewChild(MatSort) sort!: MatSort;
   ngAfterViewInit() {
-    this.sort.sortChange.subscribe(sortState => {
-      this.files.sort((a: gapi.client.drive.File, b: gapi.client.drive.File) => {
-        const isAsc = sortState.direction === 'asc';
-        switch (sortState.active) {
-          case 'Name': 
-            if(a.name && b.name) return this.compare(a.name.toLowerCase(), b.name.toLowerCase(), isAsc);
-            return 0
-            break;
-          case 'Owner': 
-            if(a.owners && b.owners && a.owners[0].displayName && b.owners[0].displayName){
-              return this.compare(a.owners ? a.owners[0].displayName.toLowerCase() : '', b.owners ? b.owners[0].displayName.toLowerCase() : '', isAsc);
-            }
-            return 0
-            break;
-          case 'Last Modified': 
-            return this.compare(a.modifiedTime ? new Date(a.modifiedTime).getTime() : 0, b.modifiedTime ? new Date(b.modifiedTime).getTime() : 0, isAsc);
-          case 'Size': 
-            return this.compare((a.size) ? Number(a.size) : 0, b.size ? Number(b.size) : 0, isAsc);
-          default: 
-            return 0;
-        }
-      });
-    });
+    this.notifyPageSettingsChanged.emit({pageNumber:this.pageNumber,pageSize:this.pageSize});
+    this.sort.sortChange.subscribe(sortState => this.notifySortChanged.emit(sortState));
   }
 
   get paginatedData(): any[] {

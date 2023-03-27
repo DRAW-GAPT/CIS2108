@@ -2,6 +2,11 @@
     position: relative;
     height: auto;
     width: 10%;
+    -moz-user-select: none;
+   -khtml-user-select: none;
+   -webkit-user-select: none;
+   -ms-user-select: none;
+   user-select: none;
 }
 
 .draw-logo{
@@ -9,6 +14,11 @@
     height: auto;
     width: 30%;
     padding-bottom: 5%;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .container{
@@ -19,6 +29,11 @@
     flex-wrap: nowrap;
     align-items: center;
     justify-content: center;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .login-button{

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { environment } from '../environments/environment';
 
@@ -11,6 +12,12 @@ const SCOPES = 'https://www.googleapis.com/auth/drive.metadata.readonly';
 const googleAPIKey:string = environment.googleAPIKey;
 const googleClientID:string = environment.googleClientID;
 
+export interface getFilesResult{
+  files:gapi.client.drive.File[]
+  nextPageToken:string|undefined;
+}
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -22,7 +29,7 @@ export class GoogleAPIService {
 
   tokenClient:any = null;
   
-  constructor(private cookie: CookieService) {
+  constructor(private cookie: CookieService, private router: Router) {
     this.gapiInited = new Promise<boolean>((resolve)=>{
       this.gapiLoaded(resolve);
     });
@@ -75,6 +82,11 @@ export class GoogleAPIService {
   }
 
 
+  async confirmLogin(){
+    if(gapi.client.getToken() == null || !this.cookie.get("googleAuthToken")){
+      this.router.navigate(['login']);
+    }
+  }
 
   async login(onSuccess:()=>void){
     await this.allInited;
@@ -84,18 +96,9 @@ export class GoogleAPIService {
         throw (resp);
       }
 
-      
-      const token = gapi.client.getToken();
-      const tokenString = JSON.stringify(token);
-      const expiryDate = new Date();
-      expiryDate.setDate(expiryDate.getDate() + 1);
-      this.cookie.set('googleAuthToken', tokenString, expiryDate, '/');
-
-
+      this.createCookie();
       onSuccess();
     };
-
-    await this.getCookie();
 
     if (gapi.client.getToken() === null) {
       // Prompt the user to select a Google Account and ask for consent to share their data
@@ -105,30 +108,38 @@ export class GoogleAPIService {
       // Skip display of account chooser and consent dialog for an existing session.
       this.tokenClient.requestAccessToken({prompt: ''});
     }
+
   }
 
-  async getAllFiles():Promise<gapi.client.drive.File[]>{
+  async getFiles(files:gapi.client.drive.File[],limit:number,q:string="",sort:string="",nextPageToken:string|undefined = undefined):Promise<getFilesResult>{
     await this.allInited;
 
-    let response;
-    try {
-      response = await gapi.client.drive.files.list({
-        'pageSize': 1000,
-        'fields': 'files(id, name, createdTime, modifiedTime, owners,size, lastModifyingUser, iconLink)',
-      });
-    } catch (err) {
-      //todo, error handling
-      //document.getElementById('content').innerText = err.message;
-      return [];
+    await this.confirmLogin();
+
+    if(limit > files.length){
+    
+      try {
+        do{
+          let response = await gapi.client.drive.files.list({
+            'pageSize': 1000,
+            'fields': 'nextPageToken, files(id, name, createdTime, modifiedTime, owners,size, lastModifyingUser, iconLink,fileExtension,permissions,hasAugmentedPermissions, capabilities, ownedByMe)',
+            'q': q,
+            'orderBy': sort,
+            'pageToken': nextPageToken
+          });
+          nextPageToken = response.result.nextPageToken;
+          if(response.result.files)
+            files = [...files,...response.result.files]
+
+        } while (nextPageToken != undefined && files.length < limit)
+      } catch (err) {
+        //todo, error handling
+        return {nextPageToken:undefined,files:[]} ;
+      }
     }
-    const files = response.result.files;
-    if (!files || files.length == 0) {
-      //todo, error handling
-      //document.getElementById('content').innerText = 'No files found.';
-      return [];
-    }
-    // Flatten to string to display
-    return files;
+    
+    //return the nextpagetoken in case we need more files in the future
+    return {nextPageToken:nextPageToken,files:files};
   }
   
 public async getCookie(): Promise<boolean>{
@@ -142,4 +153,21 @@ public async getCookie(): Promise<boolean>{
   }
   return false;
 }
+
+
+public createCookie(){
+  const token = gapi.client.getToken();
+  const tokenString = JSON.stringify(token);
+  const currentTime = new Date();
+  const expiryTime = (JSON.parse(gapi.client.getToken().expires_in) * 1000);
+
+  this.cookie.set('googleAuthToken', tokenString, expiryTime/(86400000), '/');
+
+  setTimeout(() => {
+    this.cookie.delete('googleAuthToken');
+    this.confirmLogin();
+  }, expiryTime);
+
+  }
 }
+
