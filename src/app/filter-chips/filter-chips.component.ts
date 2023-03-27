@@ -5,7 +5,6 @@ import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
 import * as _ from 'lodash';
 import { filter, update } from 'lodash';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
-import { DateRange } from '@angular/material/datepicker';
 
 export const DATE_FORMAT = {
   parse: {
@@ -65,7 +64,7 @@ export class FilterChipsComponent {
 
   editOwner(owner: String, event: MatChipEditedEvent) {
     const value = event.value.trim();
-    // Remove fruit if it no longer has a name
+    // Remove owner if reduced to nothing
     if (!value) {
       this.removeOwner(owner);
       return;
@@ -140,7 +139,7 @@ export class FilterChipsComponent {
 
   updateFilter(){
     let subqueries:string[] = ["trashed=false"];
-    
+    console.log("test");
     if(this.owners.length > 0)
       subqueries.push(`(${this.owners.map(owner => `'${owner}' in owners`).join(' or ')})`);
 
