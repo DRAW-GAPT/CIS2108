@@ -1,3 +1,11 @@
+<mat-paginator 
+    [length]="files.length"
+    [pageSize]="pageSize"
+    [pageIndex]="pageNumber"
+    [pageSizeOptions]="[50,100,200,500,1000]"
+    (page)="onPageSettingsChange($event)"
+/>
+
 <table mat-table [dataSource]="paginatedData" class="table" matSort>
     <!-- HEADERS -->
     <ng-container matColumnDef="Name">
@@ -23,13 +31,6 @@
     <tr mat-row *matRowDef="let row; columns: headers;"></tr>
 </table>
 
-<mat-paginator 
-    [length]="files.length"
-    [pageSize]="pageSize"
-    [pageIndex]="pageNumber"
-    [pageSizeOptions]="[50,100,200,500,1000]"
-    (page)="onPageSettingsChange($event)"
-/>
 
 
 

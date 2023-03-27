@@ -3,7 +3,7 @@
 @include mat.core();
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { margin: 1000; font-family: Roboto, "Helvetica Neue", sans-serif; }
 #background { background-image: url("/assets/images/logo-background.png");}
 
 $primary: mat.define-palette(mat.$blue-palette);
