@@ -23,6 +23,7 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {MatProgressSpinner, MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
 import { MomentDateModule } from '@angular/material-moment-adapter';
 
@@ -54,6 +55,7 @@ import { MomentDateModule } from '@angular/material-moment-adapter';
     MatCheckboxModule,
     MatButtonToggleModule,
     MatAutocompleteModule,
+    MatProgressSpinnerModule,
     FormsModule,
     MomentDateModule,
   ],

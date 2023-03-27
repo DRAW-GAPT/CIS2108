@@ -11,6 +11,9 @@ import { getFilesResult, GoogleAPIService } from '../google-api.service';
 })
 export class ListComponent {
 
+  //to allow using math in html
+  Math = Math;
+
   //todo this is a temp class - need to redo with proper async
   list$:gapi.client.drive.File[] = [];
   nextPageToken$:string|undefined=undefined;

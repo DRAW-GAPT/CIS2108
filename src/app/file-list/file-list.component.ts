@@ -18,6 +18,9 @@ export interface PageSetting{
 export class FileListComponent {
 
   @Input() files:gapi.client.drive.File[] = [];
+  @Input() tableLoading = true;
+  @Input() nextPageLoading = true;
+
 
 
 

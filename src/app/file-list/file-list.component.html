@@ -30,7 +30,22 @@
     <tr mat-header-row *matHeaderRowDef="headers"></tr>
     <tr mat-row *matRowDef="let row; columns: headers;"></tr>
 </table>
+<div class="spinner">
+    <mat-spinner *ngIf="tableLoading"></mat-spinner>
+</div>
 
 
+
+<div class="paginatorDiv">
+    <mat-paginator 
+        [length]="files.length"
+        [pageSize]="pageSize"
+        [pageIndex]="pageNumber"
+        [pageSizeOptions]="[50,100,200,500,1000]"
+        (page)="onPageSettingsChange($event)"
+    />
+    <mat-spinner *ngIf="nextPageLoading" diameter="20"></mat-spinner>
+
+</div>
 
 

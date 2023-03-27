@@ -7,3 +7,16 @@
 .table{
    background-color:rgba(0, 0, 0, 0);
 }
+
+.paginatorDiv{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: right;
+    align-items: center;
+}
+
+.spinner{
+    display: grid; 
+    place-items: center;
+}
