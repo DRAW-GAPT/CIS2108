@@ -49,7 +49,6 @@ export class FilterChipsComponent {
     const value = (event.value || '').trim();
     if (value) {
       this.owners.push(value);
-      console.log(this.filterByOwner());
     }
     // Clear the input value
     event.chipInput!.clear();
@@ -136,7 +135,6 @@ export class FilterChipsComponent {
       this.permissionsSelected.push("owners")
     }
     
-    console.log(this.permissionsSelected)
     this.updateFilter();
   }
 
@@ -158,7 +156,6 @@ export class FilterChipsComponent {
     }
     if(this.searchTerm != undefined && this.searchTerm?.length  > 0){
       subqueries.push("name contains '" + this.searchTerm + "'");
-      console.log(this.searchTerm)
     }
     this.updateFilterQuery.emit(subqueries.map(s=>"("+s+")").join(" and "))
   } 

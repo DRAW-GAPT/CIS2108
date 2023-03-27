@@ -55,9 +55,6 @@ export class ListComponent {
   ]);
 
   async setSort($event: Sort) {
-
-    console.log("here")
-
     let s = this.columnNameToSortMap.get($event.active);
     if(s == undefined){
       s = "recency";

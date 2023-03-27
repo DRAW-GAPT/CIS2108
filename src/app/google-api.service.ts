@@ -116,8 +116,6 @@ export class GoogleAPIService {
 
     await this.confirmLogin();
 
-    console.log(limit);
-
     if(limit > files.length){
     
       try {
