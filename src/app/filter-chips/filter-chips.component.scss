@@ -30,5 +30,22 @@ mat-icon{
     flex-direction: column;
 }
 mat-form-field{
-    width: 80%;
+    width: 100%;
+}
+
+.example-chip-list {
+    width: 300px;
+}
+
+.picker-form, .hint{
+    width: 270px;
+    white-space: nowrap;
+}
+
+.email-input{
+    overflow: hidden;
+}
+
+.drop-down-icon{
+    padding-right: 10px;
 }
