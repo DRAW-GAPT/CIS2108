@@ -1,123 +1,106 @@
-<mat-chip-listbox multiple>
-    <mat-chip-option [matMenuTriggerFor]="menu">
+<mat-form-field>
+    <mat-icon matPrefix>search</mat-icon>
+    <input matInput placeholder="Search" [(ngModel)]="searchTerm" (input)="onSearch()">
+</mat-form-field>
+
+<!--Container for Chips-->
+<mat-chip-listbox multiple selectable="false">
+    <mat-chip-option [matMenuTriggerFor]="ownersMenu" selected="{{this.owners.length > 0}}">
         Owner
         <mat-icon>keyboard_arrow_down</mat-icon>
     </mat-chip-option>
 
-    <mat-chip-option [matMenuTriggerFor]="permissions">
+    <mat-chip-option [matMenuTriggerFor]="permissions" selected="{{this.permissionsSelected.length > 0}}">
         Permissions
         <mat-icon>keyboard_arrow_down</mat-icon>
     </mat-chip-option>
     
-    <mat-chip-option  [matMenuTriggerFor]="date">
+    <mat-chip-option  [matMenuTriggerFor]="date" selected="{{this.startDate != null && this.endDate != null}}">
         Date
         <mat-icon>keyboard_arrow_down</mat-icon>     
     </mat-chip-option>
-    
-    <mat-chip-option [matMenuTriggerFor]="type" >
-        Type
-        <mat-icon>keyboard_arrow_down</mat-icon>
-    </mat-chip-option>
-    
-    <mat-chip-option [matMenuTriggerFor]="shared">
+
+    <mat-chip-option [matMenuTriggerFor]="shared" selected="{{this.sharedWith.length > 0}}">
         Shared with 
         <mat-icon>keyboard_arrow_down</mat-icon>
     </mat-chip-option>
 </mat-chip-listbox>
 
-<!---INPUT FOR OWNER-->
-<mat-menu #menu="matMenu" multiple>
-        <mat-icon>search</mat-icon>
-        <input type="text"
-           matInput
-           [matAutocomplete]="auto"
-           (click)="$event.stopPropagation()"
-           [(ngModel)]="searchText"
-           (input)="filterOptions()">
-        
-        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete"/>
-        <div class="checkbox-container">
-            <mat-checkbox *ngFor="let option of filteredOptions" [value]="option">
-                <!--ADD USER ICON HERE-->
-                {{option}}
-            </mat-checkbox>
-        </div>
+<!---Chip that handles input for the 'Owner' filter, textbox that expects email accounts-->
+<mat-menu #ownersMenu="matMenu" multiple>
+    <mat-form-field class="example-chip-list" appearance="fill" (click)="$event.stopPropagation()">
+        <mat-chip-grid #ownerGrid aria-label="Enter email address..">
+            <mat-chip-row *ngFor="let owner of owners"
+                          (removed)="removeOwner(owner)"
+                          [editable]="true"
+                          (edited)="editOwner(owner, $event)"
+                          [aria-description]="'press enter to edit ' + owner">
+              {{owner}}
+              <button matChipRemove [attr.aria-label]="'remove ' + owner">
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip-row>
+            <input class="email-input" placeholder="Enter email address..."
+                   [matChipInputFor]="ownerGrid"
+                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                   [matChipInputAddOnBlur]="addOnBlur"
+                   (matChipInputTokenEnd)="addOwner($event)"
+                   (change)="updateFilter()"/>
+        </mat-chip-grid>   
+    </mat-form-field>      
 </mat-menu>
 
-<!---INPUT FOR TYPE -->
-<mat-menu #type="matMenu" multiple>
-    <mat-icon>search</mat-icon>
-    <input type="text"
-       matInput
-       [matAutocomplete]="auto"
-       (click)="$event.stopPropagation()"
-       [(ngModel)]="searchText"
-       (input)="filterType()">
-    
-    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete"/>
-    <div class="checkbox-container">
-        <mat-checkbox *ngFor="let type of filteredType" [value]="type">
-            <!-- Insert file type here -->
-            {{type}}
-        </mat-checkbox>
-    </div>
-</mat-menu>
-
-<!---INPUT FOR SHARED WITH -->
-<mat-menu #shared="matMenu" multiple>
-    <mat-icon>search</mat-icon>
-    <input type="text"
-       matInput
-       [matAutocomplete]="auto"
-       (click)="$event.stopPropagation()"
-       [(ngModel)]="searchText"
-       (input)="filterShared()">
-    
-    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete"/>
-    <div class="checkbox-container">
-        <mat-checkbox *ngFor="let share of filteredShared" [value]="share">
-            <!--ADD USER ICON HERE-->
-            {{share}}
-        </mat-checkbox>
-    </div>
+<!---Chip that handles input for the 'Shared' filter, textbox that expects email accounts-->
+<mat-menu id="shared" #shared="matMenu" multiple>
+    <mat-form-field class="example-chip-list" appearance="fill" (click)="$event.stopPropagation()">
+        <mat-chip-grid #sharedGrid aria-label="Enter email address..">
+            <mat-chip-row *ngFor="let shared of sharedWith"
+                          (removed)="removeShared(shared)"
+                          [editable]="true"
+                          (edited)="editShared(shared, $event)"
+                          [aria-description]="'press enter to edit ' + shared">
+              {{shared}}
+              <button matChipRemove [attr.aria-label]="'remove ' + shared">
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip-row>
+            <input class="email-input" placeholder="Enter email address..."
+                   [matChipInputFor]="sharedGrid"
+                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                   [matChipInputAddOnBlur]="addOnBlur"
+                   (matChipInputTokenEnd)="addShared($event)"
+                   (change)="updateFilter()"/> <!--TODO should call re-display method instead, which would itself call filter by owner--> 
+          </mat-chip-grid>
+    </mat-form-field> 
 </mat-menu>
   
-<!---INPUT FOR PERMISSIONS-->
-<mat-menu #permissions="matMenu" multiple appearance="fill">
-        <mat-checkbox value="option1"><span class="drop-down-item1">Editor</span>
-            <mat-icon class="drop-down-icon">edit</mat-icon> 
-        </mat-checkbox><br>
-        <mat-checkbox value="option2"><span class="drop-down-item2">Viewer</span>
-            <mat-icon class="drop-down-icon">remove_red_eye</mat-icon> 
-        </mat-checkbox><br>
-        <mat-checkbox value="option3"><span class="drop-down-item3">Commenter</span>
-            <mat-icon class="drop-down-icon"> comment</mat-icon> &nbsp;&nbsp;
-        </mat-checkbox>
-</mat-menu>
-
-<!---INPUT FOR PERMISSIONS-->
-<mat-menu #permissions="matMenu" multiple appearance="fill">
-    <mat-checkbox value="option1"><span class="drop-down-item1">Editor</span>
+<!---Chip that handles input for the 'Permissions' filter, dropdown menu with checkboxes for 'Owner', 'Editor', or 'Reader' permissions-->
+<mat-menu #permissions="matMenu" multiple appearance="fill" class="permissionbox">
+    <mat-checkbox value="owner" [(ngModel)]="isCheckedOwner" (change)="onCheckboxChange($event)" (click)="$event.stopPropagation()">
+        <span class="drop-down-item0">Owner</span>
+        <mat-icon class="drop-down-icon">star</mat-icon> 
+    </mat-checkbox><br>
+    <mat-checkbox value="writer" [(ngModel)]="isCheckedWriter" (change)="onCheckboxChange($event)" (click)="$event.stopPropagation()">
+        <span class="drop-down-item1">Editor</span>
         <mat-icon class="drop-down-icon">edit</mat-icon> 
     </mat-checkbox><br>
-    <mat-checkbox value="option2"><span class="drop-down-item2">Viewer</span>
+    <mat-checkbox value="reader" [(ngModel)]="isCheckedReader"(change)="onCheckboxChange($event)" (click)="$event.stopPropagation()">
+        <span class="drop-down-item2">Viewer</span>
         <mat-icon class="drop-down-icon">remove_red_eye</mat-icon> 
     </mat-checkbox><br>
-    <mat-checkbox value="option3"><span class="drop-down-item3">Commenter</span>
-        <mat-icon class="drop-down-icon"> comment</mat-icon> &nbsp;&nbsp;
-    </mat-checkbox>
 </mat-menu>
 
+<!---Chip that handles input for the 'Date' filter, datepicker that expects a start date and end date-->
 <mat-menu #date="matMenu" multiple appearance="fill">
-    <mat-form-field appearance="fill">
+    <mat-form-field appearance="fill" (click)="$event.stopPropagation()" class="picker-form">
         <mat-label>Enter a date range</mat-label>
-        <mat-date-range-input [rangePicker]="picker">
-            <input matStartDate placeholder="Start date">
-            <input matEndDate placeholder="End date">
+        <mat-date-range-input [rangePicker]="picker" >
+            <input matStartDate placeholder="Start date" [(ngModel)]="startDate" (dateChange)="onDateChange()">
+            <input matEndDate placeholder="End date" [(ngModel)]="endDate" (dateChange)="onDateChange()">
         </mat-date-range-input>
-        <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+        <mat-hint class="hint">DD/MM/YYYY – DD/MM/YYYY</mat-hint>
         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-date-range-picker #picker></mat-date-range-picker>
     </mat-form-field>
-    
 </mat-menu>
+

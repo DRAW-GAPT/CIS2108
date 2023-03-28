@@ -1,9 +1,20 @@
 .icon{
     padding-right: 5%;
-    width: 3%;
-    height: 3%;
-    vertical-align: bottom;
+    width: 15px;
+    height: 15px;
+    vertical-align:middle;
 }
 .table{
    background-color:rgba(0, 0, 0, 0);
+}
+.paginatorDiv{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: right;
+    align-items: center;
+}
+.spinner{
+    display: grid; 
+    place-items: center;
 }

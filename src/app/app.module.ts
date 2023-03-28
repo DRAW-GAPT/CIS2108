@@ -23,10 +23,12 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {MatProgressSpinner, MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
 import {MatCardModule} from '@angular/material/card';
 import { RecentlyAccessedComponent } from './recently-accessed/recently-accessed.component';
 import {MatGridListModule} from '@angular/material/grid-list';
+import { MomentDateModule } from '@angular/material-moment-adapter';
 
 
 @NgModule({
@@ -60,6 +62,9 @@ import {MatGridListModule} from '@angular/material/grid-list';
     FormsModule,
     MatCardModule,
     MatGridListModule
+    MatProgressSpinnerModule,
+    FormsModule,
+    MomentDateModule,
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]

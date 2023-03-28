@@ -12,6 +12,11 @@ const SCOPES = 'https://www.googleapis.com/auth/drive.metadata.readonly';
 const googleAPIKey:string = environment.googleAPIKey;
 const googleClientID:string = environment.googleClientID;
 
+export interface getFilesResult{
+  files:gapi.client.drive.File[]
+  nextPageToken:string|undefined;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -31,7 +36,6 @@ export class GoogleAPIService {
     this.gisInited = new Promise<boolean>((resolve)=>{
       this.gisLoaded(resolve);
     });
-
 
     //promise that returns true when both gapi and gis are loaded
     this.allInited = new Promise(async (resolve)=>{
@@ -75,9 +79,8 @@ export class GoogleAPIService {
     resolve(true)
   }
 
-
   async confirmLogin(){
-    if(gapi.client.getToken() == null || JSON.parse(gapi.client.getToken().expires_in) < 0){
+    if(gapi.client.getToken() == null || !this.cookie.get("googleAuthToken")){
       this.router.navigate(['login']);
     }
   }
@@ -90,12 +93,7 @@ export class GoogleAPIService {
         throw (resp);
       }
 
-      const token = gapi.client.getToken();
-      const tokenString = JSON.stringify(token);
-      const expiryDate = new Date();
-      expiryDate.setDate(expiryDate.getDate() + 1);
-      this.cookie.set('googleAuthToken', tokenString, expiryDate, '/');
-
+      this.createCookie();
       onSuccess();
     };
 
@@ -107,44 +105,63 @@ export class GoogleAPIService {
       // Skip display of account chooser and consent dialog for an existing session.
       this.tokenClient.requestAccessToken({prompt: ''});
     }
-
   }
 
-  async getAllFiles():Promise<gapi.client.drive.File[]>{
-    await this.allInited;
+  async getFiles(files:gapi.client.drive.File[],limit:number,q:string="",sort:string="",nextPageToken:string|undefined = undefined):Promise<getFilesResult>{
 
+    await this.allInited;
     await this.confirmLogin();
 
-    let response;
-    try {
-      response = await gapi.client.drive.files.list({
-        'pageSize': 1000,
-        'fields': 'files(id, name, createdTime, modifiedTime, owners,size, lastModifyingUser, iconLink)',
-      });
-    } catch (err) {
-      //todo, error handling
-      //document.getElementById('content').innerText = err.message;
-      return [];
-    }
-    const files = response.result.files;
-    if (!files || files.length == 0) {
-      //todo, error handling
-      //document.getElementById('content').innerText = 'No files found.';
-      return [];
-    }
-    // Flatten to string to display
-    return files;
-  }
-  
-public async getCookie(): Promise<boolean>{
-  await this.gapiInited;
-  await this.gisInited;
+    if(limit > files.length){
+    
+      try {
+        do{
+          let response = await gapi.client.drive.files.list({
+            'pageSize': 1000,
+            'fields': 'nextPageToken, files(id, name, createdTime, modifiedTime, owners,size, lastModifyingUser, iconLink,fileExtension,permissions,hasAugmentedPermissions, capabilities, ownedByMe)',
+            'q': q,
+            'orderBy': sort,
+            'pageToken': nextPageToken
+          });
+          nextPageToken = response.result.nextPageToken;
+          if(response.result.files)
+            files = [...files,...response.result.files]
 
-  if(this.cookie.get("googleAuthToken")){
-    const tokenToken = JSON.parse(this.cookie.get("googleAuthToken"));
-    gapi.client.setToken(tokenToken);
-    return true;
+        } while (nextPageToken != undefined && files.length < limit)
+      } catch (err) {
+        //todo, error handling
+        return {nextPageToken:undefined,files:[]} ;
+      }
+    }
+    
+    //return the nextpagetoken in case we need more files in the future
+    return {nextPageToken:nextPageToken,files:files};
   }
-  return false;
+  //uses the cookie storing the google auth token to appease the API
+  public async getCookie(): Promise<boolean>{
+    await this.gapiInited;
+    await this.gisInited;
+
+    if(this.cookie.get("googleAuthToken")){
+      const tokenToken = JSON.parse(this.cookie.get("googleAuthToken"));
+      gapi.client.setToken(tokenToken);
+      return true;
+    }
+    return false;
+  }
+
+  //used to check validation of Google Authentication token by synchronizing cookie expiry with token expiry
+  public createCookie(){
+    const token = gapi.client.getToken();
+    const tokenString = JSON.stringify(token);
+    const expiryTime = (JSON.parse(gapi.client.getToken().expires_in) * 1000);
+
+    this.cookie.set('googleAuthToken', tokenString, expiryTime/(86400000), '/');
+
+    setTimeout(() => {
+      this.cookie.delete('googleAuthToken');
+      this.confirmLogin();
+    }, expiryTime);
+  }
 }
-}
+
