@@ -51,6 +51,7 @@ export class FilterChipsComponent {
     }
     // Clear the input value
     event.chipInput!.clear();
+    this.updateFilter();
   }
 
   removeOwner(owner: String): void {
@@ -74,6 +75,8 @@ export class FilterChipsComponent {
     if (index >= 0) {
       this.owners[index] = value;
     }
+
+    this.updateFilter();
   }
   
   //methods to handle the input received from the 'Shared with' filter
@@ -84,6 +87,9 @@ export class FilterChipsComponent {
     }
     // Clear the input value
     event.chipInput!.clear();
+
+    this.updateFilter();
+
   }
   
   removeShared(shared: String): void {
