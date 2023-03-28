@@ -1,5 +1,5 @@
 <app-filter-chips/>
 <app-recently-accessed/>
-<app-file-list [files]=list/>
+<app-file-list [files]=list$/>
 <app-filter-chips (updateFilterQuery)="updateQuery($event)"/>
 <app-file-list [tableLoading]="list$.length < (Math.max(pageNumber,1) * pageSize) && nextPageToken$ != null" [nextPageLoading]="this.list$.length <= ((this.pageNumber+1) * this.pageSize) && nextPageToken$ != null" [files]=list$ (notifyPageSettingsChanged)="setPageSettings($event)" (notifySortChanged)="setSort($event)"/>

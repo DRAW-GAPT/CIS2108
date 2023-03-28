@@ -61,7 +61,7 @@ import { MomentDateModule } from '@angular/material-moment-adapter';
     MatAutocompleteModule,
     FormsModule,
     MatCardModule,
-    MatGridListModule
+    MatGridListModule,
     MatProgressSpinnerModule,
     FormsModule,
     MomentDateModule,
