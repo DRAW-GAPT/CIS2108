@@ -18,6 +18,7 @@ export class FileListComponent {
 
   @Input() files:gapi.client.drive.File[] = [];
   @Input() tableLoading = true;
+  //loads the next page as the user is viewing the current page
   @Input() nextPageLoading = true;
 
   @Output() notifyPageSettingsChanged:EventEmitter<PageSetting> = new EventEmitter<PageSetting>();
@@ -47,17 +48,6 @@ export class FileListComponent {
     const startIndex = this.pageNumber * this.pageSize;
 
     return this.files.slice(startIndex, startIndex + this.pageSize);
-  }
-  
-  
-  compare = (a: string | number | Date, b: string | number | Date, isAsc: boolean): number => {
-    if (a < b) {
-      return isAsc ? -1 : 1;
-    }
-    if (a > b) {
-      return isAsc ? 1 : -1;
-    }
-    return 0;
   }
   
   byteSize = (size:number) => {
