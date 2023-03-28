@@ -84,6 +84,7 @@ export class ListComponent {
     let requestID = this.getMoreFilesRequestID;
 
     let getFilesResult:getFilesResult = await this.googleAPIService.getFiles(this.list$,limit,this.filterQuery,this.sortSettings,this.nextPageToken$);
+    //if the request is the last request (ie most recent) keep it and filter using that request, else remove it (as it is older than the most recent)
     if(requestID == this.getMoreFilesRequestID){
       //only store the results from the last request that was sent.
       //if requestID != getMoreFilesRequestID, it means that the opeartion has been
