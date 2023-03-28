@@ -25,6 +25,9 @@ import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatProgressSpinner, MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
+import {MatCardModule} from '@angular/material/card';
+import { RecentlyAccessedComponent } from './recently-accessed/recently-accessed.component';
+import {MatGridListModule} from '@angular/material/grid-list';
 import { MomentDateModule } from '@angular/material-moment-adapter';
 
 
@@ -35,6 +38,7 @@ import { MomentDateModule } from '@angular/material-moment-adapter';
     ListComponent,
     FileListComponent,
     FilterChipsComponent,
+    RecentlyAccessedComponent,
   ],
   imports: [
     BrowserModule,
@@ -55,6 +59,9 @@ import { MomentDateModule } from '@angular/material-moment-adapter';
     MatCheckboxModule,
     MatButtonToggleModule,
     MatAutocompleteModule,
+    FormsModule,
+    MatCardModule,
+    MatGridListModule
     MatProgressSpinnerModule,
     FormsModule,
     MomentDateModule,
