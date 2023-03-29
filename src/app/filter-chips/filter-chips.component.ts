@@ -147,7 +147,6 @@ export class FilterChipsComponent {
 
   //sends query to google api according to the search terms entered into the filter (in google-api.service.ts 'q')
   updateFilter(){
-    console.log("test")
     let subqueries:string[] = ["trashed=false"];
     if(this.owners.length > 0){
       subqueries.push(`(${this.owners.map(owner => `'${owner}' in owners`).join(' or ')})`);

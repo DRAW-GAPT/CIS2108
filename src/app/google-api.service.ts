@@ -16,6 +16,9 @@ export interface getFilesResult{
   files:gapi.client.drive.File[]
   nextPageToken:string|undefined;
 }
+export interface getRecentFilesResult{
+  files:gapi.client.drive.File[];
+}
 
 @Injectable({
   providedIn: 'root'
@@ -130,13 +133,34 @@ export class GoogleAPIService {
         } while (nextPageToken != undefined && files.length < limit)
       } catch (err) {
         //todo, error handling
+
         return {nextPageToken:undefined,files:[]} ;
       }
     }
-    
     //return the nextpagetoken in case we need more files in the future
     return {nextPageToken:nextPageToken,files:files};
   }
+
+  async getMostRecent(recentFiles:gapi.client.drive.File[]):Promise<getRecentFilesResult>{
+    await this.allInited;
+    await this.confirmLogin();
+
+    const now = new Date();
+    const fiveDaysAgo = new Date(now.getTime() - (5 * 24 * 60 * 60 * 1000));
+    const timestamp = fiveDaysAgo.toISOString();
+
+          let response = await gapi.client.drive.files.list({
+            'pageSize': 5,
+            'fields': 'files(id, name, thumbnailLink, createdTime, modifiedTime)',
+            'orderBy': 'createdTime desc',
+            'q': `modifiedTime > '${timestamp}'`,
+          });
+          if(response.result.files)
+          recentFiles = [...recentFiles,...response.result.files];
+            console.log(recentFiles);
+      return {files:recentFiles};
+  }
+
   //uses the cookie storing the google auth token to appease the API
   public async getCookie(): Promise<boolean>{
     await this.gapiInited;

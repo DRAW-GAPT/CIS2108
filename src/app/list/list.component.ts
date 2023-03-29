@@ -16,6 +16,8 @@ export class ListComponent {
 
   //todo this is a temp class - need to redo with proper async
   list$:gapi.client.drive.File[] = [];
+  recentList$:gapi.client.drive.File[] = [];
+
   nextPageToken$:string|undefined=undefined;
   //store the id of the latest request
   getMoreFilesRequestID:number = 0;
@@ -63,14 +65,21 @@ export class ListComponent {
 
     this.sortSettings = s;
     this.list$=[];
+    this.recentList$=[];
     this.nextPageToken$=undefined;
 
     await this.getMoreFilesAsNeeded();
   }
 
   async init() {    
+    
     await this.getMoreFilesAsNeeded();
+    await this.getMostRecentFiles();
   }
+
+  async getMostRecentFiles(){
+    this.googleAPIService.getMostRecent(this.recentList$);
+    }
 
   async getMoreFilesAsNeeded(){
     let filesNeeded:number = (this.pageNumber+2) * this.pageSize;
