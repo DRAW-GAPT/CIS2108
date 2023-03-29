@@ -65,7 +65,7 @@ export class GoogleAPIService {
   async initializeGapiClient(resolve: (value: boolean | PromiseLike<boolean>) => void) {
     await gapi.client.init({
        apiKey: googleAPIKey,
-      discoveryDocs: [DISCOVERY_DOC],
+       discoveryDocs: [DISCOVERY_DOC],
     });
     resolve(true);
   }
@@ -141,23 +141,19 @@ export class GoogleAPIService {
     return {nextPageToken:nextPageToken,files:files};
   }
 
+    //method used to fetch the top 5 most recently modified files and their attributes for use in the header cards
   async getMostRecent(recentFiles:gapi.client.drive.File[]):Promise<getRecentFilesResult>{
     await this.allInited;
     await this.confirmLogin();
 
-    const now = new Date();
-    const fiveDaysAgo = new Date(now.getTime() - (5 * 24 * 60 * 60 * 1000));
-    const timestamp = fiveDaysAgo.toISOString();
-
           let response = await gapi.client.drive.files.list({
             'pageSize': 5,
-            'fields': 'files(id, name, thumbnailLink, createdTime, modifiedTime)',
+            'fields': 'files(id, name, webContentLink , owners, lastModifyingUser, createdTime, modifiedTime)',
             'orderBy': 'createdTime desc',
-            'q': `modifiedTime > '${timestamp}'`,
           });
           if(response.result.files)
           recentFiles = [...recentFiles,...response.result.files];
-            console.log(recentFiles);
+          
       return {files:recentFiles};
   }
 
