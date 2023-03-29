@@ -13,15 +13,23 @@ export class RecentlyAccessedComponent{
    }
 
   recentList$:gapi.client.drive.File[] = [];
-  documents:[] = [];
-
+  documents: any[] = [];
+  
   async init() {    
     await this.getMostRecentFiles();
+    this.documents = this.recentList$.map(file => ({
+      name: file.name,
+      owner: file.owners && file.owners.length ? file.owners[0].emailAddress : 'Unknown',
+      lastModifier: file.lastModifyingUser?.displayName,
+      image: file.webContentLink,
+      modifiedTime: file.modifiedTime ? new Date(file.modifiedTime).toLocaleString() : 'Unknown'
+    }));
   }
  
   async getMostRecentFiles(){
     const result = await this.googleAPIService.getMostRecent(this.recentList$);
-    console.log(result);
-    }
+    this.recentList$ = result.files;
+    
+  }
 
 }

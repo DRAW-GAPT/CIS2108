@@ -148,7 +148,7 @@ export class GoogleAPIService {
 
           let response = await gapi.client.drive.files.list({
             'pageSize': 5,
-            'fields': 'files(id, name, webContentLink , owners, lastModifyingUser, createdTime, modifiedTime)',
+            'fields': 'files(id, name, webContentLink , owners, lastModifyingUser, createdTime, modifiedTime, thumbnailLink)',
             'orderBy': 'createdTime desc',
           });
           if(response.result.files)

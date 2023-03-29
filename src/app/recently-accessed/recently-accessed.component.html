@@ -2,12 +2,16 @@
  <mat-grid-list cols="5">
   <mat-grid-tile *ngFor="let card of documents">
     <mat-card class="example-card">
-      <img mat-card-image src={{card}} alt="Photo of a Shiba Inu">
+      <iframe src={{card.egg}} width="100%" >
+
+      </iframe>
       <mat-card-actions>
           <mat-card-header>
             <div mat-card-avatar class="example-header-image"></div>
-            <mat-card-title>{{card}}</mat-card-title>
-            <mat-card-subtitle>{{card}}</mat-card-subtitle>
+            <mat-card-title>{{card.name}}</mat-card-title>
+            <mat-card-subtitle>Modder:{{card.lastModifier}}</mat-card-subtitle>
+            <mat-card-subtitle>Author:{{card.owner}}</mat-card-subtitle>
+
           </mat-card-header>
       </mat-card-actions>
     </mat-card>
