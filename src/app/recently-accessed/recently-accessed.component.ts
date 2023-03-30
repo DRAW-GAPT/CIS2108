@@ -21,7 +21,7 @@ export class RecentlyAccessedComponent{
       name: file.name,
       owner: file.owners && file.owners.length ? file.owners[0].emailAddress : 'Unknown',
       lastModifier: file.lastModifyingUser?.displayName,
-      image: file.webContentLink,
+      image: file.thumbnailLink,
       modifiedTime: file.modifiedTime ? new Date(file.modifiedTime).toLocaleString() : 'Unknown'
     }));
   }
@@ -29,6 +29,7 @@ export class RecentlyAccessedComponent{
   async getMostRecentFiles(){
     const result = await this.googleAPIService.getMostRecent(this.recentList$);
     this.recentList$ = result.files;
+    console.log(this.recentList$)
     
   }
 
