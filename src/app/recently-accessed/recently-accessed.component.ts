@@ -17,19 +17,21 @@ export class RecentlyAccessedComponent{
   
   async init() {    
     await this.getMostRecentFiles();
-    this.documents = this.recentList$.map(file => ({
-      name: file.name,
-      owner: file.owners && file.owners.length ? file.owners[0].emailAddress : 'Unknown',
-      lastModifier: file.lastModifyingUser?.displayName,
-      image: file.thumbnailLink,
-      modifiedTime: file.modifiedTime ? new Date(file.modifiedTime).toLocaleString() : 'Unknown'
-    }));
+    
   }
  
   async getMostRecentFiles(){
     const result = await this.googleAPIService.getMostRecent(this.recentList$);
     this.recentList$ = result.files;
     console.log(this.recentList$)
+
+    this.documents = this.recentList$.map(file => ({
+      name: file.name,
+      owner: file.owners && file.owners.length ? file.owners[0].emailAddress : 'Unknown',
+      lastModifier: file.lastModifyingUser?.displayName,
+      image: file.iconLink,
+      modifiedTime: file.modifiedTime ? new Date(file.modifiedTime).toLocaleString() : 'Unknown'
+    }));
     
   }
 
