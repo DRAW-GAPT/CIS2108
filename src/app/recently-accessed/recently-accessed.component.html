@@ -1,19 +1,18 @@
- <mat-grid-list cols="5">
+<mat-grid-list cols="5">
   <mat-grid-tile *ngFor="let card of documents">
     <mat-card class="example-card">
 
       <div class="cardImageContainer">
-        <img src={{card.image}} width="50%" class="cardImage">
+        <img src={{card.image}} class="cardImage">
       </div>
       
       <mat-card-actions>
           <mat-card-header>
             <mat-card-title>{{card.name}}</mat-card-title>
-            <mat-card-subtitle>Last Modified by {{card.lastModifier}} on {{card.modifiedTime}}</mat-card-subtitle>
-            <mat-card-subtitle>Author: {{card.owner}}</mat-card-subtitle>
+            <mat-card-subtitle><b>Last Modified by:</b> <br/> {{card.lastModifier}} on {{card.modifiedTime}}</mat-card-subtitle>
+            <mat-card-subtitle><b>Author:</b> <br/>{{card.owner}}</mat-card-subtitle>
           </mat-card-header>
       </mat-card-actions>
     </mat-card>
   </mat-grid-tile>
 </mat-grid-list>
-
