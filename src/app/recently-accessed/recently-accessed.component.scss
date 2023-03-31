@@ -2,14 +2,16 @@
     max-width: 250px;
     height: 250px;
   }
-  
+
 .example-header-image {
     background-size: cover;
   }
+
 h2{
   margin-left: 50px; 
   margin-top: 10px;
 }
+
 .cardImage{
   height:40px;
   width:40px;
@@ -20,5 +22,20 @@ h2{
 }
 
 .cardImageContainer{
-  background-color: #c7c7c7;
+  background-color: #e4e3e3;
 }
+
+mat-card-title{
+  font-size: 1vw;
+}
+
+mat-card-subtitle{
+  font-size: 0.7vw;
+}
+
+.example-card{
+  width:24vw;
+  height:15vw;
+  overflow:hidden;
+}
+

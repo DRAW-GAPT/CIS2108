@@ -17,7 +17,6 @@ export class RecentlyAccessedComponent{
   
   async init() {    
     await this.getMostRecentFiles();
-    
   }
  
   async getMostRecentFiles(){

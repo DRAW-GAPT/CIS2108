@@ -1,4 +1,3 @@
- <h2>Recently Accessed</h2>
  <mat-grid-list cols="5">
   <mat-grid-tile *ngFor="let card of documents">
     <mat-card class="example-card">
@@ -8,13 +7,11 @@
       </div>
       
       <mat-card-actions>
-        
           <mat-card-header>
             <mat-card-title>{{card.name}}</mat-card-title>
             <mat-card-subtitle>Last Modified By: {{card.lastModifier}}</mat-card-subtitle>
             <mat-card-subtitle>On: {{card.modifiedTime}}</mat-card-subtitle>
             <mat-card-subtitle>Author: {{card.owner}}</mat-card-subtitle>
-
           </mat-card-header>
       </mat-card-actions>
     </mat-card>
