@@ -137,6 +137,26 @@ export class GoogleAPIService {
     //return the nextpagetoken in case we need more files in the future
     return {nextPageToken:nextPageToken,files:files};
   }
+
+
+  async getFile(id:string):Promise<gapi.client.drive.File | null>{
+
+    await this.allInited;
+    await this.confirmLogin();
+
+    
+      try {
+          let response = await gapi.client.drive.files.get({
+            'fileId':id,
+            'fields':"*"
+          });
+          return response.result;
+      } catch (err) {
+        //todo, error handling
+        return null;
+      }
+    
+  }
   //uses the cookie storing the google auth token to appease the API
   public async getCookie(): Promise<boolean>{
     await this.gapiInited;
