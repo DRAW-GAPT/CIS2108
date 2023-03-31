@@ -9,7 +9,7 @@ import { GoogleAPIService } from '../google-api.service';
 /** Flat node with expandable and level information */
 export class DynamicFlatNode {
   constructor(
-    public item: gapi.client.drive.File,
+    public item: gapi.client.drive.File | null,
     public level = 1,
     public expandable = false,
     public isLoading = false,
@@ -107,11 +107,9 @@ export class DynamicDatabase {
     ['Onion', ['Yellow', 'White', 'Purple']],
   ]);
 
-  rootLevelNodes: Promise<gapi.client.drive.File[]> = getRoots(this.googleApiService);
-
   /** Initial data from database */
-  async initialData(): Promise<DynamicFlatNode[]> {
-    return (await this.rootLevelNodes).map(f => new DynamicFlatNode(f, 0, true));
+  initialData(): DynamicFlatNode[] {
+    return [new DynamicFlatNode(null,1,true,false)]
   }
 
   // getChildren(node: string): string[] | undefined {
@@ -154,9 +152,12 @@ export class FiletreeComponent {
 }
 
 async function getRoots(googleApiService: GoogleAPIService) {
-  return await googleApiService.getFiles([],1000).then(files => {
-    return _.uniqBy(files.files.map(async f=>(await getRoot(googleApiService,f))),'id');
-  });
+  
+  let files:gapi.client.drive.File[] = (await (googleApiService.getFiles([],1000))).files;
+
+  let roots = await Promise.all(files.map(f=>getRoot(googleApiService,f)))
+
+  return _.uniqBy(roots,'id');
 }
 
 
