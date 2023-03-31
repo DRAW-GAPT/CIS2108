@@ -16,6 +16,9 @@ export interface getFilesResult{
   files:gapi.client.drive.File[]
   nextPageToken:string|undefined;
 }
+export interface getRecentFilesResult{
+  files:gapi.client.drive.File[];
+}
 
 @Injectable({
   providedIn: 'root'
@@ -62,7 +65,7 @@ export class GoogleAPIService {
   async initializeGapiClient(resolve: (value: boolean | PromiseLike<boolean>) => void) {
     await gapi.client.init({
        apiKey: googleAPIKey,
-      discoveryDocs: [DISCOVERY_DOC],
+       discoveryDocs: [DISCOVERY_DOC],
     });
     resolve(true);
   }
@@ -130,13 +133,30 @@ export class GoogleAPIService {
         } while (nextPageToken != undefined && files.length < limit)
       } catch (err) {
         //todo, error handling
+
         return {nextPageToken:undefined,files:[]} ;
       }
     }
-    
     //return the nextpagetoken in case we need more files in the future
     return {nextPageToken:nextPageToken,files:files};
   }
+
+    //method used to fetch the top 5 most recently modified files and their attributes for use in the header cards
+  async getMostRecent(recentFiles:gapi.client.drive.File[]):Promise<getRecentFilesResult>{
+    await this.allInited;
+    await this.confirmLogin();
+
+          let response = await gapi.client.drive.files.list({
+            'pageSize': 5,
+            'fields': 'files(id, name, iconLink , owners, lastModifyingUser, createdTime, modifiedTime)',
+            'orderBy': 'createdTime desc',
+          });
+          if(response.result.files)
+          recentFiles = [...recentFiles,...response.result.files];
+          
+      return {files:recentFiles};
+  }
+
   //uses the cookie storing the google auth token to appease the API
   public async getCookie(): Promise<boolean>{
     await this.gapiInited;
