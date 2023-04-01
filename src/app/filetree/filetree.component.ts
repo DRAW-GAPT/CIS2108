@@ -5,6 +5,8 @@ import * as _ from 'lodash';
 import {BehaviorSubject, merge, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import { GoogleAPIService } from '../google-api.service';
+const byteSize = require('byte-size')
+
 
 /** Flat node with expandable and level information */
 // export class DynamicFlatNode {
@@ -152,6 +154,7 @@ export class DynamicDataSource implements DataSource<FileNode> {
   templateUrl: './filetree.component.html',
   styleUrls: ['./filetree.component.scss']
 })
+
 export class FiletreeComponent {
   constructor(database: DynamicDatabase, googleApiService:GoogleAPIService) {
 
@@ -176,6 +179,34 @@ export class FiletreeComponent {
   isExpandable = (node: FileNode) => node.file.mimeType == "application/vnd.google-apps.folder";
 
   hasChild = (_: number, _nodeData: FileNode) => _nodeData.expandable;
+
+  byteSize = (size:number) => {
+    if(size === null || size === undefined || isNaN(size)){
+        return "---"
+    }
+    return byteSize(size)
+  }
+
+  formatLastModified = (file:gapi.client.drive.File) => {
+    let user = file.lastModifyingUser?.displayName;
+    let options: any = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    let dateTime: string = ""
+
+    if(file.modifiedTime){
+      dateTime = new Date(file.modifiedTime).toLocaleDateString(undefined, options);
+    }
+    if (user) return user + "; " + dateTime;
+    else return dateTime
+  }
+
+   tooltip = (node: FileNode) : string =>{
+     if(node.file.owners == undefined) return "Undefined"
+     let owner: string = "Owner: " + node.file.owners[0].displayName + "\n";
+     let last : string = "Last Modified: " + this.formatLastModified(node.file) + "\n";
+     let size: string = "Size: " + this.byteSize(Number(node.file.size)) + "\n";
+     return owner + last + size;
+   }
+
 }
 
 async function getRoots(googleApiService: GoogleAPIService) {

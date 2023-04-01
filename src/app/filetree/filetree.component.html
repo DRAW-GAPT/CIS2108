@@ -3,7 +3,7 @@
   <!-- File Node -->
   <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
       <button mat-icon-button disabled></button>
-      <mat-chip matTooltip="Owner" matTooltipPosition="right">
+      <mat-chip matTooltip={{tooltip(node)}} matTooltipPosition="right"  matTooltipClass="multiline-tooltip">
         <img src={{node.file.iconLink}}/>
         {{node.file.name}}
       </mat-chip>
@@ -16,11 +16,11 @@
           {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
         </mat-icon>
       </button>
-      <mat-chip>
+      <mat-chip matTooltip={{tooltip(node)}} matTooltipPosition="right"  matTooltipClass="multiline-tooltip">
         <img src={{node.file.iconLink}}/>
         {{node.file.name}}
       </mat-chip>
-      <mat-progress-bar *ngIf="node.isLoading" mode="indeterminate" class="example-tree-progress-bar"/>
+      <mat-progress-spinner class = "spinner" *ngIf="node.isLoading" mode="indeterminate"/>
     </mat-tree-node>
  
   </mat-tree>

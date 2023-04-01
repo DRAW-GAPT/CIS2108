@@ -20,3 +20,9 @@ $theme: mat.define-light-theme((
   )
 ));
 @include mat.all-component-themes($theme);
+
+.multiline-tooltip {
+  max-width: unset !important;
+  min-width: 5000px !important;
+  white-space: pre-line !important;
+}
