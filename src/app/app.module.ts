@@ -32,6 +32,7 @@ import { MomentDateModule } from '@angular/material-moment-adapter';
 import { FiletreeComponent } from './filetree/filetree.component';
 import {MatTreeModule} from '@angular/material/tree';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 
 
@@ -72,7 +73,8 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
     FormsModule,
     MomentDateModule,
     MatTreeModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatTooltipModule
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]
