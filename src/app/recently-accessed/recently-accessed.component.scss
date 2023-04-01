@@ -1,28 +1,31 @@
 .example-card {
-    max-width: 18vw;
-    height:15vw;
-    overflow:hidden;
-  }
+  max-width: 350px;
+  height: 250px;
+}
 
 .example-header-image {
-    background-size: cover;
-  }
+  background-size: cover;
+}
 
-  
+h2{
+margin-left: 50px; 
+margin-top: 10px;
+}
+
 .cardImage{
-  height:35px;
-  width:35px;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+height:35px;
+width:35px;
+display: block;
+margin-left: auto;
+margin-right: auto;
 }
 
 .cardImageContainer{
-  background-color: #EFEEF1 ;
-  height: 5vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+background-color: #EFEEF1 ;
+height: 50px;
+display: flex;
+align-items: center;
+justify-content: center;
 }
 
 
@@ -31,16 +34,14 @@ mat-card-title{
 }
 
 mat-card-subtitle{
-  font-size: 0.8vw;
-  margin-top: 3vh;
-  margin-bottom: 3.5vh;
-  
+font-size: 0.8vw;
+margin-bottom: 5px;
+
 }
 
 .example-card{
-  width:24vw;
-  height:15vw;
-  overflow:hidden;
+width:24vw;
+margin-left: 10px;
+height:15vw;
+overflow:hidden;
 }
-
-
