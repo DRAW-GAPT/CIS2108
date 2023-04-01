@@ -10,7 +10,7 @@
           {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
         </mat-icon>
       </button>
-      {{node.file.name}}<p>hi</p>
+      {{node.file.name}}
       <mat-progress-bar *ngIf="node.isLoading"
                         mode="indeterminate"
                         class="example-tree-progress-bar"></mat-progress-bar>

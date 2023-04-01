@@ -32,16 +32,8 @@ export class FileNode{
  */
 @Injectable({providedIn: 'root'})
 export class DynamicDatabase {
-  dataMap = new Map<string, string[]>([
-    ['Fruits', ['Apple', 'Orange', 'Banana']],
-    ['Vegetables', ['Tomato', 'Potato', 'Onion']],
-    ['Apple', ['Fuji', 'Macintosh']],
-    ['Onion', ['Yellow', 'White', 'Purple']],
-  ]);
 
   constructor (public googleApiService:GoogleAPIService){}
-
-  rootLevelNodes: string[] = ['My Drive', 'Shared with me'];
 
   /** Initial data from database */
   async initialData(): Promise<FileNode[]> {
@@ -52,7 +44,7 @@ export class DynamicDatabase {
     return (await getRoots(this.googleApiService)).map(
 
       //fixme
-      f => new FileNode(f, 1, true),
+      f => new FileNode(f, 1, f.mimeType == "application/vnd.google-apps.folder"),
     );;
   }
 
@@ -60,8 +52,8 @@ export class DynamicDatabase {
     return getRoots(this.googleApiService)
   }
 
-  isExpandable(node: string): boolean {
-    return this.dataMap.has(node);
+  isExpandable(node: gapi.client.drive.File): boolean {
+    return node.mimeType == "application/vnd.google-apps.folder";
   }
 }
 /**
@@ -132,7 +124,7 @@ export class DynamicDataSource implements DataSource<FileNode> {
     
     if (expand) {
       const nodes = (await children).map(
-        f => new FileNode(f, node.level + 1, this._database.isExpandable(f.id??"")),
+        f => new FileNode(f, node.level + 1, this._database.isExpandable(f)),
       );
       this.data.splice(index + 1, 0, ...nodes);
     } else {
@@ -181,7 +173,7 @@ export class FiletreeComponent {
 
   getLevel = (node: FileNode) => node.level;
 
-  isExpandable = (node: FileNode) => node.expandable;
+  isExpandable = (node: FileNode) => node.file.mimeType == "application/vnd.google-apps.folder";
 
   hasChild = (_: number, _nodeData: FileNode) => _nodeData.expandable;
 }
