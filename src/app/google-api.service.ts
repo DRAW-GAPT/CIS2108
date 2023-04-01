@@ -127,7 +127,7 @@ export class GoogleAPIService {
           if(response.result.files)
             files = [...files,...response.result.files]
 
-        } while (nextPageToken != undefined && files.length < limit)
+        } while (nextPageToken != undefined && (files.length < limit || limit == -1))
       } catch (err) {
         //todo, error handling
         return {nextPageToken:undefined,files:[]} ;

@@ -16,34 +16,14 @@ import { GoogleAPIService } from '../google-api.service';
 //   ) {}
 // }
 
-export class Node{
+export class FileNode{
   constructor(
-    public id:string,
-    public displayText:string,
+
+    public file:gapi.client.drive.File,
     public level = 1,
     public expandable = false,
     public isLoading = false,
   ){}
-}
-
-export class RootNode extends Node{
-  constructor(
-    id:string,
-    displayText:string,
-    level = 1,
-  ){
-    super(id,displayText,level,true)
-  }
-}
-
-export class FileNode extends Node{
-  constructor(
-    file:gapi.client.drive.File,
-    level = 1,
-    expandable = false
-  ){
-    super(file?.id??"",file?.name??"",level,expandable)
-  }
 }
 
 /**
@@ -64,7 +44,7 @@ export class DynamicDatabase {
   rootLevelNodes: string[] = ['My Drive', 'Shared with me'];
 
   /** Initial data from database */
-  async initialData(): Promise<Node[]> {
+  async initialData(): Promise<FileNode[]> {
     // return [
     //   new RootNode("myDrive","my drive"),      
     //   new RootNode("sharedWithMe","shared with me"),
@@ -91,29 +71,30 @@ export class DynamicDatabase {
  * The input will be a json object string, and the output is a list of `FileNode` with nested
  * structure.
  */
-export class DynamicDataSource implements DataSource<Node> {
-  dataChange = new BehaviorSubject<Node[]>([]);
+export class DynamicDataSource implements DataSource<FileNode> {
+  dataChange = new BehaviorSubject<FileNode[]>([]);
 
-  get data(): Node[] {
+  get data(): FileNode[] {
     return this.dataChange.value;
   }
-  set data(value: Node[]) {
+  set data(value: FileNode[]) {
     this._treeControl.dataNodes = value;
     this.dataChange.next(value);
   }
 
   constructor(
-    private _treeControl: FlatTreeControl<Node>,
+    private googleApiService: GoogleAPIService,
+    private _treeControl: FlatTreeControl<FileNode>,
     private _database: DynamicDatabase,
   ) {}
 
-  connect(collectionViewer: CollectionViewer): Observable<Node[]> {
+  connect(collectionViewer: CollectionViewer): Observable<FileNode[]> {
     this._treeControl.expansionModel.changed.subscribe(change => {
       if (
-        (change as SelectionChange<Node>).added ||
-        (change as SelectionChange<Node>).removed
+        (change as SelectionChange<FileNode>).added ||
+        (change as SelectionChange<FileNode>).removed
       ) {
-        this.handleTreeControl(change as SelectionChange<Node>);
+        this.handleTreeControl(change as SelectionChange<FileNode>);
       }
     });
 
@@ -123,7 +104,7 @@ export class DynamicDataSource implements DataSource<Node> {
   disconnect(collectionViewer: CollectionViewer): void {}
 
   /** Handle expand/collapse behaviors */
-  handleTreeControl(change: SelectionChange<Node>) {
+  handleTreeControl(change: SelectionChange<FileNode>) {
     if (change.added) {
       change.added.forEach(node => this.toggleNode(node, true));
     }
@@ -138,8 +119,8 @@ export class DynamicDataSource implements DataSource<Node> {
   /**
    * Toggle the node, remove from display list
    */
-  async toggleNode(node: Node, expand: boolean) {
-    const children = this._database.getChildren(node.id);
+  async toggleNode(node: FileNode, expand: boolean) {
+    const children = getChildren(this.googleApiService,node.file)
     const index = this.data.indexOf(node);
     if (!children || index < 0) {
       // If no children, or cannot find the node, no op
@@ -151,8 +132,6 @@ export class DynamicDataSource implements DataSource<Node> {
     
     if (expand) {
       const nodes = (await children).map(
-
-        //fixme
         f => new FileNode(f, node.level + 1, this._database.isExpandable(f.id??"")),
       );
       this.data.splice(index + 1, 0, ...nodes);
@@ -186,31 +165,25 @@ export class FiletreeComponent {
 
 
 
-    this.treeControl = new FlatTreeControl<Node>(this.getLevel, this.isExpandable);
-    this.dataSource = new DynamicDataSource(this.treeControl, database);
+    this.treeControl = new FlatTreeControl<FileNode>(this.getLevel, this.isExpandable);
+    this.dataSource = new DynamicDataSource(googleApiService, this.treeControl, database);
 
     this.setInitialData(googleApiService,database)
   }
 
   async setInitialData( googleApiService:GoogleAPIService,database: DynamicDatabase){
-    console.log("here")
-
-    let f = await googleApiService.getFile("1WXbCnNCEjLUR5DMVvV4BMwaTHMVuqAnQ");
-    if(f)
-      getRoot(googleApiService,f)
-
     this.dataSource.data = await database.initialData();
   }
 
-  treeControl: FlatTreeControl<Node>;
+  treeControl: FlatTreeControl<FileNode>;
 
   dataSource: DynamicDataSource;
 
-  getLevel = (node: Node) => node.level;
+  getLevel = (node: FileNode) => node.level;
 
-  isExpandable = (node: Node) => node.expandable;
+  isExpandable = (node: FileNode) => node.expandable;
 
-  hasChild = (_: number, _nodeData: Node) => _nodeData.expandable;
+  hasChild = (_: number, _nodeData: FileNode) => _nodeData.expandable;
 }
 
 async function getRoots(googleApiService: GoogleAPIService) {
@@ -245,10 +218,10 @@ async function getRoot(googleApiService: GoogleAPIService,file:gapi.client.drive
 
 async function getChildren(googleApiService: GoogleAPIService, root:gapi.client.drive.File){
 
+  console.log("children of ",root.name)
+
   if(root.mimeType != "application/vnd.google-apps.folder")
     return []
-
-  console.log("getting children of ",root)
 
 	let result:gapi.client.drive.File[] = []
 
@@ -256,9 +229,7 @@ async function getChildren(googleApiService: GoogleAPIService, root:gapi.client.
 
   for (const f of items.files) {
       if(f.mimeType == "application/vnd.google-apps.folder"){
-        let subRoot = await googleApiService.getFile(f.parents?.[0]??"");
-        if(subRoot)
-          result = [...result,...await getChildren(googleApiService,subRoot)]
+        result = [...result,...await getChildren(googleApiService,f)]
       } else{
         result.push(f)
       }
