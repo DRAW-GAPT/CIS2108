@@ -253,11 +253,12 @@ async function getChildren(googleApiService: GoogleAPIService, root:gapi.client.
   for (const f of items.files) {
       if(f.mimeType == "application/vnd.google-apps.folder"){
         result = [...result,...await getChildren(googleApiService,f)]
+        
       } else{
         result.push(f)
       }
   }
 
-	return result;
+	return items.files;
 
 }
