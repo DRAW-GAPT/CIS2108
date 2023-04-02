@@ -29,6 +29,13 @@ import {MatCardModule} from '@angular/material/card';
 import { RecentlyAccessedComponent } from './recently-accessed/recently-accessed.component';
 import {MatGridListModule} from '@angular/material/grid-list';
 import { MomentDateModule } from '@angular/material-moment-adapter';
+import { FiletreeComponent } from './filetree/filetree.component';
+import {MatTreeModule} from '@angular/material/tree';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatTabsModule} from '@angular/material/tabs';
+
+
 
 
 @NgModule({
@@ -39,6 +46,7 @@ import { MomentDateModule } from '@angular/material-moment-adapter';
     FileListComponent,
     FilterChipsComponent,
     RecentlyAccessedComponent,
+    FiletreeComponent,
   ],
   imports: [
     BrowserModule,
@@ -65,6 +73,10 @@ import { MomentDateModule } from '@angular/material-moment-adapter';
     MatProgressSpinnerModule,
     FormsModule,
     MomentDateModule,
+    MatTreeModule,
+    MatProgressBarModule,
+    MatTooltipModule,
+    MatTabsModule
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]

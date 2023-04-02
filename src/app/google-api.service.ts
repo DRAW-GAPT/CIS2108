@@ -121,7 +121,7 @@ export class GoogleAPIService {
         do{
           let response = await gapi.client.drive.files.list({
             'pageSize': 1000,
-            'fields': 'nextPageToken, files(id, name, createdTime, modifiedTime, owners,size, lastModifyingUser, iconLink,fileExtension,permissions,hasAugmentedPermissions, capabilities, ownedByMe)',
+            'fields': 'nextPageToken, files(id, name,mimeType,parents, createdTime, modifiedTime, owners,size, lastModifyingUser, iconLink,fileExtension,permissions,hasAugmentedPermissions, capabilities, ownedByMe)',
             'q': q,
             'orderBy': sort,
             'pageToken': nextPageToken
@@ -130,7 +130,7 @@ export class GoogleAPIService {
           if(response.result.files)
             files = [...files,...response.result.files]
 
-        } while (nextPageToken != undefined && files.length < limit)
+        } while (nextPageToken != undefined && (files.length < limit || limit == -1))
       } catch (err) {
         //todo, error handling
 
@@ -141,6 +141,25 @@ export class GoogleAPIService {
     return {nextPageToken:nextPageToken,files:files};
   }
 
+
+  async getFile(id:string):Promise<gapi.client.drive.File | null>{
+
+    await this.allInited;
+    await this.confirmLogin();
+
+    
+      try {
+          let response = await gapi.client.drive.files.get({
+            'fileId':id,
+            'fields':"*"
+          });
+          return response.result;
+      } catch (err) {
+        //todo, error handling
+        return null;
+      }
+    
+  }
     //method used to fetch the top 5 most recently modified files and their attributes for use in the header cards
   async getMostRecent(recentFiles:gapi.client.drive.File[]):Promise<getRecentFilesResult>{
     await this.allInited;
