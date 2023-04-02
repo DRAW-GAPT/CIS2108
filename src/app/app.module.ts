@@ -33,6 +33,8 @@ import { FiletreeComponent } from './filetree/filetree.component';
 import {MatTreeModule} from '@angular/material/tree';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import { ListTreeTabsComponent } from './list-tree-tabs/list-tree-tabs.component';
+import {MatTabsModule} from '@angular/material/tabs';
 
 
 
@@ -46,6 +48,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     FilterChipsComponent,
     RecentlyAccessedComponent,
     FiletreeComponent,
+    ListTreeTabsComponent,
   ],
   imports: [
     BrowserModule,
@@ -74,7 +77,8 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     MomentDateModule,
     MatTreeModule,
     MatProgressBarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatTabsModule
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]
