@@ -6,5 +6,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./sort-by.component.scss']
 })
 export class SortByComponent {
+  selectedValue!: string;
+
+  options: string[] = ["Date Created", "Last Modified", "Modified by Me", "Shared with Me", "Viewed by Me"]
 
 }

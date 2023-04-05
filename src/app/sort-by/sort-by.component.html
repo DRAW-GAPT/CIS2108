@@ -3,12 +3,10 @@
         <h2>Sort by</h2>
         <div style="display: flex;">
             <mat-form-field appearance="fill">
-                <mat-select #mode value="datecreated">
-                  <mat-option value="datecreated">Date Created</mat-option>
-                  <mat-option value="lastmodified">Last Modified</mat-option>
-                  <mat-option value="modifiedbyme">Modified by Me</mat-option>
-                  <mat-option value="sharedwithme">Shared with Me</mat-option>
-                  <mat-option value="Viewed by Me">Viewed by Me</mat-option>
+                <mat-select [(ngModel)]="selectedValue" #mode value="datecreated">
+                  <mat-option *ngFor="let option of options" [value]="option">
+                    {{option}}
+                  </mat-option>
                 </mat-select>
               </mat-form-field>
           <div class="sort">
