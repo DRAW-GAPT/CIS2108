@@ -1,0 +1,27 @@
+<mat-drawer-container class="example-container">
+    <mat-drawer-content>
+        <h2>Sort by</h2>
+        <div style="display: flex;">
+            <mat-form-field appearance="fill">
+                <mat-select #mode value="datecreated">
+                  <mat-option value="datecreated">Date Created</mat-option>
+                  <mat-option value="lastmodified">Last Modified</mat-option>
+                  <mat-option value="modifiedbyme">Modified by Me</mat-option>
+                  <mat-option value="sharedwithme">Shared with Me</mat-option>
+                  <mat-option value="Viewed by Me">Viewed by Me</mat-option>
+                </mat-select>
+              </mat-form-field>
+          <div class="sort">
+            <mat-button-toggle-group #group="matButtonToggleGroup">
+                <mat-button-toggle value="asc">
+                  <mat-icon>arrow_upward</mat-icon>
+                </mat-button-toggle>
+                <mat-button-toggle value="desc">
+                  <mat-icon>arrow_downward</mat-icon>
+                </mat-button-toggle>
+              </mat-button-toggle-group>
+          </div>
+        </div>
+        
+    </mat-drawer-content>
+  </mat-drawer-container>
