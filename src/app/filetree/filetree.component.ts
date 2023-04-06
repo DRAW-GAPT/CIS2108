@@ -5,7 +5,7 @@ import * as _ from 'lodash';
 import {BehaviorSubject, merge, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import { GoogleAPIService } from '../google-api.service';
-import { firstTrue } from '../util';
+import { firstTrue, truePromise } from '../util';
 const byteSize = require('byte-size')
 
 
@@ -39,19 +39,19 @@ export class TreeDatabase {
   constructor (public googleApiService:GoogleAPIService){}
 
   /** Initial data from database */
-  async initialData(filterQuery:string): Promise<FileNode[]> {
-    return (await this.getRoots(filterQuery)).map(
+  async initialData(_treeComponent: FiletreeComponent,reqID:number,filterQuery:string): Promise<FileNode[]> {
+    return (await this.getRoots(_treeComponent, reqID, filterQuery)).map(
 
       //fixme
       f => new FileNode(f, 1, f.mimeType == "application/vnd.google-apps.folder"),
     );;
   }
 
-  async getRoots(filterQuery:string) {
+  async getRoots(_treeComponent: FiletreeComponent,reqID:number,filterQuery:string) {
   
     let files:gapi.client.drive.File[] = (await (this.googleApiService.getFiles([],100,filterQuery))).files;
   
-    let roots = await Promise.all(files.map(f=>this.getRoot(f)))
+    let roots = await Promise.all(files.map(f=>this.getRoot(_treeComponent,reqID,f)))
   
     console.log("getting roots",filterQuery);
   
@@ -61,15 +61,36 @@ export class TreeDatabase {
   }
   
   
-  async getRoot(file:gapi.client.drive.File):Promise<gapi.client.drive.File>{
+  async getRoot(_treeComponent: FiletreeComponent,reqID:number,file:gapi.client.drive.File):Promise<gapi.client.drive.File>{
     if(file.parents == null){
       return file;
     } 
     else{
+      
+    //if request is stil valid add the current folder to cache
+    if(reqID == _treeComponent.latestRootsRequestID)
+      //we know that the folder already contains at least 1 item which matches the filter, since we're getting the root of that item
+      _treeComponent.knownGoodFoldersCache.set(file.id as string,truePromise);
+
+
+      //if we already have a promise to get the root of this file, then we return that instead of working it out again
+      if(file.id &&  _treeComponent.knownRootsCache.has(file.id)){
+        console.log("cache hit",file.name)
+        return _treeComponent.knownRootsCache.get(file.id) as gapi.client.drive.File;
+      }
+      console.log("cache miss",file.name)
+
       let parent = await this.googleApiService.getFile(file.parents[0])
-      if(parent != null)
-        return this.getRoot(parent)
-      else{
+      if(parent != null){
+        let promise = this.getRoot(_treeComponent,reqID, parent);
+
+        //check if the current request is still valid
+        if(reqID == _treeComponent.latestRootsRequestID)     
+        //   //add the promise to the cache so it won't be calculated twice   
+          _treeComponent.knownRootsCache.set(file.id as string,promise);
+
+        return promise;
+      }else{
         console.error("lost parent")
         return file;
       }
@@ -80,7 +101,7 @@ export class TreeDatabase {
     return node.mimeType == "application/vnd.google-apps.folder";
   }
 
-  async getChildren(root:gapi.client.drive.File,filterQuery:string){  
+  async getChildren(_treeComponent: FiletreeComponent,reqID:number,root:gapi.client.drive.File,filterQuery:string){  
     if(root.mimeType != "application/vnd.google-apps.folder")
       return []
   
@@ -89,7 +110,7 @@ export class TreeDatabase {
   
 
     //promise.all is used to execute all of them in parallell
-    let filterResults:boolean[] = await Promise.all(items.files.map(f=>this.showItem(f,filterQuery)));
+    let filterResults:boolean[] = await Promise.all(items.files.map(f=>this.showItem(_treeComponent,reqID, f,filterQuery)));
     console.log("got results from filter")
     let filtered:gapi.client.drive.File[] = 
       //start a chain
@@ -106,23 +127,36 @@ export class TreeDatabase {
   
   }
 
-  async showItem(item:gapi.client.drive.File,filterQuery:string):Promise<boolean>{
+  async showItem(_treeComponent: FiletreeComponent,reqID:number,item:gapi.client.drive.File,filterQuery:string):Promise<boolean>{
 
-    console.log("a")
 
+    //if request is not still valid return false as we will get discarded anyways
+    if(reqID != _treeComponent.latestRootsRequestID)
+      return false;
+
+    //if its not a filtered, it should have already been filtered by google api
     if(item.mimeType != "application/vnd.google-apps.folder")
       return true;
+    else if (_treeComponent.knownGoodFoldersCache.has(item.id as string)){
+      console.log("child cache hit",item.name)
+      return _treeComponent.knownGoodFoldersCache.get(item.id as string) as Promise<boolean>
+    }
+
+    console.log("child cache miss")
+
 
     let childItems = await this.googleApiService.getFiles([],-1,"('"+item.id+"' in parents) AND (mimeType = 'application/vnd.google-apps.folder' OR("+filterQuery+"))",undefined);
     
-    let promises:Promise<boolean>[] = childItems.files.map(child=>this.showItem(child,filterQuery));
-
-    let result:boolean = false;
-
+    let promises:Promise<boolean>[] = childItems.files.map(child=>this.showItem(_treeComponent,reqID,child,filterQuery));
     
+    let res = firstTrue(promises);
+
+    //if request is stil valid add the current folder to cache
+    if(reqID == _treeComponent.latestRootsRequestID)
+      _treeComponent.knownGoodFoldersCache.set(item.id as string,res);
 
     //todo https://stackoverflow.com/questions/51160260/clean-way-to-wait-for-first-true-returned-by-promise
-    return firstTrue(promises);
+    return res;
   }
 }
 
@@ -149,7 +183,6 @@ export class DynamicDataSource implements DataSource<FileNode> {
         (change as SelectionChange<FileNode>).added ||
         (change as SelectionChange<FileNode>).removed
       ) {
-        console.log("here");
         this.handleTreeControl(change as SelectionChange<FileNode>,this._treeComponent.filterQuery);
       }
     });
@@ -176,7 +209,8 @@ export class DynamicDataSource implements DataSource<FileNode> {
    * Toggle the node, remove from display list
    */
   async toggleNode(node: FileNode,filterQuery:string, expand: boolean) {
-    const children = this._database.getChildren(node.file,filterQuery)
+    //when getting children pass the latestRootsRequestID, so that if the filters change, and thus a new rootsrequested is needed, the getChildren method can stop
+    const children = this._database.getChildren(this._treeComponent,this._treeComponent.latestRootsRequestID, node.file,filterQuery)
     const index = this.data.indexOf(node);
     if (!children || index < 0) {
       // If no children, or cannot find the node, no op
@@ -241,8 +275,29 @@ export class FiletreeComponent {
     return this._filterQuery;
   }
 
+  //store the id of the latest request
+  public latestRootsRequestID:number = 0;
+
+  //stores a set of ids of known folders that we already know that pass the filter
+  //the value is yes if the folder is known to be good
+  public knownGoodFoldersCache:Map<string,Promise<boolean>> = new Map();
+  //if we already know or are already waiting to get the root of a folder, we don't need to get that twice
+  public knownRootsCache:Map<string,Promise<gapi.client.drive.File>> = new Map();
+
+
   async setInitialData(database: TreeDatabase){
-    this.dataSource.data = await database.initialData(this._filterQuery);
+    this.latestRootsRequestID++;
+    let reqID:number = this.latestRootsRequestID
+
+    var startTime = performance.now()
+    let data = await database.initialData(this,reqID,this._filterQuery);
+    var endTime = performance.now()
+    console.log(`roots took ${endTime - startTime} milliseconds`)
+
+    if(reqID == this.latestRootsRequestID)
+      //only accept data if it hasnt been superseeded by a newer version
+      this.dataSource.data = data;
+
   }
 
   treeControl: FlatTreeControl<FileNode>;

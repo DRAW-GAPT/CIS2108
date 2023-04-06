@@ -17,3 +17,5 @@ export function firstTrue(promises:Promise<boolean>[]) :Promise<boolean> {
     newPromises.push(Promise.all(promises).then(() => false));
     return Promise.race(newPromises);
 }
+
+export let truePromise:Promise<boolean> =new Promise((resolve)=>resolve(true));
