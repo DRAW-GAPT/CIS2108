@@ -6,6 +6,7 @@ import {BehaviorSubject, merge, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import { GoogleAPIService } from '../google-api.service';
 import { V } from '@angular/cdk/keycodes';
+import { firstTrue } from '../util';
 const byteSize = require('byte-size')
 
 
@@ -88,6 +89,7 @@ export class TreeDatabase {
     let items = await this.googleApiService.getFiles([],-1,"('"+root.id+"' in parents) AND (mimeType = 'application/vnd.google-apps.folder' OR("+filterQuery+"))",undefined);
   
 
+    //promise.all is used to execute all of them in parallell
     let filterResults:boolean[] = await Promise.all(items.files.map(f=>this.showItem(f,filterQuery)));
     console.log("got results from filter")
     let filtered:gapi.client.drive.File[] = 
@@ -107,6 +109,8 @@ export class TreeDatabase {
 
   async showItem(item:gapi.client.drive.File,filterQuery:string):Promise<boolean>{
 
+    console.log("a")
+
     if(item.mimeType != "application/vnd.google-apps.folder")
       return true;
 
@@ -116,11 +120,10 @@ export class TreeDatabase {
 
     let result:boolean = false;
 
-    while(!result && promises.length>0){
-      result = await Promise.race(promises);
-    }
+    
 
-    return result;
+    //todo https://stackoverflow.com/questions/51160260/clean-way-to-wait-for-first-true-returned-by-promise
+    return firstTrue(promises);
   }
 }
 
