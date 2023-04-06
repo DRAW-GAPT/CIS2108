@@ -34,6 +34,7 @@ import {MatTreeModule} from '@angular/material/tree';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTabsModule} from '@angular/material/tabs';
+import { ItemDetailsComponent } from './item-details/item-details.component';
 
 
 
@@ -47,6 +48,7 @@ import {MatTabsModule} from '@angular/material/tabs';
     FilterChipsComponent,
     RecentlyAccessedComponent,
     FiletreeComponent,
+    ItemDetailsComponent,
   ],
   imports: [
     BrowserModule,
