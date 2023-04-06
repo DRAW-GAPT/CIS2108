@@ -36,6 +36,8 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTabsModule} from '@angular/material/tabs';
 import { ItemDetailsComponent } from './item-details/item-details.component';
 import { ItemDetailsTitleComponent } from './item-details-title/item-details-title.component';
+import { ItemTabsComponent } from './item-tabs/item-tabs.component';
+import {MatSidenavModule} from '@angular/material/sidenav';
 
 
 
@@ -51,6 +53,7 @@ import { ItemDetailsTitleComponent } from './item-details-title/item-details-tit
     FiletreeComponent,
     ItemDetailsComponent,
     ItemDetailsTitleComponent,
+    ItemTabsComponent,
   ],
   imports: [
     BrowserModule,
@@ -80,7 +83,8 @@ import { ItemDetailsTitleComponent } from './item-details-title/item-details-tit
     MatTreeModule,
     MatProgressBarModule,
     MatTooltipModule,
-    MatTabsModule
+    MatTabsModule,
+    MatSidenavModule
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]
