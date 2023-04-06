@@ -80,28 +80,47 @@ export class TreeDatabase {
     return node.mimeType == "application/vnd.google-apps.folder";
   }
 
-  async getChildren(root:gapi.client.drive.File,filterQuery:string){
-
-    console.log("children of ",root.name)
-  
+  async getChildren(root:gapi.client.drive.File,filterQuery:string){  
     if(root.mimeType != "application/vnd.google-apps.folder")
       return []
   
-    let result:gapi.client.drive.File[] = []
   
     let items = await this.googleApiService.getFiles([],-1,"('"+root.id+"' in parents) AND (mimeType = 'application/vnd.google-apps.folder' OR("+filterQuery+"))",undefined);
   
-    for (const f of items.files) {
-        if(f.mimeType == "application/vnd.google-apps.folder"){
-          result = [...result,...await this.getChildren(f,filterQuery)]
-          
-        } else{
-          result.push(f)
-        }
+
+    let filterResults:boolean[] = await Promise.all(items.files.map(f=>this.showItem(f,filterQuery)));
+    console.log("got results from filter")
+    let filtered:gapi.client.drive.File[] = 
+      //start a chain
+      _.chain(items.files)
+      //zip the into tuples of [file,boolean] where boolean stores the result of showItem
+      .zip(filterResults)
+      //filter those tuples where the predicate returned true
+      .filter(1)
+      //get the files
+      .map(tuple=>tuple[0] as gapi.client.drive.File)
+      .value();
+    
+    return filtered
+  
+  }
+
+  async showItem(item:gapi.client.drive.File,filterQuery:string):Promise<boolean>{
+
+    if(item.mimeType != "application/vnd.google-apps.folder")
+      return true;
+
+    let childItems = await this.googleApiService.getFiles([],-1,"('"+item.id+"' in parents) AND (mimeType = 'application/vnd.google-apps.folder' OR("+filterQuery+"))",undefined);
+    
+    let promises:Promise<boolean>[] = childItems.files.map(child=>this.showItem(child,filterQuery));
+
+    let result:boolean = false;
+
+    while(!result && promises.length>0){
+      result = await Promise.race(promises);
     }
-  
-    return items.files;
-  
+
+    return result;
   }
 }
 

@@ -115,7 +115,7 @@ export class GoogleAPIService {
     await this.allInited;
     await this.confirmLogin();
 
-    if(limit > files.length){
+    if(limit > files.length || limit == -1){
     
       try {
         do{
