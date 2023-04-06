@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { GoogleAPIService } from '../google-api.service';
 
@@ -15,8 +15,8 @@ export class ItemDetailsComponent {
     public googleApiService: GoogleAPIService
   ) {}
 
+  @Input() file: any;
   sub: any;
-  file : any;
   id: any;
 
   ngOnInit() {

@@ -26,3 +26,7 @@ $theme: mat.define-light-theme((
   min-width: 5000px !important;
   white-space: pre-line !important;
 }
+
+mat-chip :hover, tr :hover{
+  cursor: pointer !important;
+}

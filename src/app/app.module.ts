@@ -35,6 +35,7 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTabsModule} from '@angular/material/tabs';
 import { ItemDetailsComponent } from './item-details/item-details.component';
+import { ItemDetailsTitleComponent } from './item-details-title/item-details-title.component';
 
 
 
@@ -49,6 +50,7 @@ import { ItemDetailsComponent } from './item-details/item-details.component';
     RecentlyAccessedComponent,
     FiletreeComponent,
     ItemDetailsComponent,
+    ItemDetailsTitleComponent,
   ],
   imports: [
     BrowserModule,

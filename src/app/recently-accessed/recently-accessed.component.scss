@@ -4,6 +4,10 @@
   overflow:hidden;
 }
 
+.example-card :hover{
+  cursor: pointer;
+}
+
 .example-header-image {
   background-size: cover;
 }

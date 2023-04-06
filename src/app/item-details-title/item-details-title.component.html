@@ -1,0 +1,7 @@
+<div class="title-bar-container">
+    <mat-icon class="back-button" [routerLink]="['/list']">arrow_back_ios_new</mat-icon>
+    <div class="file-icon-title" (click)="openFile(file)">
+        <img src={{file.iconLink}} class="icon"/>
+        <h1>{{file.name}}</h1>
+    </div>
+</div>
