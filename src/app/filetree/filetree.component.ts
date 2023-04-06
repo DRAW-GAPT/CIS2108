@@ -5,7 +5,6 @@ import * as _ from 'lodash';
 import {BehaviorSubject, merge, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import { GoogleAPIService } from '../google-api.service';
-import { V } from '@angular/cdk/keycodes';
 import { firstTrue } from '../util';
 const byteSize = require('byte-size')
 
@@ -234,6 +233,7 @@ export class FiletreeComponent {
   @Input ()
   public set filterQuery(value:string){
     this._filterQuery = value;
+    this.dataSource.data = [];
     this.setInitialData(this.database)
   }
 
