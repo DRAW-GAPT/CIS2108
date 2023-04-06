@@ -18,11 +18,13 @@
     align-items: center;
     justify-content: center;
     flex-grow: 1;
-    text-align: center;
+    text-align: center;    
   }
 
-  .file-icon-title :hover{
+  .file-icon-title :hover, .file-icon-title:hover mat-icon{
     cursor: pointer;
+    text-decoration: underline;
+    color: #2E84FC;
   }
   
   .icon {
@@ -34,4 +36,5 @@
   h1 {
     margin: 0;
     font-size: 2vw;
+    padding-right: 0.5vw;
   }
