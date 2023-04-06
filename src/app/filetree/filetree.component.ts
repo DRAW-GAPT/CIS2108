@@ -1,10 +1,11 @@
 import {CollectionViewer, SelectionChange, DataSource} from '@angular/cdk/collections';
 import {FlatTreeControl} from '@angular/cdk/tree';
-import {Component, Injectable} from '@angular/core';
+import {Component, Injectable, Input} from '@angular/core';
 import * as _ from 'lodash';
 import {BehaviorSubject, merge, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import { GoogleAPIService } from '../google-api.service';
+import { V } from '@angular/cdk/keycodes';
 const byteSize = require('byte-size')
 
 
@@ -33,38 +34,77 @@ export class FileNode{
  * the descendants data from the database.
  */
 @Injectable({providedIn: 'root'})
-export class DynamicDatabase {
+export class TreeDatabase {
 
   constructor (public googleApiService:GoogleAPIService){}
 
   /** Initial data from database */
-  async initialData(): Promise<FileNode[]> {
-    // return [
-    //   new RootNode("myDrive","my drive"),      
-    //   new RootNode("sharedWithMe","shared with me"),
-    // ]
-    return (await getRoots(this.googleApiService)).map(
+  async initialData(filterQuery:string): Promise<FileNode[]> {
+    return (await this.getRoots(filterQuery)).map(
 
       //fixme
       f => new FileNode(f, 1, f.mimeType == "application/vnd.google-apps.folder"),
     );;
   }
 
-  async getChildren(node: string): Promise<gapi.client.drive.File[]> {
-    return getRoots(this.googleApiService)
+  async getRoots(filterQuery:string) {
+  
+    let files:gapi.client.drive.File[] = (await (this.googleApiService.getFiles([],100,filterQuery))).files;
+  
+    let roots = await Promise.all(files.map(f=>this.getRoot(f)))
+  
+    console.log("getting roots",filterQuery);
+  
+    let uniqRoots = _.uniqBy(roots,'id');
+  
+    return uniqRoots;
+  }
+  
+  
+  async getRoot(file:gapi.client.drive.File):Promise<gapi.client.drive.File>{
+    if(file.parents == null){
+      return file;
+    } 
+    else{
+      let parent = await this.googleApiService.getFile(file.parents[0])
+      if(parent != null)
+        return this.getRoot(parent)
+      else{
+        console.error("lost parent")
+        return file;
+      }
+    } 
   }
 
   isExpandable(node: gapi.client.drive.File): boolean {
     return node.mimeType == "application/vnd.google-apps.folder";
   }
+
+  async getChildren(root:gapi.client.drive.File,filterQuery:string){
+
+    console.log("children of ",root.name)
+  
+    if(root.mimeType != "application/vnd.google-apps.folder")
+      return []
+  
+    let result:gapi.client.drive.File[] = []
+  
+    let items = await this.googleApiService.getFiles([],-1,"('"+root.id+"' in parents) AND (mimeType = 'application/vnd.google-apps.folder' OR("+filterQuery+"))",undefined);
+  
+    for (const f of items.files) {
+        if(f.mimeType == "application/vnd.google-apps.folder"){
+          result = [...result,...await this.getChildren(f,filterQuery)]
+          
+        } else{
+          result.push(f)
+        }
+    }
+  
+    return items.files;
+  
+  }
 }
-/**
- * File database, it can build a tree structured Json object from string.
- * Each node in Json object represents a file or a directory. For a file, it has filename and type.
- * For a directory, it has filename and children (a list of files or directories).
- * The input will be a json object string, and the output is a list of `FileNode` with nested
- * structure.
- */
+
 export class DynamicDataSource implements DataSource<FileNode> {
   dataChange = new BehaviorSubject<FileNode[]>([]);
 
@@ -77,9 +117,9 @@ export class DynamicDataSource implements DataSource<FileNode> {
   }
 
   constructor(
-    private googleApiService: GoogleAPIService,
+    private _treeComponent: FiletreeComponent,
     private _treeControl: FlatTreeControl<FileNode>,
-    private _database: DynamicDatabase,
+    private _database: TreeDatabase,
   ) {}
 
   connect(collectionViewer: CollectionViewer): Observable<FileNode[]> {
@@ -88,7 +128,8 @@ export class DynamicDataSource implements DataSource<FileNode> {
         (change as SelectionChange<FileNode>).added ||
         (change as SelectionChange<FileNode>).removed
       ) {
-        this.handleTreeControl(change as SelectionChange<FileNode>);
+        console.log("here");
+        this.handleTreeControl(change as SelectionChange<FileNode>,this._treeComponent.filterQuery);
       }
     });
 
@@ -98,23 +139,23 @@ export class DynamicDataSource implements DataSource<FileNode> {
   disconnect(collectionViewer: CollectionViewer): void {}
 
   /** Handle expand/collapse behaviors */
-  handleTreeControl(change: SelectionChange<FileNode>) {
+  handleTreeControl(change: SelectionChange<FileNode>,filterQuery:string) {
     if (change.added) {
-      change.added.forEach(node => this.toggleNode(node, true));
+      change.added.forEach(node => this.toggleNode(node,filterQuery, true));
     }
     if (change.removed) {
       change.removed
         .slice()
         .reverse()
-        .forEach(node => this.toggleNode(node, false));
+        .forEach(node => this.toggleNode(node,filterQuery, false));
     }
   }
 
   /**
    * Toggle the node, remove from display list
    */
-  async toggleNode(node: FileNode, expand: boolean) {
-    const children = getChildren(this.googleApiService,node.file)
+  async toggleNode(node: FileNode,filterQuery:string, expand: boolean) {
+    const children = this._database.getChildren(node.file,filterQuery)
     const index = this.data.indexOf(node);
     if (!children || index < 0) {
       // If no children, or cannot find the node, no op
@@ -156,18 +197,30 @@ export class DynamicDataSource implements DataSource<FileNode> {
 })
 
 export class FiletreeComponent {
-  constructor(database: DynamicDatabase, googleApiService:GoogleAPIService) {
+  constructor(private database: TreeDatabase, googleApiService:GoogleAPIService) {
 
 
 
     this.treeControl = new FlatTreeControl<FileNode>(this.getLevel, this.isExpandable);
-    this.dataSource = new DynamicDataSource(googleApiService, this.treeControl, database);
+    this.dataSource = new DynamicDataSource(this,this.treeControl, database);
 
-    this.setInitialData(googleApiService,database)
+    this.setInitialData(database)
   }
 
-  async setInitialData( googleApiService:GoogleAPIService,database: DynamicDatabase){
-    this.dataSource.data = await database.initialData();
+  _filterQuery:string ="";
+
+  @Input ()
+  public set filterQuery(value:string){
+    this._filterQuery = value;
+    this.setInitialData(this.database)
+  }
+
+  public get filterQuery():string{
+    return this._filterQuery;
+  }
+
+  async setInitialData(database: TreeDatabase){
+    this.dataSource.data = await database.initialData(this._filterQuery);
   }
 
   treeControl: FlatTreeControl<FileNode>;
@@ -209,56 +262,6 @@ export class FiletreeComponent {
 
 }
 
-async function getRoots(googleApiService: GoogleAPIService) {
-  
-  let files:gapi.client.drive.File[] = (await (googleApiService.getFiles([],1000))).files;
-
-  let roots = await Promise.all(files.map(f=>getRoot(googleApiService,f)))
-
-  console.log("getting roots");
-
-  let uniqRoots = _.uniqBy(roots,'id');
-
-  return uniqRoots;
-}
 
 
-async function getRoot(googleApiService: GoogleAPIService,file:gapi.client.drive.File):Promise<gapi.client.drive.File>{
-	if(file.parents == null){
-		return file;
-	} 
-	else{
-    let parent = await googleApiService.getFile(file.parents[0])
-    if(parent != null)
-      return getRoot(googleApiService,parent)
-    else{
-      console.error("lost parent")
-      return file;
-    }
-	} 
-}
 
-
-async function getChildren(googleApiService: GoogleAPIService, root:gapi.client.drive.File){
-
-  console.log("children of ",root.name)
-
-  if(root.mimeType != "application/vnd.google-apps.folder")
-    return []
-
-	let result:gapi.client.drive.File[] = []
-
-	let items = await googleApiService.getFiles([],1000,"'"+root.id+"' in parents",undefined);
-
-  for (const f of items.files) {
-      if(f.mimeType == "application/vnd.google-apps.folder"){
-        result = [...result,...await getChildren(googleApiService,f)]
-        
-      } else{
-        result.push(f)
-      }
-  }
-
-	return items.files;
-
-}

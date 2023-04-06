@@ -23,7 +23,9 @@
         Hierarchy View 
       </ng-template>
         <ng-template matTabContent>
-            <app-filetree/>
+            <app-filetree
+              [filterQuery]="filterQuery"
+            />
         </ng-template>
     </mat-tab>
   </mat-tab-group>
