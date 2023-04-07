@@ -38,6 +38,8 @@ import { ItemDetailsComponent } from './item-details/item-details.component';
 import { ItemDetailsTitleComponent } from './item-details-title/item-details-title.component';
 import { ItemTabsComponent } from './item-tabs/item-tabs.component';
 import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatDialogModule} from '@angular/material/dialog';
+
 
 
 @NgModule({
@@ -82,9 +84,11 @@ import {MatSidenavModule} from '@angular/material/sidenav';
     MatProgressBarModule,
     MatTooltipModule,
     MatTabsModule,
-    MatSidenavModule
+    MatSidenavModule,
+    MatDialogModule,
   ],
   providers: [CookieService],
+  entryComponents:[MatDialogModule],
   bootstrap: [AppComponent]
 })
 export class AppModule { 
