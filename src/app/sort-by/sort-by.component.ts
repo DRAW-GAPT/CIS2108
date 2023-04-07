@@ -7,11 +7,12 @@ import { Component } from '@angular/core';
 })
 export class SortByComponent {
   selectedValue!: string;
-  sortOrder!:string;
+  sortOrder: string = "asc";
 
   options: string[] = ["Date Created", "Last Modified", "Modified by Me", "Shared with Me", "Viewed by Me"]
   
-  updateSort(){
-    console.log("HI");
+  updateSort() {
+    console.log(this.selectedValue);
+    console.log(this.sortOrder);
   }
 }

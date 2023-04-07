@@ -10,14 +10,14 @@
                 </mat-select>
               </mat-form-field>
           <div class="sort">
-            <mat-button-toggle-group #group="matButtonToggleGroup">
-                <mat-button-toggle class="sorting" value="asc"[(ngModel)]="sortOrder" (click)="updateSort()" >
-                  <mat-icon>arrow_upward</mat-icon>
-                </mat-button-toggle>
-                <mat-button-toggle value="desc" [(ngModel)]="sortOrder"(click)="updateSort()" >
-                  <mat-icon>arrow_downward</mat-icon>
-                </mat-button-toggle>
-              </mat-button-toggle-group>
+            <mat-button-toggle-group #group="matButtonToggleGroup" [(ngModel)]="sortOrder" (ngModelChange)="updateSort()">
+              <mat-button-toggle class="sorting" value="asc">
+                <mat-icon>arrow_upward</mat-icon>
+              </mat-button-toggle>
+              <mat-button-toggle value="desc">
+                <mat-icon>arrow_downward</mat-icon>
+              </mat-button-toggle>
+            </mat-button-toggle-group>
           </div>
         </div>
         
