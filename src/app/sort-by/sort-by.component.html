@@ -3,7 +3,7 @@
         <h2>Sort by</h2>
         <div style="display: flex;">
             <mat-form-field appearance="fill">
-                <mat-select [(ngModel)]="selectedValue" #mode value="datecreated">
+                <mat-select [(ngModel)]="selectedValue" #mode value="datecreated" (selectionChange)="updateSort()" >
                   <mat-option *ngFor="let option of options" [value]="option">
                     {{option}}
                   </mat-option>
@@ -11,10 +11,10 @@
               </mat-form-field>
           <div class="sort">
             <mat-button-toggle-group #group="matButtonToggleGroup">
-                <mat-button-toggle class="sorting" value="asc"[(ngModel)]="sortOrder" >
+                <mat-button-toggle class="sorting" value="asc"[(ngModel)]="sortOrder" (click)="updateSort()" >
                   <mat-icon>arrow_upward</mat-icon>
                 </mat-button-toggle>
-                <mat-button-toggle value="desc" [(ngModel)]="sortOrder" >
+                <mat-button-toggle value="desc" [(ngModel)]="sortOrder"(click)="updateSort()" >
                   <mat-icon>arrow_downward</mat-icon>
                 </mat-button-toggle>
               </mat-button-toggle-group>

@@ -11,4 +11,7 @@ export class SortByComponent {
 
   options: string[] = ["Date Created", "Last Modified", "Modified by Me", "Shared with Me", "Viewed by Me"]
   
+  updateSort(){
+    console.log("HI");
+  }
 }
