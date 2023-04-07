@@ -49,8 +49,9 @@ export class TreeDatabase {
 
   async getRoots(_treeComponent: FiletreeComponent,reqID:number,filterQuery:string) {
 
+   filterQuery = "name='GAPT' and trashed=false";
   
-    let files: gapi.client.drive.File[] = (await this.googleApiService.getFiles([], 100, filterQuery)).files;
+    let files:gapi.client.drive.File[] = (await (this.googleApiService.getFiles([],100,filterQuery))).files;
   
     let roots = await Promise.all(files.map(f=>this.getRoot(_treeComponent,reqID,f)))
   
@@ -61,13 +62,7 @@ export class TreeDatabase {
     return uniqRoots;
   }
   
-   setFilter(): string {
-    let filterQuery = "";
-    filterQuery += "orderBy=createdTime desc";
-    
-    return filterQuery;
   
-  }
   async getRoot(_treeComponent: FiletreeComponent,reqID:number,file:gapi.client.drive.File):Promise<gapi.client.drive.File>{
     if(file.parents == null){
       return file;
@@ -109,8 +104,6 @@ export class TreeDatabase {
   }
 
   async getChildren(_treeComponent: FiletreeComponent,reqID:number,root:gapi.client.drive.File,filterQuery:string){  
-
-    filterQuery += this.setFilter();
     if(root.mimeType != "application/vnd.google-apps.folder")
       return []
   
@@ -347,5 +340,7 @@ export class FiletreeComponent {
    }
 
 }
+
+
 
 
