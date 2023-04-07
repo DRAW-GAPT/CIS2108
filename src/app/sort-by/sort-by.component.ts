@@ -7,7 +7,8 @@ import { Component } from '@angular/core';
 })
 export class SortByComponent {
   selectedValue!: string;
+  sortOrder!:string;
 
   options: string[] = ["Date Created", "Last Modified", "Modified by Me", "Shared with Me", "Viewed by Me"]
-
+  
 }

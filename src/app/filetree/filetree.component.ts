@@ -6,6 +6,9 @@ import {BehaviorSubject, merge, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import { GoogleAPIService } from '../google-api.service';
 import { firstTrue, truePromise } from '../util';
+import { SortByComponent } from '../sort-by/sort-by.component';
+import { NgModule } from '@angular/core';
+
 const byteSize = require('byte-size')
 
 
@@ -18,6 +21,7 @@ const byteSize = require('byte-size')
 //     public isLoading = false,
 //   ) {}
 // }
+
 
 export class FileNode{
   constructor(
@@ -34,9 +38,13 @@ export class FileNode{
  * the descendants data from the database.
  */
 @Injectable({providedIn: 'root'})
+
+
 export class TreeDatabase {
 
-  constructor (public googleApiService:GoogleAPIService){}
+  constructor (public googleApiService:GoogleAPIService){
+    
+  }
 
   /** Initial data from database */
   async initialData(_treeComponent: FiletreeComponent,reqID:number,filterQuery:string): Promise<FileNode[]> {
@@ -48,8 +56,10 @@ export class TreeDatabase {
   }
 
   async getRoots(_treeComponent: FiletreeComponent,reqID:number,filterQuery:string) {
-    filterQuery = "trashed = false and mimeType != 'application/vnd.google-apps.folder' and 'me' in owners";
-    const orderBy = "createdTime asc";
+    
+    filterQuery = "trashed = false";
+    let orderBy = "";
+    this.setFilter(filterQuery);
 
     let files:gapi.client.drive.File[] = (await (this.googleApiService.getFiles([],100,filterQuery, orderBy))).files;
   
@@ -97,6 +107,35 @@ export class TreeDatabase {
         return file;
       }
     } 
+  }
+
+  setFilter(filterQuery:String){
+    const sortByComponent = new SortByComponent();
+    const sortValue= sortByComponent.selectedValue;
+    let sortOrder = sortByComponent.sortOrder;
+    let orderBy = "";
+
+    //filterQuery = "trashed = false and mimeType != 'application/vnd.google-apps.folder' and 'me' in owners";
+    if(sortValue == "Last Modified"){
+      orderBy = "modifiedTime "+ sortOrder;
+    }
+    if(sortValue == "Date Created"){
+      orderBy = "createdTime "+ sortOrder;
+    }
+    if(sortValue == "Viewed by Me"){
+      orderBy = "viewedByMeTime "+ sortOrder;
+    }
+    if(sortValue == "Modified by Me"){
+      filterQuery += " AND modifiedByMe=true"
+      orderBy = "modifiedTime "+ sortOrder;
+    }
+    if(sortValue == "Shared with Me"){
+      filterQuery += " AND sharedWithMe"
+      orderBy = "modifiedTime "+ sortOrder;
+    }
+    else{
+      console.log("no filter applied");
+    }
   }
 
   isExpandable(node: gapi.client.drive.File): boolean {

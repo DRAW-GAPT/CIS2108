@@ -11,10 +11,10 @@
               </mat-form-field>
           <div class="sort">
             <mat-button-toggle-group #group="matButtonToggleGroup">
-                <mat-button-toggle class="sorting" value="asc">
+                <mat-button-toggle class="sorting" value="asc"[(ngModel)]="sortOrder" >
                   <mat-icon>arrow_upward</mat-icon>
                 </mat-button-toggle>
-                <mat-button-toggle value="desc">
+                <mat-button-toggle value="desc" [(ngModel)]="sortOrder" >
                   <mat-icon>arrow_downward</mat-icon>
                 </mat-button-toggle>
               </mat-button-toggle-group>
