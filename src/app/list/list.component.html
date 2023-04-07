@@ -24,7 +24,9 @@
       </ng-template>
         <ng-template matTabContent>
           <div class="tree-container">
-            <app-filetree/>
+            <app-filetree
+              [filterQuery]="filterQuery"
+            />
             <app-sort-by/>
           </div>
         </ng-template>
