@@ -48,10 +48,10 @@ export class TreeDatabase {
   }
 
   async getRoots(_treeComponent: FiletreeComponent,reqID:number,filterQuery:string) {
+    filterQuery = "trashed = false and mimeType != 'application/vnd.google-apps.folder' and 'me' in owners";
+    const orderBy = "createdTime asc";
 
-   filterQuery = "name='GAPT' and trashed=false";
-  
-    let files:gapi.client.drive.File[] = (await (this.googleApiService.getFiles([],100,filterQuery))).files;
+    let files:gapi.client.drive.File[] = (await (this.googleApiService.getFiles([],100,filterQuery, orderBy))).files;
   
     let roots = await Promise.all(files.map(f=>this.getRoot(_treeComponent,reqID,f)))
   
