@@ -40,8 +40,6 @@ import { ItemTabsComponent } from './item-tabs/item-tabs.component';
 import {MatSidenavModule} from '@angular/material/sidenav';
 
 
-
-
 @NgModule({
   declarations: [
     AppComponent,
