@@ -34,6 +34,8 @@ import {MatTreeModule} from '@angular/material/tree';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTabsModule} from '@angular/material/tabs';
+import { SortByComponent } from './sort-by/sort-by.component';
+import {MatSidenavModule} from '@angular/material/sidenav';
 
 
 
@@ -47,6 +49,7 @@ import {MatTabsModule} from '@angular/material/tabs';
     FilterChipsComponent,
     RecentlyAccessedComponent,
     FiletreeComponent,
+    SortByComponent,
   ],
   imports: [
     BrowserModule,
@@ -76,7 +79,8 @@ import {MatTabsModule} from '@angular/material/tabs';
     MatTreeModule,
     MatProgressBarModule,
     MatTooltipModule,
-    MatTabsModule
+    MatTabsModule,
+    MatSidenavModule
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]
