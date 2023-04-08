@@ -26,8 +26,12 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    border-radius: 50%;
+    border-top-left-radius: 50%;
+    border-bottom-left-radius: 50%;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
 }
+
   
 mat-icon {
     position: absolute;
