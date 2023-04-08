@@ -2,7 +2,7 @@
 @use '@angular/material' as mat;
 @include mat.core();
 
-html, body { height: 100%; }
+html, body { max-height: 100%; }
 body { margin: 1000; font-family: Roboto, "Helvetica Neue", sans-serif; }
 #background { background-image: url("/assets/images/logo-background.png");}
 
