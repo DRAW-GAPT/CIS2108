@@ -39,6 +39,7 @@ import { ItemDetailsTitleComponent } from './item-details-title/item-details-tit
 import { ItemTabsComponent } from './item-tabs/item-tabs.component';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatDialogModule} from '@angular/material/dialog';
+import { DetailsTabComponent } from './details-tab/details-tab.component';
 
 
 
@@ -54,6 +55,7 @@ import {MatDialogModule} from '@angular/material/dialog';
     ItemDetailsComponent,
     ItemDetailsTitleComponent,
     ItemTabsComponent,
+    DetailsTabComponent,
   ],
   imports: [
     BrowserModule,
