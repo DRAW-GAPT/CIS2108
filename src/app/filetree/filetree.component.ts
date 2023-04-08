@@ -85,10 +85,8 @@ export class TreeDatabase {
 
       //if we already have a promise to get the root of this file, then we return that instead of working it out again
       if(file.id &&  _treeComponent.knownRootsCache.has(file.id)){
-        console.log("cache hit",file.name)
         return _treeComponent.knownRootsCache.get(file.id) as gapi.client.drive.File;
       }
-      console.log("cache miss",file.name)
 
       let parent = await this.googleApiService.getFile(file.parents[0])
       if(parent != null){
@@ -150,11 +148,9 @@ export class TreeDatabase {
     if(item.mimeType != "application/vnd.google-apps.folder")
       return true;
     else if (_treeComponent.knownGoodFoldersCache.has(item.id as string)){
-      console.log("child cache hit",item.name)
       return _treeComponent.knownGoodFoldersCache.get(item.id as string) as Promise<boolean>
     }
 
-    console.log("child cache miss")
 
 
     let childItems = await this.googleApiService.getFiles([],-1,"('"+item.id+"' in parents) AND (mimeType = 'application/vnd.google-apps.folder' OR("+filterQuery+"))",undefined);

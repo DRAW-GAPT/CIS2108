@@ -28,7 +28,7 @@
               [filterQuery]="filterQuery"
               [sortOrder]="treeSortSettings"
             />
-            <app-sort-by (notifySortChanged)="updateTreeSort"/>
+            <app-sort-by (notifySortChanged)="updateTreeSort($event)"/>
           </div>
         </ng-template>
     </mat-tab>
