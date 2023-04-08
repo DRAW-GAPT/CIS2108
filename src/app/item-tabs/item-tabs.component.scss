@@ -1,9 +1,10 @@
-.example-container {
+.tab-container {
     width: 50vw;
     height: 75vh;
     background-color: #F1F3F4;
     margin-left: -2vw;
     border-top-left-radius: 1vh;
+    bottom: -12vh;
 }
 
 .parent {
@@ -14,6 +15,7 @@
     position: fixed;
     bottom: 0;
     right: 0;
+    height: 100vh;
 }
   
 .side-toggle {

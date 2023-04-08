@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./item-tabs.component.scss']
 })
 export class ItemTabsComponent {
-  showTabs = false;
+  showTabs : boolean = false;
 }
