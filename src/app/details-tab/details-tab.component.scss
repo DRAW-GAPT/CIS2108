@@ -14,19 +14,38 @@
     font-size: 1vw;
 }
 
-.file-icon{
+.file-icon, .location-icon{
     width: 1.5vw;
     height: 1.5vw;
     margin-right: 0.5vw;
 }
 
-.file-type{
+.file-type, .location-name{
     margin-top: 0.2vw;
 }
 
-.file-type-container{
+.file-type-container, .location-container{
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
+}
+
+.location-container{
+    width: 9vw !important;
+    height: 5vh !important;
+    background-color: lightgray;
+    padding-left: 1vw;
+    padding-right: 1vw;
+    border-radius: 1vw;
+}
+
+.location-container:hover{
+    cursor: pointer;
+    background-color: #2E84FC;
+    color: white
+}
+
+mat-icon{
+    margin-left: 0.8vw !important;
 }

@@ -1,4 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit} from '@angular/core';
+import { GoogleAPIService } from '../google-api.service';
+
 
 @Component({
   selector: 'app-details-tab',
@@ -7,7 +9,18 @@ import { Component, Input } from '@angular/core';
 })
 export class DetailsTabComponent {
   @Input() file: any;
+  location_id: string = "";
+  location_name: string = "";
+  location_icon: string = "";
+  
+  constructor(
+    public googleApiService: GoogleAPIService
+  ) {}
 
+  ngOnInit(): void {
+    this.getParent(this.file.parents[0]);
+  }
+  
   formatCreated(date: Date): string{
     let options: any = { day: "numeric", month: "long", year: "numeric", hour: "numeric", minute: "numeric"};
     return new Date(date).toLocaleDateString(undefined, options);
@@ -30,4 +43,25 @@ export class DetailsTabComponent {
     }
     return temp.charAt(0).toUpperCase() + temp.slice(1); 
   }
+
+  getParent(id: string): void{
+    getFile(this.googleApiService, id)
+    .then((file) => {
+      this.location_id = file.id ?? "";
+      this.location_name = file.name ?? "---";
+      this.location_icon = file.iconLink ?? "";
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
+}
+
+
+async function getFile(googleApiService: GoogleAPIService, id: string) : Promise<gapi.client.drive.File>{
+  let file : any =  await googleApiService.getFile(id);
+  if (!file) {
+    throw new Error('File not found');
+  }
+  return file;
 }

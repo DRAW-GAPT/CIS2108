@@ -34,10 +34,11 @@
         <mat-grid-tile>
             <div class="details-tile">
                 <b>Location</b><br/>
-                <div>
-                    <img>
-                    My Drive
-                </div>
+                    <div [routerLink]="['/item', location_id]" class="location-container">
+                        <img src={{location_icon}}  class="location-icon"/>
+                        <div class="location-name">{{location_name}}</div>
+                        <!-- <mat-icon>open_in_new</mat-icon> -->
+                    </div>
             </div>
         </mat-grid-tile>
       </mat-grid-list>
