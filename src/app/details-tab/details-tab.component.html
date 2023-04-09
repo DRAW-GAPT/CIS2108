@@ -10,9 +10,9 @@
         <mat-grid-tile>
             <div class="details-tile">
                 <b>Type</b><br/>
-                <div>
-                    <img src={{file.iconLink}}>
-                    {{fileType(file.mimeType)}}
+                <div class="file-type-container">
+                    <img src={{file.iconLink}} class="file-icon">
+                    <div class="file-type">{{fileType(file.mimeType)}}</div>
                 </div>
             </div>
         </mat-grid-tile>
