@@ -3,7 +3,7 @@
         <mat-grid-tile>
             <div class="details-tile">
                 <b>Owner</b><br/>
-                Rianne Azzopardi
+                {{file.owners[0].displayName}}
             </div>
         </mat-grid-tile>
     
@@ -11,8 +11,8 @@
             <div class="details-tile">
                 <b>Type</b><br/>
                 <div>
-                    <img>
-                    Word Document
+                    <img src={{file.iconLink}}>
+                    {{file.mimeType}}
                 </div>
             </div>
         </mat-grid-tile>
@@ -20,14 +20,14 @@
         <mat-grid-tile>
             <div class="details-tile">
                 <b>Created</b><br/>
-                10th March 2013 10:00
+                {{formatCreated(file.createdTime)}}
             </div>
         </mat-grid-tile>
     
         <mat-grid-tile>
             <div class="details-tile">
                 <b>Last Modified</b><br/>
-                8th April 2023 by David Briffa
+                {{formatLastModified(file.modifiedTime, file.lastModifyingUser)}}
             </div>
         </mat-grid-tile>
     
