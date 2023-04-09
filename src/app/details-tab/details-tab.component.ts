@@ -21,4 +21,13 @@ export class DetailsTabComponent {
     if (user) return dateTime + " by " + user;
     else return dateTime
   }
+
+  fileType(mimeType: string): string{
+    let temp : string = mimeType.substring(mimeType.lastIndexOf(".") + 1);
+    temp = temp.substring(temp.lastIndexOf("/") + 1);
+    if(temp.length < 4){
+      return temp.toUpperCase();
+    }
+    return temp.charAt(0).toUpperCase() + temp.slice(1); 
+  }
 }
