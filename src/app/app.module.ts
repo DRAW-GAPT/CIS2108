@@ -42,6 +42,8 @@ import {MatDialogModule} from '@angular/material/dialog';
 import { DetailsTabComponent } from './details-tab/details-tab.component';
 import { ShareDialogComponent } from './share-dialog/share-dialog.component';
 import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
+import { SortByComponent } from './sort-by/sort-by.component';
+
 
 
 
@@ -60,6 +62,7 @@ import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
     DetailsTabComponent,
     ShareDialogComponent,
     DeleteDialogComponent,
+    SortByComponent,
   ],
   imports: [
     BrowserModule,
