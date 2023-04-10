@@ -40,6 +40,7 @@ import { ItemTabsComponent } from './item-tabs/item-tabs.component';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatDialogModule} from '@angular/material/dialog';
 import { DetailsTabComponent } from './details-tab/details-tab.component';
+import { ShareDialogComponent } from './share-dialog/share-dialog.component';
 
 
 
@@ -56,6 +57,7 @@ import { DetailsTabComponent } from './details-tab/details-tab.component';
     ItemDetailsTitleComponent,
     ItemTabsComponent,
     DetailsTabComponent,
+    ShareDialogComponent,
   ],
   imports: [
     BrowserModule,

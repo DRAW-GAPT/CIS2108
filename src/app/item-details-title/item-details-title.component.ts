@@ -1,10 +1,7 @@
 import { Component, Input } from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
+import { ShareDialogComponent } from '../share-dialog/share-dialog.component'; // Import the component
 
-@Component({
-  selector: 'dialog-content-example',
-  templateUrl: 'dialog.html',
-})
 export class DialogContentExample {
 }
 
@@ -15,14 +12,14 @@ export class DialogContentExample {
 })
 export class ItemDetailsTitleComponent {
   @Input() file: any;
+  constructor(private dialog: MatDialog) { }
 
   openFile(file : gapi.client.drive.File): void {
     window.open(file.webViewLink, '_blank');
   }
 
-  constructor(public dialog: MatDialog) {}
+  openShareDialog(): void{
+    this.dialog.open(ShareDialogComponent);
 
-  openDialog() {
-    this.dialog.open(DialogContentExample);
   }
 }
