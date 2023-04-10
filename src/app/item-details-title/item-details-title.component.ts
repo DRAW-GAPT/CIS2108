@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
-import { ShareDialogComponent } from '../share-dialog/share-dialog.component'; // Import the component
+import { ShareDialogComponent } from '../share-dialog/share-dialog.component'; 
+import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
 
 export class DialogContentExample {
 }
@@ -20,6 +21,9 @@ export class ItemDetailsTitleComponent {
 
   openShareDialog(): void{
     this.dialog.open(ShareDialogComponent);
+  }
 
+  openDeleteDialog(): void{
+    this.dialog.open(DeleteDialogComponent);
   }
 }

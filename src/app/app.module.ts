@@ -41,6 +41,7 @@ import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatDialogModule} from '@angular/material/dialog';
 import { DetailsTabComponent } from './details-tab/details-tab.component';
 import { ShareDialogComponent } from './share-dialog/share-dialog.component';
+import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
 
 
 
@@ -58,6 +59,7 @@ import { ShareDialogComponent } from './share-dialog/share-dialog.component';
     ItemTabsComponent,
     DetailsTabComponent,
     ShareDialogComponent,
+    DeleteDialogComponent,
   ],
   imports: [
     BrowserModule,
