@@ -90,7 +90,6 @@ import { DetailsTabComponent } from './details-tab/details-tab.component';
     MatDialogModule,
   ],
   providers: [CookieService],
-  entryComponents:[MatDialogModule],
   bootstrap: [AppComponent]
 })
 export class AppModule { 

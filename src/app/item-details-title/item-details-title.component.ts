@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 
 @Component({
   selector: 'dialog-content-example',
