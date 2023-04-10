@@ -48,6 +48,16 @@ export class DetailsTabComponent{
     }
     return temp.charAt(0).toUpperCase() + temp.slice(1); 
   }
+
+  updateParent(id: string){
+    getFile(this.googleApiService, id)
+    .then((file) => {
+      this.parent = file;
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
 }
 
 

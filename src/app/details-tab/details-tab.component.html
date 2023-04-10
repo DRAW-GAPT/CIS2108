@@ -34,7 +34,7 @@
         <mat-grid-tile>
             <div class="details-tile">
                 <b>Location</b><br/>
-                    <div [routerLink]="['/item', parent.id]" class="location-container">
+                    <div (click) = "updateParent(parent.parents[0])" [routerLink]="['/item', parent.id]" class="location-container">
                         <img src={{parent.iconLink}}  class="location-icon"/>
                         <div class="location-name">{{parent.name}}</div>
                         <!-- <mat-icon>open_in_new</mat-icon> -->
