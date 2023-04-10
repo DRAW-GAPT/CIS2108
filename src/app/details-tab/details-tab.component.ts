@@ -7,19 +7,24 @@ import { GoogleAPIService } from '../google-api.service';
   templateUrl: './details-tab.component.html',
   styleUrls: ['./details-tab.component.scss']
 })
-export class DetailsTabComponent {
+export class DetailsTabComponent{
   @Input() file: any;
-  location_id: string = "";
-  location_name: string = "";
-  location_icon: string = "";
+  parent: any;
   
   constructor(
     public googleApiService: GoogleAPIService
   ) {}
 
   ngOnInit(): void {
-    this.getParent(this.file.parents[0]);
+    getFile(this.googleApiService, this.file.parents[0])
+    .then((file) => {
+      this.parent = file;
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   }
+
   
   formatCreated(date: Date): string{
     let options: any = { day: "numeric", month: "long", year: "numeric", hour: "numeric", minute: "numeric"};
@@ -42,18 +47,6 @@ export class DetailsTabComponent {
       return temp.toUpperCase();
     }
     return temp.charAt(0).toUpperCase() + temp.slice(1); 
-  }
-
-  getParent(id: string): void{
-    getFile(this.googleApiService, id)
-    .then((file) => {
-      this.location_id = file.id ?? "";
-      this.location_name = file.name ?? "---";
-      this.location_icon = file.iconLink ?? "";
-    })
-    .catch((error) => {
-      console.error(error);
-    });
   }
 }
 

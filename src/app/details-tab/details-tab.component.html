@@ -34,9 +34,9 @@
         <mat-grid-tile>
             <div class="details-tile">
                 <b>Location</b><br/>
-                    <div [routerLink]="['/item', location_id]" class="location-container">
-                        <img src={{location_icon}}  class="location-icon"/>
-                        <div class="location-name">{{location_name}}</div>
+                    <div [routerLink]="['/item', parent.id]" class="location-container">
+                        <img src={{parent.iconLink}}  class="location-icon"/>
+                        <div class="location-name">{{parent.name}}</div>
                         <!-- <mat-icon>open_in_new</mat-icon> -->
                     </div>
             </div>
