@@ -25,6 +25,7 @@ export class RecentlyAccessedComponent{
     console.log(this.recentList$)
 
     this.documents = this.recentList$.map(file => ({
+      id: file.id,
       name: file.name,
       owner: file.owners && file.owners.length ? file.owners[0].emailAddress : 'Unknown',
       lastModifier: file.lastModifyingUser?.displayName,

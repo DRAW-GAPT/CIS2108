@@ -2,7 +2,7 @@
 @use '@angular/material' as mat;
 @include mat.core();
 
-html, body { height: 100%; }
+html, body { max-height: 100%; }
 body { margin: 1000; font-family: Roboto, "Helvetica Neue", sans-serif; }
 #background { background-image: url("/assets/images/logo-background.png");}
 
@@ -26,3 +26,8 @@ $theme: mat.define-light-theme((
   min-width: 5000px !important;
   white-space: pre-line !important;
 }
+
+mat-chip :hover, tr :hover{
+  cursor: pointer !important;
+}
+

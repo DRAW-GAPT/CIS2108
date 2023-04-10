@@ -34,8 +34,15 @@ import {MatTreeModule} from '@angular/material/tree';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTabsModule} from '@angular/material/tabs';
-import { SortByComponent } from './sort-by/sort-by.component';
+import { ItemDetailsComponent } from './item-details/item-details.component';
+import { ItemDetailsTitleComponent } from './item-details-title/item-details-title.component';
+import { ItemTabsComponent } from './item-tabs/item-tabs.component';
 import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatDialogModule} from '@angular/material/dialog';
+import { DetailsTabComponent } from './details-tab/details-tab.component';
+import { ShareDialogComponent } from './share-dialog/share-dialog.component';
+import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
+import { SortByComponent } from './sort-by/sort-by.component';
 
 
 
@@ -49,6 +56,12 @@ import {MatSidenavModule} from '@angular/material/sidenav';
     FilterChipsComponent,
     RecentlyAccessedComponent,
     FiletreeComponent,
+    ItemDetailsComponent,
+    ItemDetailsTitleComponent,
+    ItemTabsComponent,
+    DetailsTabComponent,
+    ShareDialogComponent,
+    DeleteDialogComponent,
     SortByComponent,
   ],
   imports: [
@@ -80,7 +93,8 @@ import {MatSidenavModule} from '@angular/material/sidenav';
     MatProgressBarModule,
     MatTooltipModule,
     MatTabsModule,
-    MatSidenavModule
+    MatSidenavModule,
+    MatDialogModule,
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]

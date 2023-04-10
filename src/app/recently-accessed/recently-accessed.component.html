@@ -1,6 +1,6 @@
 <mat-grid-list cols="5">
   <mat-grid-tile *ngFor="let card of documents">
-    <mat-card class="example-card">
+    <mat-card class="example-card" [routerLink]="['/item',card.id]">
 
       <div class="cardImageContainer">
         <img src={{card.image}} class="cardImage">
