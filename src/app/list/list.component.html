@@ -26,8 +26,9 @@
           <div class="tree-container">
             <app-filetree
               [filterQuery]="filterQuery"
+              [sortOrder]="treeSortSettings"
             />
-            <app-sort-by/>
+            <app-sort-by (notifySortChanged)="updateTreeSort($event)"/>
           </div>
         </ng-template>
     </mat-tab>

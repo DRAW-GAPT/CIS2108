@@ -6,6 +6,9 @@ import {BehaviorSubject, merge, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import { GoogleAPIService } from '../google-api.service';
 import { firstTrue, truePromise } from '../util';
+import { SortByComponent, SortSetting } from '../sort-by/sort-by.component';
+import { NgModule } from '@angular/core';
+
 const byteSize = require('byte-size')
 
 
@@ -18,6 +21,7 @@ const byteSize = require('byte-size')
 //     public isLoading = false,
 //   ) {}
 // }
+
 
 export class FileNode{
   constructor(
@@ -34,22 +38,27 @@ export class FileNode{
  * the descendants data from the database.
  */
 @Injectable({providedIn: 'root'})
+
+
 export class TreeDatabase {
 
-  constructor (public googleApiService:GoogleAPIService){}
+  constructor (public googleApiService:GoogleAPIService){
+    
+  }
 
   /** Initial data from database */
-  async initialData(_treeComponent: FiletreeComponent,reqID:number,filterQuery:string): Promise<FileNode[]> {
-    return (await this.getRoots(_treeComponent, reqID, filterQuery)).map(
+  async initialData(_treeComponent: FiletreeComponent,reqID:number,filterQuery:string, orderBy:string|undefined): Promise<FileNode[]> {
+    return (await this.getRoots(_treeComponent, reqID, filterQuery, orderBy)).map(
 
       //fixme
       f => new FileNode(f, 1, f.mimeType == "application/vnd.google-apps.folder"),
     );;
   }
 
-  async getRoots(_treeComponent: FiletreeComponent,reqID:number,filterQuery:string) {
-  
-    let files:gapi.client.drive.File[] = (await (this.googleApiService.getFiles([],100,filterQuery))).files;
+  async getRoots(_treeComponent: FiletreeComponent,reqID:number,filterQuery:string, orderBy:string|undefined) {
+    
+
+    let files:gapi.client.drive.File[] = (await (this.googleApiService.getFiles([],100,filterQuery, orderBy))).files;
   
     let roots = await Promise.all(files.map(f=>this.getRoot(_treeComponent,reqID,f)))
   
@@ -97,16 +106,18 @@ export class TreeDatabase {
     } 
   }
 
+
+
   isExpandable(node: gapi.client.drive.File): boolean {
     return node.mimeType == "application/vnd.google-apps.folder";
   }
 
-  async getChildren(_treeComponent: FiletreeComponent,reqID:number,root:gapi.client.drive.File,filterQuery:string){  
+  async getChildren(_treeComponent: FiletreeComponent,reqID:number,root:gapi.client.drive.File,filterQuery:string, sortOrder:string|undefined){  
     if(root.mimeType != "application/vnd.google-apps.folder")
       return []
   
   
-    let items = await this.googleApiService.getFiles([],-1,"('"+root.id+"' in parents) AND (mimeType = 'application/vnd.google-apps.folder' OR("+filterQuery+"))",undefined);
+    let items = await this.googleApiService.getFiles([],-1,"('"+root.id+"' in parents) AND (mimeType = 'application/vnd.google-apps.folder' OR("+filterQuery+"))", sortOrder);
   
 
     //promise.all is used to execute all of them in parallell
@@ -183,7 +194,7 @@ export class DynamicDataSource implements DataSource<FileNode> {
         (change as SelectionChange<FileNode>).added ||
         (change as SelectionChange<FileNode>).removed
       ) {
-        this.handleTreeControl(change as SelectionChange<FileNode>,this._treeComponent.filterQuery);
+        this.handleTreeControl(change as SelectionChange<FileNode>,this._treeComponent.filterQuery, this._treeComponent.orderBy);
       }
     });
 
@@ -193,24 +204,24 @@ export class DynamicDataSource implements DataSource<FileNode> {
   disconnect(collectionViewer: CollectionViewer): void {}
 
   /** Handle expand/collapse behaviors */
-  handleTreeControl(change: SelectionChange<FileNode>,filterQuery:string) {
+  handleTreeControl(change: SelectionChange<FileNode>,filterQuery:string, sortOrder:string|undefined) {
     if (change.added) {
-      change.added.forEach(node => this.toggleNode(node,filterQuery, true));
+      change.added.forEach(node => this.toggleNode(node,filterQuery, true, sortOrder));
     }
     if (change.removed) {
       change.removed
         .slice()
         .reverse()
-        .forEach(node => this.toggleNode(node,filterQuery, false));
+        .forEach(node => this.toggleNode(node,filterQuery, false, sortOrder));
     }
   }
 
   /**
    * Toggle the node, remove from display list
    */
-  async toggleNode(node: FileNode,filterQuery:string, expand: boolean) {
+  async toggleNode(node: FileNode,filterQuery:string, expand: boolean, sortOrder:string|undefined) {
     //when getting children pass the latestRootsRequestID, so that if the filters change, and thus a new rootsrequested is needed, the getChildren method can stop
-    const children = this._database.getChildren(this._treeComponent,this._treeComponent.latestRootsRequestID, node.file,filterQuery)
+    const children = this._database.getChildren(this._treeComponent,this._treeComponent.latestRootsRequestID, node.file,filterQuery, sortOrder)
     const index = this.data.indexOf(node);
     if (!children || index < 0) {
       // If no children, or cannot find the node, no op
@@ -254,21 +265,56 @@ export class DynamicDataSource implements DataSource<FileNode> {
 export class FiletreeComponent {
   constructor(private database: TreeDatabase, googleApiService:GoogleAPIService) {
 
-
-
     this.treeControl = new FlatTreeControl<FileNode>(this.getLevel, this.isExpandable);
     this.dataSource = new DynamicDataSource(this,this.treeControl, database);
 
     this.setInitialData(database)
   }
 
+  
+  orderBy:string | undefined;
+
+  @Input ()
+  public set sortOrder(value:SortSetting | undefined){
+   
+    console.log("SETTER DETECTED");
+    this.dataSource.data = [];
+    let orderBy = "";
+
+    if(value == undefined){
+      this.orderBy = undefined;
+      return;
+    }
+    if(value.selectedValue == "Last Modified"){
+      orderBy = "modifiedTime " + value.sortOrder;
+    }
+    if(value.selectedValue  == "Date Created"){
+      orderBy = "createdTime "+ value.sortOrder;
+    }
+    if(value.selectedValue  == "Viewed by Me"){
+      orderBy = "viewedByMeTime "+ value.sortOrder;
+    }
+    if(value.selectedValue  == "Modified by Me"){
+      orderBy = "modifiedByMeTime "+ value.sortOrder;
+    }
+    if(value.selectedValue  == "Shared with Me"){
+      orderBy = "sharedWithMeTime "+ value.sortOrder;
+    }
+    else{
+      console.log("no filter applied");
+    }
+    this.orderBy = orderBy;
+    
+    this.setInitialData(this.database);
+  }
+  
   _filterQuery:string ="";
 
   @Input ()
   public set filterQuery(value:string){
     this._filterQuery = value;
     this.dataSource.data = [];
-    this.setInitialData(this.database)
+    this.setInitialData(this.database);
   }
 
   public get filterQuery():string{
@@ -290,7 +336,7 @@ export class FiletreeComponent {
     let reqID:number = this.latestRootsRequestID
 
     var startTime = performance.now()
-    let data = await database.initialData(this,reqID,this._filterQuery);
+    let data = await database.initialData(this,reqID,this._filterQuery, this.orderBy);
     var endTime = performance.now()
     console.log(`roots took ${endTime - startTime} milliseconds`)
 

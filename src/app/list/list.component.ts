@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { Sort } from '@angular/material/sort';
-import { CookieService } from 'ngx-cookie-service';
 import { PageSetting } from '../file-list/file-list.component';
 import { getFilesResult, GoogleAPIService } from '../google-api.service';
+import { SortSetting } from '../sort-by/sort-by.component';
 
 @Component({
   selector: 'app-list',
@@ -70,7 +70,6 @@ export class ListComponent {
   }
 
   async init() {    
-    
     await this.getMoreFilesAsNeeded();
   }
 
@@ -97,8 +96,12 @@ export class ListComponent {
       this.nextPageToken$ = getFilesResult.nextPageToken;
       this.list$ = getFilesResult.files;
     }
+  }
 
+  treeSortSettings:SortSetting | undefined;
+  updateTreeSort(sortSettings:SortSetting){
+        console.log("treeSort DETECTED");
+    this.treeSortSettings = sortSettings;
   }
- 
-  }
+}
 
