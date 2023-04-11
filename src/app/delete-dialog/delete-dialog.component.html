@@ -1,11 +1,11 @@
 <div class="dialog">
-    <h2 mat-dialog-title>Are you sure you want to delete 'TestDocument.docx'</h2>
+    <h2 mat-dialog-title>Are you sure you want to delete 'TestDocument.docx'?</h2>
     <div mat-dialog-content class="content">
-      <p>The file will be placed in the recycling bin for <b>30 days</b> & will then be <b>permantently discarded</b></p>
+      <p>The file will be placed in the recycling bin for <b>30 days</b> & will then be <b>permantently discarded.</b></p>
       <p>People with access</p>
     </div>
-    <div mat-dialog-actions>
-      <button mat-raised-button color="warn">Yes</button>
-      <button color="primary" mat-raised-button [mat-dialog-close]="true" cdkFocusInitial>Cancel</button>
+    <div class="buttons" mat-dialog-actions>
+      <button style="margin-right: 100px" mat-raised-button color="warn">Yes</button>
+      <button style="color: #2E84FC; margin-left: 30px" mat-raised-button [mat-dialog-close]="true" cdkFocusInitial>Cancel</button>
     </div>
 </div>
