@@ -1,6 +1,6 @@
 <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
     
-    <!-- This is the tree node template for leaf nodes -->
+    <!-- Non-expandable nodes -->
     <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
       <button mat-icon-button disabled></button>
       {{node.name}}
@@ -8,7 +8,7 @@
       {{node.date}}
     </mat-tree-node>
 
-    <!-- This is the tree node template for expandable nodes -->
+    <!-- Expandable nodes -->
     <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
       <button mat-icon-button matTreeNodeToggle
               [attr.aria-label]="'Toggle ' + node.name">
