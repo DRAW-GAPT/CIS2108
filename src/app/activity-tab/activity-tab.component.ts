@@ -92,9 +92,10 @@ export class ActivityTabComponent {
     let children: any[] = [];
     for(const key in a){
       a[key].forEach((permission: any) => {
+        console.log(a[key])
         children.push(
           {
-            name: key + ": " + a[key].user + "(" + a[key].role + ")", 
+            name: key + ": " + permission.user.knownUser.personName + "(" + permission.role + ")", 
             children:[], 
             date: undefined
           }
