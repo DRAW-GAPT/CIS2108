@@ -91,9 +91,9 @@ export class ActivityTabComponent {
       a[key].forEach((permission: any) => {
         children.push(
           {
-            name: capitalizeFirst(key.replace("Permission", " permission")) + ": " + permission.user.knownUser.personName + "(" + capitalizeFirst(permission.role) + ")", 
+            name: capitalizeFirst(key.replace("Permission", " permission")) + ": " + permission.user.knownUser.personName + " (" + capitalizeFirst(permission.role) + ")", 
             children:[], 
-            date: undefined
+            date: ''
           }
         );      
       });
