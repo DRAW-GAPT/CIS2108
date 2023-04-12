@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { environment } from '../environments/environment';
+import { driveactivity } from 'googleapis/build/src/apis/driveactivity';
 
 // Discovery doc URL for APIs used by the quickstart
-const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest';
+const DISCOVERY_DOCS = ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest','https://www.googleapis.com/discovery/v1/apis/driveactivity/v2/rest'];
 
 // Authorization scopes required by the API; multiple scopes can be
 // included, separated by spaces.
-const SCOPES = 'https://www.googleapis.com/auth/drive.metadata.readonly';
+const SCOPES = 'https://www.googleapis.com/auth/drive.metadata.readonly https://www.googleapis.com/auth/drive.activity.readonly';
 const googleAPIKey:string = environment.googleAPIKey;
 const googleClientID:string = environment.googleClientID;
 
@@ -46,8 +47,9 @@ export class GoogleAPIService {
       var b = await this.gisInited;    
 
       await this.getCookie();
-
       resolve(a && b);
+      await this.listActivities();
+
     })
   }
 
@@ -56,6 +58,7 @@ export class GoogleAPIService {
    */
   gapiLoaded(resolve: (value: boolean | PromiseLike<boolean>) => void) {
     gapi.load('client', ()=>this.initializeGapiClient(resolve));
+    
   }
 
   /**
@@ -65,8 +68,12 @@ export class GoogleAPIService {
   async initializeGapiClient(resolve: (value: boolean | PromiseLike<boolean>) => void) {
     await gapi.client.init({
        apiKey: googleAPIKey,
-       discoveryDocs: [DISCOVERY_DOC],
+       discoveryDocs: DISCOVERY_DOCS,
     });
+
+    //gapi.client.driveactivity.
+
+    
     resolve(true);
   }
 
@@ -201,6 +208,31 @@ export class GoogleAPIService {
       this.cookie.delete('googleAuthToken');
       this.confirmLogin();
     }, expiryTime);
+  }
+
+  async listActivities() {
+
+    await this.gapiInited;
+    await this.gisInited;
+
+    let response;
+    try {
+      response = await gapi.client.driveactivity.activity.query({
+        resource: {
+          pageSize: 10
+        }
+      });
+    } catch (err) {
+      console.error(err);
+      return;
+    }
+
+    const activities = response?.result?.activities;
+    if (!activities || activities.length == 0) {
+      return;
+    } else {
+      console.log(activities);
+    }
   }
 }
 
