@@ -51,7 +51,6 @@ export class ActivityTabComponent {
   ngOnInit(): void{
     this.activities = this.googleApiService.listActivities()
     .then((res: any) => {
-      console.log(res)
       this.activities = this.formatActivities(res);
       this.dataSource.data = this.activities;
     })
@@ -83,8 +82,6 @@ export class ActivityTabComponent {
           }
       }
     });
-  
-    console.log(temp)
     return temp;
   }
 
@@ -92,7 +89,6 @@ export class ActivityTabComponent {
     let children: any[] = [];
     for(const key in a){
       a[key].forEach((permission: any) => {
-        console.log(a[key])
         children.push(
           {
             name: key + ": " + permission.user.knownUser.personName + "(" + permission.role + ")", 
