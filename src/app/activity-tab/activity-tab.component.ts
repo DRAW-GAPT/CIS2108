@@ -91,7 +91,7 @@ export class ActivityTabComponent {
       a[key].forEach((permission: any) => {
         children.push(
           {
-            name: key + ": " + permission.user.knownUser.personName + "(" + permission.role + ")", 
+            name: capitalizeFirst(key.replace("Permission", " permission")) + ": " + permission.user.knownUser.personName + "(" + capitalizeFirst(permission.role) + ")", 
             children:[], 
             date: undefined
           }
@@ -105,4 +105,8 @@ export class ActivityTabComponent {
 function formatTimestamp(date: string): string{
   let options: any = { day: "numeric", month: "long", year: "numeric", hour: "numeric", minute: "numeric"};
   return new Date(date).toLocaleDateString(undefined, options);
+}
+
+function capitalizeFirst(s: string){
+  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 }
