@@ -5,7 +5,7 @@ import * as _ from 'lodash';
 import {BehaviorSubject, merge, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import { GoogleAPIService } from '../google-api.service';
-import { firstTrue, truePromise } from '../util';
+import { firstTrue, getMax, getMin, truePromise } from '../util';
 import { SortByComponent, SortSetting } from '../sort-by/sort-by.component';
 import { NgModule } from '@angular/core';
 
@@ -132,6 +132,7 @@ export class TreeDatabase {
       .filter(1)
       //get the files
       .map(tuple=>tuple[0] as gapi.client.drive.File)
+      .sortBy(item=>this.getSortValue(_treeComponent,reqID,item,filterQuery))
       .value();
     
     return filtered
@@ -168,6 +169,43 @@ export class TreeDatabase {
 
     //todo https://stackoverflow.com/questions/51160260/clean-way-to-wait-for-first-true-returned-by-promise
     return res;
+  }
+
+  async getSortValue(_treeComponent: FiletreeComponent,reqID:number,item:gapi.client.drive.File,filterQuery:string):Promise<number>{
+
+    console.log("getting sort value of" +item.name)
+    //if request is not still valid return 0 as we will get discarded anyways
+    if(reqID != _treeComponent.latestRootsRequestID)
+      return 0;
+
+    //if its a file return the current value
+    if(item.mimeType != "application/vnd.google-apps.folder"){
+      switch(_treeComponent.sortOrder?.selectedValue){
+        case "Date Created": return Date.parse(item.createdTime??"");
+        case "Last Modified": return Date.parse(item.modifiedTime??"");
+        case "Modified by Me": return Date.parse(item.modifiedByMeTime??"");
+        case "Shared with Me": return Date.parse(item.sharedWithMeTime??"");
+        case "Viewed by Me": return Date.parse(item.viewedByMeTime??"");
+      }
+    }
+
+
+    let childItems = await this.googleApiService.getFiles([],-1,"('"+item.id+"' in parents) AND (mimeType = 'application/vnd.google-apps.folder' OR("+filterQuery+"))",undefined);
+    
+    let promises:Promise<number>[] = childItems.files.map(child=>this.getSortValue(_treeComponent,reqID,child,filterQuery));
+    
+    switch(_treeComponent.sortOrder?.selectedValue){
+      case "Date Created": 
+      case "Shared with Me":
+        return getMin(promises)
+
+
+      case "Last Modified": 
+      case "Modified by Me":
+      case "Viewed by Me":
+        return getMax(promises)
+    }
+    return 0;
   }
 }
 
@@ -273,9 +311,11 @@ export class FiletreeComponent {
 
   
   orderBy:string | undefined;
+  _sortOrder: SortSetting|undefined;
 
   @Input ()
   public set sortOrder(value:SortSetting | undefined){
+    this._sortOrder = this.sortOrder;
    
     console.log("SETTER DETECTED");
     this.dataSource.data = [];
@@ -307,6 +347,10 @@ export class FiletreeComponent {
     
     this.setInitialData(this.database);
   }
+
+  public get sortOrder(){
+    return this._sortOrder;
+  }
   
   _filterQuery:string ="";
 
@@ -329,6 +373,9 @@ export class FiletreeComponent {
   public knownGoodFoldersCache:Map<string,Promise<boolean>> = new Map();
   //if we already know or are already waiting to get the root of a folder, we don't need to get that twice
   public knownRootsCache:Map<string,Promise<gapi.client.drive.File>> = new Map();
+  //stores the sort values of the files and folders that we already know of
+  public sortValueCache:Map<string,Promise<Number>> = new Map();
+
 
 
   async setInitialData(database: TreeDatabase){
