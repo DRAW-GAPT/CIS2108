@@ -43,6 +43,7 @@ import { DetailsTabComponent } from './details-tab/details-tab.component';
 import { ShareDialogComponent } from './share-dialog/share-dialog.component';
 import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
 import { SortByComponent } from './sort-by/sort-by.component';
+import { ActivityTabComponent } from './activity-tab/activity-tab.component';
 
 
 
@@ -64,6 +65,7 @@ import { SortByComponent } from './sort-by/sort-by.component';
     ShareDialogComponent,
     DeleteDialogComponent,
     SortByComponent,
+    ActivityTabComponent,
   ],
   imports: [
     BrowserModule,

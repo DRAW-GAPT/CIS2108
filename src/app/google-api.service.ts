@@ -231,7 +231,7 @@ export class GoogleAPIService {
     if (!activities || activities.length == 0) {
       return;
     } else {
-      console.log(activities);
+      return activities
     }
   }
 }
