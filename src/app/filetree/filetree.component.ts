@@ -48,6 +48,11 @@ export class TreeDatabase {
 
   /** Initial data from database */
   async initialData(_treeComponent: FiletreeComponent,reqID:number,filterQuery:string, orderBy:string|undefined): Promise<FileNode[]> {
+    
+    _treeComponent.sortValueCache.clear();
+    _treeComponent.knownRootsCache.clear();
+    _treeComponent.knownGoodFoldersCache.clear();
+    
     return (await this.getRoots(_treeComponent, reqID, filterQuery, orderBy)).map(
 
       //fixme
@@ -84,10 +89,8 @@ export class TreeDatabase {
 
       //if we already have a promise to get the root of this file, then we return that instead of working it out again
       if(file.id &&  _treeComponent.knownRootsCache.has(file.id)){
-        console.log("cache hit",file.name)
         return _treeComponent.knownRootsCache.get(file.id) as gapi.client.drive.File;
       }
-      console.log("cache miss",file.name)
 
       let parent = await this.googleApiService.getFile(file.parents[0])
       if(parent != null){
@@ -134,6 +137,9 @@ export class TreeDatabase {
       .map(tuple=>tuple[0] as gapi.client.drive.File)
       .sortBy(item=>this.getSortValue(_treeComponent,reqID,item,filterQuery))
       .value();
+
+      if(_treeComponent.sortOrder?.sortOrder == "desc")
+        filtered.reverse();
     
     return filtered
   
@@ -150,11 +156,9 @@ export class TreeDatabase {
     if(item.mimeType != "application/vnd.google-apps.folder")
       return true;
     else if (_treeComponent.knownGoodFoldersCache.has(item.id as string)){
-      console.log("child cache hit",item.name)
       return _treeComponent.knownGoodFoldersCache.get(item.id as string) as Promise<boolean>
     }
 
-    console.log("child cache miss")
 
 
     let childItems = await this.googleApiService.getFiles([],-1,"('"+item.id+"' in parents) AND (mimeType = 'application/vnd.google-apps.folder' OR("+filterQuery+"))",undefined);
@@ -187,6 +191,7 @@ export class TreeDatabase {
         case "Shared with Me": return Date.parse(item.sharedWithMeTime??"");
         case "Viewed by Me": return Date.parse(item.viewedByMeTime??"");
       }
+      return 0;
     }
 
 
@@ -194,15 +199,20 @@ export class TreeDatabase {
     
     let promises:Promise<number>[] = childItems.files.map(child=>this.getSortValue(_treeComponent,reqID,child,filterQuery));
     
+
     switch(_treeComponent.sortOrder?.selectedValue){
       case "Date Created": 
       case "Shared with Me":
+        console.log("found sort val",item.name,await getMin(promises))
+        _treeComponent.sortValueCache.set(item.id??"",getMin(promises))
         return getMin(promises)
 
 
       case "Last Modified": 
       case "Modified by Me":
       case "Viewed by Me":
+        console.log("found sort val",item.name,await getMax(promises))
+        _treeComponent.sortValueCache.set(item.id??"",getMax(promises))
         return getMax(promises)
     }
     return 0;
@@ -315,7 +325,7 @@ export class FiletreeComponent {
 
   @Input ()
   public set sortOrder(value:SortSetting | undefined){
-    this._sortOrder = this.sortOrder;
+    this._sortOrder = value
    
     console.log("SETTER DETECTED");
     this.dataSource.data = [];
