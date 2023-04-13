@@ -3,13 +3,28 @@ import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { environment } from '../environments/environment';
 import { driveactivity } from 'googleapis/build/src/apis/driveactivity';
+import { userInfo } from 'os';
 
 // Discovery doc URL for APIs used by the quickstart
-const DISCOVERY_DOCS = ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest','https://www.googleapis.com/discovery/v1/apis/driveactivity/v2/rest'];
+const DISCOVERY_DOCS = [
+  'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest',
+  'https://www.googleapis.com/discovery/v1/apis/driveactivity/v2/rest',
+  'https://people.googleapis.com/$discovery/rest?version=v1'
+];
 
 // Authorization scopes required by the API; multiple scopes can be
 // included, separated by spaces.
-const SCOPES = 'https://www.googleapis.com/auth/drive.metadata.readonly https://www.googleapis.com/auth/drive.activity.readonly';
+const SCOPES = 
+  'https://www.googleapis.com/auth/drive.metadata.readonly ' +
+  'https://www.googleapis.com/auth/drive.activity.readonly ' +
+  'https://www.googleapis.com/auth/userinfo.profile ' +
+'  https://www.googleapis.com/auth/contacts ' +
+'  https://www.googleapis.com/auth/directory.readonly ' +
+'  https://www.googleapis.com/auth/profile.emails.read ' +
+'  https://www.googleapis.com/auth/user.emails.read ' +
+'  https://www.googleapis.com/auth/userinfo.email ' + 
+'  https://www.googleapis.com/auth/userinfo.profile';
+
 const googleAPIKey:string = environment.googleAPIKey;
 const googleClientID:string = environment.googleClientID;
 
@@ -31,7 +46,7 @@ export class GoogleAPIService {
   allInited: Promise<boolean>;
 
   tokenClient:any = null;
-  
+
   constructor(private cookie: CookieService, private router: Router) {
     this.gapiInited = new Promise<boolean>((resolve)=>{
       this.gapiLoaded(resolve);
@@ -49,6 +64,9 @@ export class GoogleAPIService {
       await this.getCookie();
       resolve(a && b);
       await this.listActivities();
+      this.getUserInfo("people/108047227550681835497"); //me
+      this.getUserInfo("people/117534848934012919819"); //wayne
+      this.getUserInfo("people/105228402161058122242"); //andrea
 
     })
   }
@@ -233,6 +251,28 @@ export class GoogleAPIService {
     } else {
       return activities
     }
+  }
+    
+  async getUserInfo(userId: string) {
+
+    const res = await gapi.client.people.people.get({
+      resourceName: userId,
+      personFields: 'names,emailAddresses,photos'
+    });
+  
+    console.log(res);
+    if (res.status === 200 && res.result.names !== undefined && res.result.emailAddresses !== undefined && res.result.photos !== undefined) {
+      const name = res.result.names[0].displayName;
+      const emailAddresses = res.result.emailAddresses[0].value;
+      const photo = res.result.photos[0].url;
+
+      console.log(name);
+      console.log(emailAddresses);
+      console.log(photo);
+    }
+     
+
+    return res.result.names ;
   }
 }
 
