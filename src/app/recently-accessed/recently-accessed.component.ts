@@ -28,7 +28,8 @@ export class RecentlyAccessedComponent{
       name: file.name,
       owner: file.owners && file.owners.length ? file.owners[0].emailAddress : 'Unknown',
       lastModifier: file.lastModifyingUser?.displayName,
-      image: file.iconLink,
+      icon: file.iconLink,
+      preview: "https://drive.google.com/thumbnail?&sz=w320&id=" + file.id,
       modifiedTime: file.modifiedTime ? new Date(file.modifiedTime).toLocaleString() : 'Unknown'
     }));
     
