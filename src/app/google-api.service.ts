@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { environment } from '../environments/environment';
+import { driveactivity } from 'googleapis/build/src/apis/driveactivity';
 
 // Discovery doc URL for APIs used by the quickstart
-const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest';
+const DISCOVERY_DOCS = ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest','https://www.googleapis.com/discovery/v1/apis/driveactivity/v2/rest'];
 
 // Authorization scopes required by the API; multiple scopes can be
 // included, separated by spaces.
-const SCOPES = 'https://www.googleapis.com/auth/drive.metadata.readonly';
+const SCOPES = 'https://www.googleapis.com/auth/drive.metadata.readonly https://www.googleapis.com/auth/drive.activity.readonly';
 const googleAPIKey:string = environment.googleAPIKey;
 const googleClientID:string = environment.googleClientID;
 
@@ -46,8 +47,9 @@ export class GoogleAPIService {
       var b = await this.gisInited;    
 
       await this.getCookie();
-
       resolve(a && b);
+      await this.listActivities();
+
     })
   }
 
@@ -56,6 +58,7 @@ export class GoogleAPIService {
    */
   gapiLoaded(resolve: (value: boolean | PromiseLike<boolean>) => void) {
     gapi.load('client', ()=>this.initializeGapiClient(resolve));
+    
   }
 
   /**
@@ -65,8 +68,12 @@ export class GoogleAPIService {
   async initializeGapiClient(resolve: (value: boolean | PromiseLike<boolean>) => void) {
     await gapi.client.init({
        apiKey: googleAPIKey,
-       discoveryDocs: [DISCOVERY_DOC],
+       discoveryDocs: DISCOVERY_DOCS,
     });
+
+    //gapi.client.driveactivity.
+
+    
     resolve(true);
   }
 
@@ -115,13 +122,13 @@ export class GoogleAPIService {
     await this.allInited;
     await this.confirmLogin();
 
-    if(limit > files.length){
+    if(limit > files.length || limit == -1){
     
       try {
         do{
           let response = await gapi.client.drive.files.list({
             'pageSize': 1000,
-            'fields': 'nextPageToken, files(id, name, createdTime, modifiedTime, owners,size, lastModifyingUser, iconLink,fileExtension,permissions,hasAugmentedPermissions, capabilities, ownedByMe)',
+            'fields': 'nextPageToken, files(id, name,mimeType,parents, createdTime, modifiedTime, owners,size, lastModifyingUser, iconLink,fileExtension,permissions,hasAugmentedPermissions, capabilities, ownedByMe, webViewLink)',
             'q': q,
             'orderBy': sort,
             'pageToken': nextPageToken
@@ -130,7 +137,7 @@ export class GoogleAPIService {
           if(response.result.files)
             files = [...files,...response.result.files]
 
-        } while (nextPageToken != undefined && files.length < limit)
+        } while (nextPageToken != undefined && (files.length < limit || limit == -1))
       } catch (err) {
         //todo, error handling
 
@@ -141,6 +148,25 @@ export class GoogleAPIService {
     return {nextPageToken:nextPageToken,files:files};
   }
 
+
+  async getFile(id:string):Promise<gapi.client.drive.File | null>{
+
+    await this.allInited;
+    await this.confirmLogin();
+
+    
+      try {
+          let response = await gapi.client.drive.files.get({
+            'fileId':id,
+            'fields':"*"
+          });
+          return response.result;
+      } catch (err) {
+        //todo, error handling
+        return null;
+      }
+    
+  }
     //method used to fetch the top 5 most recently modified files and their attributes for use in the header cards
   async getMostRecent(recentFiles:gapi.client.drive.File[]):Promise<getRecentFilesResult>{
     await this.allInited;
@@ -182,6 +208,31 @@ export class GoogleAPIService {
       this.cookie.delete('googleAuthToken');
       this.confirmLogin();
     }, expiryTime);
+  }
+
+  async listActivities() {
+
+    await this.gapiInited;
+    await this.gisInited;
+
+    let response;
+    try {
+      response = await gapi.client.driveactivity.activity.query({
+        resource: {
+          pageSize: 10
+        }
+      });
+    } catch (err) {
+      console.error(err);
+      return;
+    }
+
+    const activities = response?.result?.activities;
+    if (!activities || activities.length == 0) {
+      return;
+    } else {
+      console.log(activities);
+    }
   }
 }
 

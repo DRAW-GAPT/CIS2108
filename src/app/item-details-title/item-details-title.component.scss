@@ -1,0 +1,44 @@
+.title-bar-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 4vh;
+}
+  
+  .back-button {
+    margin-right: auto;
+    padding-left: 2vw;
+    width: fit-content;
+    height: fit-content;
+    font-size: 2vw;
+  }
+  
+  .file-icon-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    text-align: center;    
+  }
+
+  .file-icon-title :hover, .file-icon-title:hover mat-icon{
+    cursor: pointer;
+    text-decoration: underline;
+    color: #2E84FC;
+  }
+  
+  .icon {
+    height: 2vw;
+    width: 2vw;
+    margin-right: 1vw;
+  }
+  
+  h1 {
+    margin: 0;
+    font-size: 2vw;
+    padding-right: 0.5vw;
+  }
+
+  .buttons{
+    float: right;
+  }

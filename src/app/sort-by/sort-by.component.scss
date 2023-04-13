@@ -1,0 +1,26 @@
+
+  .example-container {
+    width: 25%;
+    height: 150px;
+    background-color: #F1F3F4;
+  }
+  
+  mat-drawer-content {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .sort{
+    margin-left: 30px;
+  }
+
+  .mat-button-toggle{
+    color: #2E84FC;
+}
+
+  .mat-button-toggle-checked{
+     background-color: #2E84FC;
+     color: #FFFFFF;
+  }
