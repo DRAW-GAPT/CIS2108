@@ -30,10 +30,22 @@ export class RecentlyAccessedComponent{
       owner: file.owners && file.owners.length ? file.owners[0].emailAddress : 'Unknown',
       lastModifier: file.lastModifyingUser?.displayName,
       icon: file.iconLink,
-      preview: "https://drive.google.com/thumbnail?&sz=w320&id=" + file.id,
+      preview: this.getThumbnailLink(file.id),
       modifiedTime: file.modifiedTime ? new Date(file.modifiedTime).toLocaleString() : 'Unknown'
     }));
-    
   }
 
+  getThumbnailLink(id: string|undefined): any{
+    if(!id) return 'undefined'
+    this.googleAPIService.getThumbnail(id)
+    .then((link) => {
+      //console.log(link)
+      return link??'undefined';
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
 }
+
+

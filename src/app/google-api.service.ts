@@ -167,6 +167,25 @@ export class GoogleAPIService {
       }
     
   }
+
+  async getThumbnail(id:string):Promise<string | null>{
+
+    await this.allInited;
+    await this.confirmLogin();
+
+    
+      try {
+          let response = await gapi.client.drive.files.get({
+            'fileId':id,
+            'fields':"thumbnailLink"
+          });
+          return response?.result?.thumbnailLink??'';
+      } catch (err) {
+        //todo, error handling
+        return null;
+      }
+    
+  }
     //method used to fetch the top 5 most recently modified files and their attributes for use in the header cards
   async getMostRecent(recentFiles:gapi.client.drive.File[]):Promise<getRecentFilesResult>{
     await this.allInited;
