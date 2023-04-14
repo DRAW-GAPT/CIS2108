@@ -43,21 +43,22 @@ export class ActivityTabComponent {
     this.past_tense.set("create", "created"),
     this.past_tense.set("delete", "deleted"),
     this.past_tense.set("move", "moved"),
-    this.past_tense.set("restore", "restored"),    
+    this.past_tense.set("restore", "restored"),
     this.past_tense.set("rename", "renamed")
   }
 
-  
+
   ngOnInit(): void{
     this.activities = this.googleApiService.listActivities()
     .then((res: any) => {
+      console.log(res);
       this.activities = this.formatActivities(res);
       this.dataSource.data = this.activities;
     })
     .catch((error: any) => {
       console.error(error);
     });
-  } 
+  }
 
   formatActivities(activities: any[]): any{
     let temp: any[] = [];
@@ -69,7 +70,7 @@ export class ActivityTabComponent {
           name: a.actors[0].user.knownUser.personName + " changed the share settings",
           children: this.getChildren(a.primaryActionDetail.permissionChange), //expandable node, foreach in permissionChange => {key}: {user} ({role})
           date: date
-        });   
+        });
       }
       else{
         let verb: string | undefined = this.past_tense.get(Object.keys(a.primaryActionDetail)[0]);
@@ -78,7 +79,7 @@ export class ActivityTabComponent {
               name: a.actors[0].user.knownUser.personName + " " + verb + " the item",
               children: [], // node not expandable
               date: date
-            }); 
+            });
           }
       }
     });
@@ -89,13 +90,15 @@ export class ActivityTabComponent {
     let children: any[] = [];
     for(const key in a){
       a[key].forEach((permission: any) => {
+        let name = "Anyone with link";
+        if(permission.user !== undefined){ name = permission.user.knownUser.personName;}
         children.push(
           {
-            name: capitalizeFirst(key.replace("Permission", " permission")) + ": " + permission.user.knownUser.personName + " (" + capitalizeFirst(permission.role) + ")", 
-            children:[], 
+            name: capitalizeFirst(key.replace("Permission", " permission")) + ": " + name + " (" + capitalizeFirst(permission.role) + ")",
+            children:[],
             date: ''
           }
-        );      
+        );
       });
     }
     return children;
