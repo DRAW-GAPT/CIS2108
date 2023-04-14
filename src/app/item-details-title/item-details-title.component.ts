@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
+import {MatDialog, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { ShareDialogComponent } from '../share-dialog/share-dialog.component'; 
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
 
@@ -20,10 +20,24 @@ export class ItemDetailsTitleComponent {
   }
 
   openShareDialog(): void{
-    this.dialog.open(ShareDialogComponent);
+    console.log(this.file)
+    console.log("ID: " + this.file.id)
+    console.log("PERM: " + this.file.permissions)
+    this.dialog.open(ShareDialogComponent, {
+      data: {
+        id: this.file.id,
+        permissions: this.file.permissions
+      },
+    });
   }
 
+
   openDeleteDialog(): void{
-    this.dialog.open(DeleteDialogComponent);
+    this.dialog.open(DeleteDialogComponent, {
+      data: {
+        id: this.file.id,
+        permissions: this.file.permissions
+      },
+    });
   }
 }

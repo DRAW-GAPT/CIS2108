@@ -152,7 +152,12 @@ export class FilterChipsComponent {
       subqueries.push(`(${this.owners.map(owner => `'${owner}' in owners`).join(' or ')})`);
     }
     if(this.permissionsSelected.length > 0){
-      subqueries.push(`${this.permissionsSelected.map(permission=> `'me' in ${ permission }` ).join(' or ')}`);
+      if(this.permissionsSelected.includes("owners")){
+         subqueries.push(`${this.permissionsSelected.map(permission=> `'me' in ${ permission }` ).join(' or ')}`);
+      }
+      else{
+        subqueries.push(`${this.permissionsSelected.map(permission=> ` 'me' in ${ permission } AND not 'me' in owners` ).join(' or ')}`);
+      }
     }
     if(this.sharedWith.length > 0){
       subqueries.push(`(${this.sharedWith.map(user => `'${user}' in readers`).join(' or ')})`);
