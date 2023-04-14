@@ -5,7 +5,24 @@
         <mat-label>Enter an email address</mat-label>
         <input matInput>
       </mat-form-field>
-      <p>People with access</p>
+      <p><b>People with access</b></p>
+      <div *ngFor="let p of data.permissions" class = "perm-container">
+        <img src="{{p.photoLink}}" class="user-image"/>
+        <div>
+          {{p.displayName}}
+          <br/>
+          {{p.emailAddress}}
+        </div>
+        <mat-form-field appearance="fill">
+          <mat-label>{{capitaliseFirstLetter(p.role)}}</mat-label>
+          <mat-select>
+            <mat-option *ngFor="let r of ['Writer', 'Viewer', 'Commenter']" [value]="capitaliseFirstLetter(p.role)">
+              {{r}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <button class="remove-user" mat-mini-fab	color="warn"><mat-icon>close</mat-icon></button>
+      </div>
     </div>
     <div mat-dialog-actions class="buttons">
       <button style="color: #2E84FC;" mat-button>
