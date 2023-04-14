@@ -64,7 +64,7 @@ export class GoogleAPIService {
 
       await this.getCookie();
       resolve(a && b);
-      await this.listActivities();
+      await this.listActivities("1NVWPmLDQTx7jduWSH6uPFMi3uBRw4vRgsRUV_ENLuqw");
 
 
       //this.getUserInfo("people/108047227550681835497"); //me
@@ -73,7 +73,7 @@ export class GoogleAPIService {
 
       //this.getRevisions("1XtikHS01Kl-kKnT9HfLYgavSbknkd42r"); //mine
       //this.getRevisions("1bpf_-tYrJ15ObIXkmjK5KDo_QgdhsT2Zgapxt-aJZM4"); //andrea's shared with me
-      console.log(this.getRevisions("1NVWPmLDQTx7jduWSH6uPFMi3uBRw4vRgsRUV_ENLuqw")); //waynefile
+      //console.log(this.getRevisions("1NVWPmLDQTx7jduWSH6uPFMi3uBRw4vRgsRUV_ENLuqw")); //waynefile
       
     })
   }
@@ -235,7 +235,7 @@ export class GoogleAPIService {
     }, expiryTime);
   }
 
-  async listActivities() {
+  async listActivities(fileId:string) {
 
     await this.gapiInited;
     await this.gisInited;
@@ -244,7 +244,9 @@ export class GoogleAPIService {
     try {
       response = await gapi.client.driveactivity.activity.query({
         resource: {
-          pageSize: 10
+          pageSize: 10,
+          itemName: "items/" + fileId
+
         }
       });
     } catch (err) {
@@ -256,9 +258,10 @@ export class GoogleAPIService {
     if (!activities || activities.length == 0) {
       return;
     } else {
-      return activities
+      console.log(activities);
+      return activities;
     }
-  }
+}
     
   //retrieves user info, requires the user to be in your contacts else only returns their profile picture
   async getUserInfo(userId: string) {

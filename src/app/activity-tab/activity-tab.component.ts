@@ -49,7 +49,8 @@ export class ActivityTabComponent {
 
 
   ngOnInit(): void{
-    this.activities = this.googleApiService.listActivities()
+    //TODO replace parameter with current file
+    this.activities = this.googleApiService.listActivities("1NVWPmLDQTx7jduWSH6uPFMi3uBRw4vRgsRUV_ENLuqw")
     .then((res: any) => {
       console.log(res);
       this.activities = this.formatActivities(res);
