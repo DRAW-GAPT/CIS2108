@@ -63,13 +63,30 @@ export class TreeDatabase {
   async getRoots(_treeComponent: FiletreeComponent,reqID:number,filterQuery:string, orderBy:string|undefined) {
     
 
-    let files:gapi.client.drive.File[] = (await (this.googleApiService.getFiles([],100,filterQuery, orderBy))).files;
+    let files:gapi.client.drive.File[] = (await (this.googleApiService.getFiles([],1000,filterQuery, orderBy))).files;
   
     let roots = await Promise.all(files.map(f=>this.getRoot(_treeComponent,reqID,f)))
   
     console.log("getting roots",filterQuery);
   
     let uniqRoots = _.uniqBy(roots,'id');
+
+    let sortValues:number[] = await Promise.all(uniqRoots.map(f=>this.getSortValue(_treeComponent,reqID, f,filterQuery)));
+
+      
+    let sorted:gapi.client.drive.File[] = 
+    
+      _.chain(uniqRoots)
+      //zip into tuples of [File,sortvalue]
+      .zip(sortValues)
+      //sort by sort value
+      .sortBy(1)
+      //get the files
+      .map(tuple=>tuple[0] as gapi.client.drive.File)
+      .value();
+
+      if(_treeComponent.sortOrder?.sortOrder == "desc")
+        sorted.reverse();
   
     return uniqRoots;
   }
@@ -207,25 +224,35 @@ export class TreeDatabase {
       return 0;
     }
 
+    if(_treeComponent.sortValueCache.has(item.id??"")){
+      console.log("sort cache hit")
+      return _treeComponent.sortValueCache.get(item.id??"") as Promise<number>;
+    }
+    console.log("sort cache miss")
+
 
     let childItems = await this.googleApiService.getFiles([],-1,"('"+item.id+"' in parents) AND (mimeType = 'application/vnd.google-apps.folder' OR("+filterQuery+"))",undefined);
     
     let promises:Promise<number>[] = childItems.files.map(child=>this.getSortValue(_treeComponent,reqID,child,filterQuery));
     
+    //add to cache if this request is still valid
+    if(reqID == _treeComponent.latestRootsRequestID){
+      _.zip(childItems.files,promises).forEach((tuple)=> {
+        let fileID = tuple[0]?.id as string;
+        let promise = tuple[1] as Promise<Number>;
+        _treeComponent.sortValueCache.set(fileID, promise)
+      });
+    }
 
     switch(_treeComponent.sortOrder?.selectedValue){
       case "Date Created": 
       case "Shared with Me":
-        console.log("found sort val",item.name,await getMin(promises))
-        _treeComponent.sortValueCache.set(item.id??"",getMin(promises))
         return getMin(promises)
 
 
       case "Last Modified": 
       case "Modified by Me":
       case "Viewed by Me":
-        console.log("found sort val",item.name,await getMax(promises))
-        _treeComponent.sortValueCache.set(item.id??"",getMax(promises))
         return getMax(promises)
     }
     return 0;
