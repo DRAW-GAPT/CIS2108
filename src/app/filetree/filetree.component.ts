@@ -126,22 +126,35 @@ export class TreeDatabase {
     //promise.all is used to execute all of them in parallell
     let filterResults:boolean[] = await Promise.all(items.files.map(f=>this.showItem(_treeComponent,reqID, f,filterQuery)));
     console.log("got results from filter")
+
     let filtered:gapi.client.drive.File[] = 
       //start a chain
       _.chain(items.files)
-      //zip the into tuples of [file,boolean] where boolean stores the result of showItem
+      //zip into tuples of [file,boolean] where boolean stores the result of showItem
       .zip(filterResults)
       //filter those tuples where the predicate returned true
       .filter(1)
+      .map(tuple=>tuple[0] as gapi.client.drive.File)
+      .value();
+
+    let sortValues:number[] = await Promise.all(filtered.map(f=>this.getSortValue(_treeComponent,reqID, f,filterQuery)));
+
+      
+    let sorted:gapi.client.drive.File[] = 
+    
+      _.chain(filtered)
+      //zip into tuples of [File,sortvalue]
+      .zip(sortValues)
+      //sort by sort value
+      .sortBy(1)
       //get the files
       .map(tuple=>tuple[0] as gapi.client.drive.File)
-      .sortBy(item=>this.getSortValue(_treeComponent,reqID,item,filterQuery))
       .value();
 
       if(_treeComponent.sortOrder?.sortOrder == "desc")
-        filtered.reverse();
+        sorted.reverse();
     
-    return filtered
+    return sorted
   
   }
 
