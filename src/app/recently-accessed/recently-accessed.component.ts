@@ -32,7 +32,6 @@ export class RecentlyAccessedComponent{
       image: file.iconLink,
       modifiedTime: file.modifiedTime ? new Date(file.modifiedTime).toLocaleString() : 'Unknown'
     }));
-    
   }
 
 }
