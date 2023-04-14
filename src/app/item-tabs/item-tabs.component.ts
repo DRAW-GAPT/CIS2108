@@ -7,5 +7,6 @@ import { Component, Input} from '@angular/core';
 })
 export class ItemTabsComponent {
   @Input() file: any;
+  @Input() id: any;
   showTabs : boolean = false;
 }
