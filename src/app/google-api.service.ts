@@ -292,7 +292,7 @@ export class GoogleAPIService {
       
       // Iterate through the list of revisions to display the details of the last modifying user
       if(revisions != undefined){
-        return revisions;
+        // console.log("REVISIONS")
         // for (const revision of revisions) {
         //   console.log(`Modified Time: ${revision.modifiedTime}`);
         //   console.log(`Last Modifying User: ${JSON.stringify(revision.lastModifyingUser?.displayName)}`);
@@ -300,6 +300,7 @@ export class GoogleAPIService {
         //   console.log(`Last Modifying User's pfp: ${JSON.stringify(revision.lastModifyingUser?.photoLink)}`);
         //   console.log("\n");
         // }
+        return revisions;
       }
     } catch (err) {
       console.error(err);
