@@ -64,7 +64,6 @@ export class GoogleAPIService {
 
       await this.getCookie();
       resolve(a && b);
-      await this.listActivities("1NVWPmLDQTx7jduWSH6uPFMi3uBRw4vRgsRUV_ENLuqw");
 
 
       //this.getUserInfo("people/108047227550681835497"); //me
@@ -258,7 +257,6 @@ export class GoogleAPIService {
     if (!activities || activities.length == 0) {
       return;
     } else {
-      console.log(activities);
       return activities;
     }
 }

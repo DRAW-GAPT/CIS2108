@@ -22,7 +22,6 @@ export class RecentlyAccessedComponent{
   async getMostRecentFiles(){
     const result = await this.googleAPIService.getMostRecent(this.recentList$);
     this.recentList$ = result.files;
-    console.log(this.recentList$)
 
     this.documents = this.recentList$.map(file => ({
       id: file.id,
