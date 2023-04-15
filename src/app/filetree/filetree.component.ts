@@ -63,13 +63,21 @@ export class TreeDatabase {
   async getRoots(_treeComponent: FiletreeComponent,reqID:number,filterQuery:string, orderBy:string|undefined) {
     
 
-    let files:gapi.client.drive.File[] = (await (this.googleApiService.getFiles([],1000,filterQuery, orderBy))).files;
+    console.log("getting file samples for roots",reqID);
+
+
+    let files:gapi.client.drive.File[] = (await (this.googleApiService.getFiles([],500,filterQuery, orderBy))).files;
   
+    console.log("getting roots from samples",reqID);
+
+
     let roots = await Promise.all(files.map(f=>this.getRoot(_treeComponent,reqID,f)))
   
-    console.log("getting roots",filterQuery);
   
     let uniqRoots = _.uniqBy(roots,'id');
+
+    console.log("sorting roots",reqID);
+
 
     let sortValues:number[] = await Promise.all(uniqRoots.map(f=>this.getSortValue(_treeComponent,reqID, f,filterQuery)));
 
@@ -87,6 +95,9 @@ export class TreeDatabase {
 
       if(_treeComponent.sortOrder?.sortOrder == "desc")
         sorted.reverse();
+      
+    console.log("roots gotten",reqID);
+
   
     return uniqRoots;
   }
@@ -106,8 +117,11 @@ export class TreeDatabase {
 
       //if we already have a promise to get the root of this file, then we return that instead of working it out again
       if(file.id &&  _treeComponent.knownRootsCache.has(file.id)){
+        console.log("root cache hit",file.name)
         return _treeComponent.knownRootsCache.get(file.id) as gapi.client.drive.File;
       }
+      console.log("root cache miss",file.name)
+
 
       let parent = await this.googleApiService.getFile(file.parents[0])
       if(parent != null){
@@ -359,6 +373,7 @@ export class FiletreeComponent {
     this.setInitialData(database)
   }
 
+  __sortDebug = true;
   
   orderBy:string | undefined;
   _sortOrder: SortSetting|undefined;
@@ -437,9 +452,14 @@ export class FiletreeComponent {
     var endTime = performance.now()
     console.log(`roots took ${endTime - startTime} milliseconds`)
 
-    if(reqID == this.latestRootsRequestID)
+    if(reqID == this.latestRootsRequestID){
       //only accept data if it hasnt been superseeded by a newer version
-      this.dataSource.data = data;
+     this.dataSource.data = data;
+     console.log("accepted roots from ",reqID)
+    } else{
+      console.log("disposed roots from ",reqID)
+
+    }
 
   }
 
