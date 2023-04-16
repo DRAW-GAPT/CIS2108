@@ -231,11 +231,11 @@ export class TreeDatabase {
     //if its a file return the current value
     if(item.mimeType != "application/vnd.google-apps.folder" || _treeComponent.sortOrder?.selectedValue === "Shared with Me"){
       switch(_treeComponent.sortOrder?.selectedValue){
-        case "Date Created": return Date.parse(item.createdTime??"");
-        case "Last Modified": return Date.parse(item.modifiedTime??"");
-        case "Modified by Me": return Date.parse(item.modifiedByMeTime??"");
-        case "Shared with Me": return Date.parse(item.sharedWithMeTime??"");
-        case "Viewed by Me": return Date.parse(item.viewedByMeTime??"");
+        case "Date Created": return item.createdTime?Date.parse(item.createdTime):0;
+        case "Last Modified": return item.modifiedTime?Date.parse(item.modifiedTime):0;
+        case "Modified by Me": return item.modifiedByMeTime?Date.parse(item.modifiedByMeTime):0;
+        case "Shared with Me": return item.sharedWithMeTime?Date.parse(item.sharedWithMeTime):0;
+        case "Viewed by Me": return item.viewedByMeTime?Date.parse(item.viewedByMeTime):0;
       }
       return -1;
     }
