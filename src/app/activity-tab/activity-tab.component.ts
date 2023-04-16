@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { GoogleAPIService } from '../google-api.service';
 import {FlatTreeControl} from '@angular/cdk/tree';
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
@@ -9,6 +9,7 @@ import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
   styleUrls: ['./activity-tab.component.scss']
 })
 export class ActivityTabComponent {
+  @Input() id: any;
   activities: any;
   past_tense: Map<string, string> = new Map();
 
@@ -49,7 +50,8 @@ export class ActivityTabComponent {
 
 
   ngOnInit(): void{
-    this.activities = this.googleApiService.listActivities()
+    //TODO replace parameter with current file
+    this.activities = this.googleApiService.listActivities(this.id)
     .then((res: any) => {
       console.log(res);
       this.activities = this.formatActivities(res);

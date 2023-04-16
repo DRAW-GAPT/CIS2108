@@ -26,7 +26,8 @@ export class ItemDetailsTitleComponent {
     this.dialog.open(ShareDialogComponent, {
       data: {
         id: this.file.id,
-        permissions: this.file.permissions
+        permissions: this.file.permissions,
+        name: this.file.name
       },
     });
   }
@@ -36,7 +37,8 @@ export class ItemDetailsTitleComponent {
     this.dialog.open(DeleteDialogComponent, {
       data: {
         id: this.file.id,
-        permissions: this.file.permissions
+        permissions: this.file.permissions,
+        name: this.file.name
       },
     });
   }

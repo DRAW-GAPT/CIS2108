@@ -1,17 +1,17 @@
 <div class="dialog">
-    <h2 mat-dialog-title>Share 'TestDocument.docx'</h2>
+    <h2 mat-dialog-title>Share '{{data.name}}'</h2>
     <div mat-dialog-content class="content">
-      <mat-form-field class="formfield" appearance="fill">
+      <mat-form-field class="email-field" appearance="fill">
         <mat-label>Enter an email address</mat-label>
         <input matInput>
       </mat-form-field>
       <p><b>People with access</b></p>
       <div *ngFor="let p of data.permissions" class = "perm-container">
-        <img src="{{p.photoLink}}" class="user-image"/>
+        <img src="{{p.photoLink ?? 'https://lh3.googleusercontent.com/a/default-user=s64'}}" class="user-image"/>
         <div>
-          {{p.displayName}}
+          {{p.displayName ?? 'Unknown user'}}
           <br/>
-          {{p.emailAddress}}
+          {{p.emailAddress ?? 'Unknown email address'}}
         </div>
         <mat-form-field appearance="fill">
           <mat-label>{{capitaliseFirstLetter(p.role)}}</mat-label>

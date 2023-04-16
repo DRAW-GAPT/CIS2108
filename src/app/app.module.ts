@@ -44,6 +44,8 @@ import { ShareDialogComponent } from './share-dialog/share-dialog.component';
 import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
 import { SortByComponent } from './sort-by/sort-by.component';
 import { ActivityTabComponent } from './activity-tab/activity-tab.component';
+import { VersionTabComponent } from './version-tab/version-tab.component';
+import {MatListModule} from '@angular/material/list';
 
 
 
@@ -66,6 +68,7 @@ import { ActivityTabComponent } from './activity-tab/activity-tab.component';
     DeleteDialogComponent,
     SortByComponent,
     ActivityTabComponent,
+    VersionTabComponent,
   ],
   imports: [
     BrowserModule,
@@ -98,6 +101,7 @@ import { ActivityTabComponent } from './activity-tab/activity-tab.component';
     MatTabsModule,
     MatSidenavModule,
     MatDialogModule,
+    MatListModule
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]

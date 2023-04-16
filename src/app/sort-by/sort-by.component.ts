@@ -23,7 +23,5 @@ export class SortByComponent {
       sortOrder : this.sortOrder
     });
 
-    console.log(this.selectedValue);
-    console.log(this.sortOrder);
   }
 }
