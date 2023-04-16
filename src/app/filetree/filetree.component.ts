@@ -73,7 +73,9 @@ export class TreeDatabase {
 
     let roots = await Promise.all(files.map(f=>this.getRoot(_treeComponent,reqID,f)))
   
-  
+    console.log("uniq roots",reqID);
+
+
     let uniqRoots = _.uniqBy(roots,'id');
 
     console.log("sorting roots",reqID);
@@ -99,7 +101,7 @@ export class TreeDatabase {
     console.log("roots gotten",reqID);
 
   
-    return uniqRoots;
+    return sorted;
   }
   
   
@@ -235,7 +237,7 @@ export class TreeDatabase {
         case "Shared with Me": return Date.parse(item.sharedWithMeTime??"");
         case "Viewed by Me": return Date.parse(item.viewedByMeTime??"");
       }
-      return 0;
+      return -1;
     }
 
     if(_treeComponent.sortValueCache.has(item.id??"")){
@@ -269,7 +271,7 @@ export class TreeDatabase {
       case "Viewed by Me":
         return getMax(promises)
     }
-    return 0;
+    return -2;
   }
 }
 
