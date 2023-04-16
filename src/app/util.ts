@@ -1,3 +1,5 @@
+import * as _ from "lodash";
+
 export function distinct<T>(arr:T[]):T[]{
     let distinct = [...new Set(arr)];
     return distinct;
@@ -16,6 +18,16 @@ export function firstTrue(promises:Promise<boolean>[]) :Promise<boolean> {
     //will finish after all the other promises
     newPromises.push(Promise.all(promises).then(() => false));
     return Promise.race(newPromises);
+}
+
+export async function getMax(promises:Promise<number>[]){
+    let values:number[] = await Promise.all(promises)
+    return _.max(values)??0;
+}
+
+export async function getMin(promises:Promise<number>[]){
+    let values:number[] = await Promise.all(promises)
+    return _.min(values)??0;
 }
 
 export let truePromise:Promise<boolean> =new Promise((resolve)=>resolve(true));

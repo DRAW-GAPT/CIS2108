@@ -5,7 +5,8 @@
       <button mat-icon-button disabled></button>
       <mat-chip matTooltip={{tooltip(node)}} matTooltipPosition="right"  matTooltipClass="multiline-tooltip" [routerLink]="['/item',node.file.id]">
         <img src={{node.file.iconLink}}/>
-        {{node.file.name}}
+        {{node.file.name}} 
+        <span *ngIf="__sortDebug">: {{sortValueCache.get(node.file.id)|async}}</span>
       </mat-chip>
     </mat-tree-node>
     
@@ -18,7 +19,8 @@
       </button>
       <mat-chip matTooltip={{tooltip(node)}} matTooltipPosition="right"  matTooltipClass="multiline-tooltip" [routerLink]="['/item',node.file.id]">
         <img src={{node.file.iconLink}}/>
-        {{node.file.name}}
+        {{node.file.name}} 
+        <span *ngIf="__sortDebug">: {{sortValueCache.get(node.file.id)|async}}</span>
       </mat-chip>
       <mat-progress-spinner class = "spinner" *ngIf="node.isLoading" mode="indeterminate"/>
     </mat-tree-node>

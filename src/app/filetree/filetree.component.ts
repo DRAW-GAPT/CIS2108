@@ -5,7 +5,7 @@ import * as _ from 'lodash';
 import {BehaviorSubject, merge, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import { GoogleAPIService } from '../google-api.service';
-import { firstTrue, truePromise } from '../util';
+import { firstTrue, getMax, getMin, truePromise } from '../util';
 import { SortByComponent, SortSetting } from '../sort-by/sort-by.component';
 import { NgModule } from '@angular/core';
 
@@ -48,6 +48,11 @@ export class TreeDatabase {
 
   /** Initial data from database */
   async initialData(_treeComponent: FiletreeComponent,reqID:number,filterQuery:string, orderBy:string|undefined): Promise<FileNode[]> {
+    
+    _treeComponent.sortValueCache.clear();
+    _treeComponent.knownRootsCache.clear();
+    _treeComponent.knownGoodFoldersCache.clear();
+    
     return (await this.getRoots(_treeComponent, reqID, filterQuery, orderBy)).map(
 
       //fixme
@@ -58,15 +63,45 @@ export class TreeDatabase {
   async getRoots(_treeComponent: FiletreeComponent,reqID:number,filterQuery:string, orderBy:string|undefined) {
     
 
-    let files:gapi.client.drive.File[] = (await (this.googleApiService.getFiles([],100,filterQuery, orderBy))).files;
+    console.log("getting file samples for roots",reqID);
+
+
+    let files:gapi.client.drive.File[] = (await (this.googleApiService.getFiles([],500,filterQuery, orderBy))).files;
   
+    console.log("getting roots from samples",reqID);
+
+
     let roots = await Promise.all(files.map(f=>this.getRoot(_treeComponent,reqID,f)))
   
-    console.log("getting roots",filterQuery);
-  
+    console.log("uniq roots",reqID);
+
+
     let uniqRoots = _.uniqBy(roots,'id');
+
+    console.log("sorting roots",reqID);
+
+
+    let sortValues:number[] = await Promise.all(uniqRoots.map(f=>this.getSortValue(_treeComponent,reqID, f,filterQuery)));
+
+      
+    let sorted:gapi.client.drive.File[] = 
+    
+      _.chain(uniqRoots)
+      //zip into tuples of [File,sortvalue]
+      .zip(sortValues)
+      //sort by sort value
+      .sortBy(1)
+      //get the files
+      .map(tuple=>tuple[0] as gapi.client.drive.File)
+      .value();
+
+      if(_treeComponent.sortOrder?.sortOrder == "desc")
+        sorted.reverse();
+      
+    console.log("roots gotten",reqID);
+
   
-    return uniqRoots;
+    return sorted;
   }
   
   
@@ -84,10 +119,11 @@ export class TreeDatabase {
 
       //if we already have a promise to get the root of this file, then we return that instead of working it out again
       if(file.id &&  _treeComponent.knownRootsCache.has(file.id)){
-        console.log("cache hit",file.name)
+        console.log("root cache hit",file.name)
         return _treeComponent.knownRootsCache.get(file.id) as gapi.client.drive.File;
       }
-      console.log("cache miss",file.name)
+      console.log("root cache miss",file.name)
+
 
       let parent = await this.googleApiService.getFile(file.parents[0])
       if(parent != null){
@@ -123,18 +159,35 @@ export class TreeDatabase {
     //promise.all is used to execute all of them in parallell
     let filterResults:boolean[] = await Promise.all(items.files.map(f=>this.showItem(_treeComponent,reqID, f,filterQuery)));
     console.log("got results from filter")
+
     let filtered:gapi.client.drive.File[] = 
       //start a chain
       _.chain(items.files)
-      //zip the into tuples of [file,boolean] where boolean stores the result of showItem
+      //zip into tuples of [file,boolean] where boolean stores the result of showItem
       .zip(filterResults)
       //filter those tuples where the predicate returned true
       .filter(1)
+      .map(tuple=>tuple[0] as gapi.client.drive.File)
+      .value();
+
+    let sortValues:number[] = await Promise.all(filtered.map(f=>this.getSortValue(_treeComponent,reqID, f,filterQuery)));
+
+      
+    let sorted:gapi.client.drive.File[] = 
+    
+      _.chain(filtered)
+      //zip into tuples of [File,sortvalue]
+      .zip(sortValues)
+      //sort by sort value
+      .sortBy(1)
       //get the files
       .map(tuple=>tuple[0] as gapi.client.drive.File)
       .value();
+
+      if(_treeComponent.sortOrder?.sortOrder == "desc")
+        sorted.reverse();
     
-    return filtered
+    return sorted
   
   }
 
@@ -149,11 +202,9 @@ export class TreeDatabase {
     if(item.mimeType != "application/vnd.google-apps.folder")
       return true;
     else if (_treeComponent.knownGoodFoldersCache.has(item.id as string)){
-      console.log("child cache hit",item.name)
       return _treeComponent.knownGoodFoldersCache.get(item.id as string) as Promise<boolean>
     }
 
-    console.log("child cache miss")
 
 
     let childItems = await this.googleApiService.getFiles([],-1,"('"+item.id+"' in parents) AND (mimeType = 'application/vnd.google-apps.folder' OR("+filterQuery+"))",undefined);
@@ -168,6 +219,59 @@ export class TreeDatabase {
 
     //todo https://stackoverflow.com/questions/51160260/clean-way-to-wait-for-first-true-returned-by-promise
     return res;
+  }
+
+  async getSortValue(_treeComponent: FiletreeComponent,reqID:number,item:gapi.client.drive.File,filterQuery:string):Promise<number>{
+
+    console.log("getting sort value of" +item.name)
+    //if request is not still valid return 0 as we will get discarded anyways
+    if(reqID != _treeComponent.latestRootsRequestID)
+      return 0;
+
+    //if its a file return the current value
+    if(item.mimeType != "application/vnd.google-apps.folder" || _treeComponent.sortOrder?.selectedValue === "Shared with Me"){
+      switch(_treeComponent.sortOrder?.selectedValue){
+        case "Date Created": return item.createdTime?Date.parse(item.createdTime):0;
+        case "Last Modified": return item.modifiedTime?Date.parse(item.modifiedTime):0;
+        case "Modified by Me": return item.modifiedByMeTime?Date.parse(item.modifiedByMeTime):0;
+        case "Shared with Me": return item.sharedWithMeTime?Date.parse(item.sharedWithMeTime):0;
+        case "Viewed by Me": return item.viewedByMeTime?Date.parse(item.viewedByMeTime):0;
+      }
+      return -1;
+    }
+
+    if(_treeComponent.sortValueCache.has(item.id??"")){
+      console.log("sort cache hit")
+      return _treeComponent.sortValueCache.get(item.id??"") as Promise<number>;
+    }
+    console.log("sort cache miss")
+
+
+    let childItems = await this.googleApiService.getFiles([],-1,"('"+item.id+"' in parents) AND (mimeType = 'application/vnd.google-apps.folder' OR("+filterQuery+"))",undefined);
+    
+    let promises:Promise<number>[] = childItems.files.map(child=>this.getSortValue(_treeComponent,reqID,child,filterQuery));
+    
+    //add to cache if this request is still valid
+    if(reqID == _treeComponent.latestRootsRequestID){
+      _.zip(childItems.files,promises).forEach((tuple)=> {
+        let fileID = tuple[0]?.id as string;
+        let promise = tuple[1] as Promise<Number>;
+        _treeComponent.sortValueCache.set(fileID, promise)
+      });
+    }
+
+    switch(_treeComponent.sortOrder?.selectedValue){
+      case "Date Created": 
+      case "Shared with Me": //shared with me never used
+        return getMin(promises)
+
+
+      case "Last Modified": 
+      case "Modified by Me":
+      case "Viewed by Me":
+        return getMax(promises)
+    }
+    return -2;
   }
 }
 
@@ -271,11 +375,14 @@ export class FiletreeComponent {
     this.setInitialData(database)
   }
 
+  __sortDebug = true;
   
   orderBy:string | undefined;
+  _sortOrder: SortSetting|undefined;
 
   @Input ()
   public set sortOrder(value:SortSetting | undefined){
+    this._sortOrder = value
    
     console.log("SETTER DETECTED");
     this.dataSource.data = [];
@@ -307,6 +414,10 @@ export class FiletreeComponent {
     
     this.setInitialData(this.database);
   }
+
+  public get sortOrder(){
+    return this._sortOrder;
+  }
   
   _filterQuery:string ="";
 
@@ -329,6 +440,9 @@ export class FiletreeComponent {
   public knownGoodFoldersCache:Map<string,Promise<boolean>> = new Map();
   //if we already know or are already waiting to get the root of a folder, we don't need to get that twice
   public knownRootsCache:Map<string,Promise<gapi.client.drive.File>> = new Map();
+  //stores the sort values of the files and folders that we already know of
+  public sortValueCache:Map<string,Promise<Number>> = new Map();
+
 
 
   async setInitialData(database: TreeDatabase){
@@ -340,9 +454,14 @@ export class FiletreeComponent {
     var endTime = performance.now()
     console.log(`roots took ${endTime - startTime} milliseconds`)
 
-    if(reqID == this.latestRootsRequestID)
+    if(reqID == this.latestRootsRequestID){
       //only accept data if it hasnt been superseeded by a newer version
-      this.dataSource.data = data;
+     this.dataSource.data = data;
+     console.log("accepted roots from ",reqID)
+    } else{
+      console.log("disposed roots from ",reqID)
+
+    }
 
   }
 
