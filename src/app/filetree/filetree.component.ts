@@ -229,7 +229,7 @@ export class TreeDatabase {
       return 0;
 
     //if its a file return the current value
-    if(item.mimeType != "application/vnd.google-apps.folder"){
+    if(item.mimeType != "application/vnd.google-apps.folder" || _treeComponent.sortOrder?.selectedValue === "Shared with Me"){
       switch(_treeComponent.sortOrder?.selectedValue){
         case "Date Created": return Date.parse(item.createdTime??"");
         case "Last Modified": return Date.parse(item.modifiedTime??"");
@@ -262,7 +262,7 @@ export class TreeDatabase {
 
     switch(_treeComponent.sortOrder?.selectedValue){
       case "Date Created": 
-      case "Shared with Me":
+      case "Shared with Me": //shared with me never used
         return getMin(promises)
 
 
