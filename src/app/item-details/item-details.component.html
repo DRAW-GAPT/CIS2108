@@ -1,4 +1,7 @@
 <div class="parent">
     <app-item-details-title [file]="file"/>
-    <app-item-tabs [file]="file"/> 
+    <div style="display: flex; flex-direction: row; justify-content: space-around;">
+        <app-share-tree/>
+        <app-item-tabs [file]="file"/> 
+    </div>
 </div>
