@@ -4,6 +4,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { environment } from '../environments/environment';
 import { driveactivity } from 'googleapis/build/src/apis/driveactivity';
 import { drive_v3 } from 'googleapis';
+import { drive } from 'googleapis/build/src/apis/drive';
 
 // Discovery doc URL for APIs used by the quickstart
 const DISCOVERY_DOCS = [
@@ -74,6 +75,7 @@ export class GoogleAPIService {
       //this.getRevisions("1bpf_-tYrJ15ObIXkmjK5KDo_QgdhsT2Zgapxt-aJZM4"); //andrea's shared with me
       //console.log(this.getRevisions("1NVWPmLDQTx7jduWSH6uPFMi3uBRw4vRgsRUV_ENLuqw")); //waynefile
       
+      //await this.addPeopleToContacts();
     })
   }
 
@@ -307,4 +309,61 @@ export class GoogleAPIService {
     }
     return false;
   }
+
+  async addPeopleToContacts(): Promise<void> {
+
+    try {
+      const folderListResponse = await gapi.client.drive.files.list({
+        q: "mimeType='application/vnd.google-apps.folder'",
+        fields: 'nextPageToken, files(id, name)',
+      });
+
+      const folderList = folderListResponse.result.files;
+  
+      if (folderList != undefined) {
+        for (const folder of folderList) {
+          const folderId = folder.id;
+  
+          // Get a list of all people who have shared the folder with you or people you've shared a folder with
+          if (folderId != undefined) {
+            const permissionListResponse = await gapi.client.drive.permissions.list({
+              fileId: folderId,
+              fields: 'permissions(id,emailAddress,displayName)',
+            });
+            const permissionList = permissionListResponse.result.permissions;
+            const peopleList = permissionList?.filter(
+              (p) => p.id !== 'anyoneWithLink' && p.emailAddress !== ''
+            );
+  
+            // Add each person to your Google Contacts
+            if (peopleList != undefined) {
+              for (const person of peopleList) {
+                const newContact: gapi.client.people.Person = {
+                  names: [
+                    {
+                      givenName: person.displayName ?? '',
+                    },
+                  ],
+                  emailAddresses: [
+                    {
+                      value: person.emailAddress!,
+                      type: 'home',
+                    },
+                  ],
+                };
+                
+                await gapi.client.people.people.createContact({
+                  resource: newContact,
+                });
+              console.log('Contacts added successfully.');
+            }
+          }
+        }
+      }
+    }
+    } catch (err) {
+      console.error(`Error adding contacts: ${err}`);
+  }
+         
+}
 }
