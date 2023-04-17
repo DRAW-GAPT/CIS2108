@@ -23,9 +23,9 @@ export class ShareTreeComponent implements AfterViewInit {
         id: i, 
         label: name + '\n' + capitaliseFirstLetter(p.role), 
         image: p.photoLink ?? 'https://lh3.googleusercontent.com/a/default-user=s64', 
-        title: p.id === 'anyoneWithLink' ? "Anyone with link" : p.emailAddress || "Unknown email address"
-      })
+        title: p.id === 'anyoneWithLink' ? "Anyone with link" : p.emailAddress || "Unknown email address"      })
     });
+  
     const nodes = new DataSet<any>(temp);
  
     const edges = new DataSet<any>([
@@ -37,24 +37,30 @@ export class ShareTreeComponent implements AfterViewInit {
     ]);
 
     const options = {
-      directed: true,
-          edges: {
-            arrows: {
-              to: {
-                enabled: true
-              }
-            }
-          },
-          nodes: {
-                shape: 'circularImage',
-                image: 'image',
-                label: 'Label'
-            },
-          interaction: {
-                  dragNodes: false,
-                  dragView: false
+      edges: {
+        arrows: {
+          to: {
+            enabled: true
           }
-      };
+        }
+      },
+      nodes: {
+            shape: 'circularImage',
+            image: 'image',
+            label: 'Label'
+        },
+      interaction: {
+              dragNodes: false,
+              dragView: false
+      },
+      layout: {
+        hierarchical: {
+          direction: "LR", 
+          levelSeparation: 150, 
+          nodeSpacing: 100,
+        },
+      },
+    };
  
     const data = { nodes, edges };
  
