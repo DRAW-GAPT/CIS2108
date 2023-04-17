@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import {MatDialog, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { ShareDialogComponent } from '../share-dialog/share-dialog.component'; 
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
+import { ContactsDialogComponent } from '../contacts-dialog/contacts-dialog.component';
 
 export class DialogContentExample {
 }
@@ -35,6 +36,16 @@ export class ItemDetailsTitleComponent {
 
   openDeleteDialog(): void{
     this.dialog.open(DeleteDialogComponent, {
+      data: {
+        id: this.file.id,
+        permissions: this.file.permissions,
+        name: this.file.name
+      },
+    });
+  }
+
+  openContactsDialog(): void{
+    this.dialog.open(ContactsDialogComponent , {
       data: {
         id: this.file.id,
         permissions: this.file.permissions,
