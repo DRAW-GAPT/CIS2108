@@ -9,9 +9,9 @@
       <div *ngFor="let p of data.permissions" class = "perm-container">
         <img src="{{p.photoLink ?? 'https://lh3.googleusercontent.com/a/default-user=s64'}}" class="user-image"/>
         <div>
-          {{p.displayName ?? 'Unknown user'}}
+          {{p.id === "anyoneWithLink" ? "Anyone with link" : p.displayName || "Unknown user"}}
           <br/>
-          {{p.emailAddress ?? 'Unknown email address'}}
+          {{p.id === "anyoneWithLink" ? "" : p.emailAddress ?? 'Unknown email address'}}
         </div>
         <mat-form-field appearance="fill">
           <mat-label>{{capitaliseFirstLetter(p.role)}}</mat-label>
