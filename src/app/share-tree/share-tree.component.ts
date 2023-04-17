@@ -19,12 +19,12 @@ export class ShareTreeComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     // create an array with nodes
     const nodes = new DataSet<any>([
-      { id: 1, label: 'Rianne Azzopardi\nOwner', image: 'https://www.hartz.com/wp-content/uploads/2022/04/small-dog-owners-1.jpg' },
-      { id: 2, label: 'David Briffa\nEditor', image: 'https://lh3.googleusercontent.com/a-/ACB-R5RxStIkJMNjIGOm84bx6y3QhwGMPCh0e01HUWDwBto=s64' },
-      { id: 3, label: 'Andrea Borg\nEditor', image: 'https://lh3.googleusercontent.com/a-/ACB-R5RxStIkJMNjIGOm84bx6y3QhwGMPCh0e01HUWDwBto=s64' },
-      { id: 4, label: 'Wayne Borg\nEditor', image: 'https://lh3.googleusercontent.com/a-/ACB-R5RxStIkJMNjIGOm84bx6y3QhwGMPCh0e01HUWDwBto=s64' },
-      { id: 5, label: 'Peter Xuereb\nViewer', image: 'https://lh3.googleusercontent.com/a-/ACB-R5RxStIkJMNjIGOm84bx6y3QhwGMPCh0e01HUWDwBto=s64' },
-      { id: 6, label: 'Michel Camilleri\nViewer',image: 'https://lh3.googleusercontent.com/a-/ACB-R5RxStIkJMNjIGOm84bx6y3QhwGMPCh0e01HUWDwBto=s64' },
+      { id: 1, label: 'Rianne Azzopardi\nOwner', image: 'https://www.hartz.com/wp-content/uploads/2022/04/small-dog-owners-1.jpg', title: 'rianneazzopardi@gmail.com' },
+      { id: 2, label: 'David Briffa\nEditor', image: 'https://lh3.googleusercontent.com/a-/ACB-R5RxStIkJMNjIGOm84bx6y3QhwGMPCh0e01HUWDwBto=s64', title: 'rianneazzopardi@gmail.com' },
+      { id: 3, label: 'Andrea Borg\nEditor', image: 'https://lh3.googleusercontent.com/a-/ACB-R5RxStIkJMNjIGOm84bx6y3QhwGMPCh0e01HUWDwBto=s64', title: 'rianneazzopardi@gmail.com' },
+      { id: 4, label: 'Wayne Borg\nEditor', image: 'https://lh3.googleusercontent.com/a-/ACB-R5RxStIkJMNjIGOm84bx6y3QhwGMPCh0e01HUWDwBto=s64' , title: 'rianneazzopardi@gmail.com'},
+      { id: 5, label: 'Peter Xuereb\nViewer', image: 'https://lh3.googleusercontent.com/a-/ACB-R5RxStIkJMNjIGOm84bx6y3QhwGMPCh0e01HUWDwBto=s64' , title: 'rianneazzopardi@gmail.com'},
+      { id: 6, label: 'Michel Camilleri\nViewer',image: 'https://lh3.googleusercontent.com/a-/ACB-R5RxStIkJMNjIGOm84bx6y3QhwGMPCh0e01HUWDwBto=s64' , title: 'rianneazzopardi@gmail.com'},
     ]);
  
     // create an array with edges
