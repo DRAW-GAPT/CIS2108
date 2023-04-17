@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { environment } from '../environments/environment';
@@ -15,6 +15,7 @@ const DISCOVERY_DOCS = [
 
 // Authorization scopes required by the API; multiple scopes can be
 // included, separated by spaces.
+// TODO Trim this list once contact-related shenanigans are working
 const SCOPES = 
   'https://www.googleapis.com/auth/drive.metadata.readonly ' +
   'https://www.googleapis.com/auth/drive.activity.readonly ' +
@@ -68,14 +69,15 @@ export class GoogleAPIService {
 
 
       //this.getUserInfo("people/108047227550681835497"); //me
-      //console.log(this.getUserInfo("people/117534848934012919819")); //wayne
       //console.log(this.getUserInfo("people/105228402161058122242")); //andrea
+      //console.log(this.getUserInfo("people/117534848934012919819")); //wayne
 
       //this.getRevisions("1XtikHS01Kl-kKnT9HfLYgavSbknkd42r"); //mine
       //this.getRevisions("1bpf_-tYrJ15ObIXkmjK5KDo_QgdhsT2Zgapxt-aJZM4"); //andrea's shared with me
       //console.log(this.getRevisions("1NVWPmLDQTx7jduWSH6uPFMi3uBRw4vRgsRUV_ENLuqw")); //waynefile
       
-      await this.addPeopleToContacts("1SOtm5imnlfwB-O10L9Q2EOdbexraPp94");
+
+
     })
   }
 
@@ -294,14 +296,6 @@ export class GoogleAPIService {
       
       // Iterate through the list of revisions to display the details of the last modifying user
       if(revisions != undefined){
-        // console.log("REVISIONS")
-        // for (const revision of revisions) {
-        //   console.log(`Modified Time: ${revision.modifiedTime}`);
-        //   console.log(`Last Modifying User: ${JSON.stringify(revision.lastModifyingUser?.displayName)}`);
-        //   console.log(`Last Modifying User email: ${JSON.stringify(revision.lastModifyingUser?.emailAddress)}`);
-        //   console.log(`Last Modifying User's pfp: ${JSON.stringify(revision.lastModifyingUser?.photoLink)}`);
-        //   console.log("\n");
-        // }
         return revisions;
       }
     } catch (err) {
@@ -310,9 +304,15 @@ export class GoogleAPIService {
     return false;
   }
 
+  //Used by item-page in order to get access to information such as names and emails.
+  //Adding users to your contacts is the only way this information can be gleaned due to Google's privacy policies
   async addPeopleToContacts(fileId: string): Promise<void> {
+  
     try {
-      // Get a list of all people who have shared the file with you and people you've shared the file with
+      // Check if the label "draw" exists; create it if it doesn't
+      const drawLabel = await this.getOrCreateLabel();
+  
+      // Get a list of all people who have interacted with a specific file, based on its ID
       const permissionListResponse = await gapi.client.drive.permissions.list({
         fileId: fileId,
         fields: 'permissions(id,emailAddress,displayName)',
@@ -327,11 +327,11 @@ export class GoogleAPIService {
         for (const person of peopleList) {
           const contactListResponse = await gapi.client.people.people.connections.list({
             resourceName: 'people/me',
-            personFields: 'emailAddresses',
+            personFields: 'emailAddresses,memberships',
           });
           const contactList = contactListResponse.result.connections;
   
-          // Check if the contact already exists
+          // Check if the contact already exists in your contacts, ignores if they are
           const existingContact = contactList?.find(
             (c) => c.emailAddresses?.find((e) => e.value === person.emailAddress) !== undefined
           );
@@ -340,8 +340,8 @@ export class GoogleAPIService {
             continue;
           }
   
-          // Add the new contact
-          const newContact: gapi.client.people.Person = {
+          //contact details
+           const newContact: gapi.client.people.Person = {
             names: [
               {
                 givenName: person.displayName ?? '',
@@ -354,14 +354,50 @@ export class GoogleAPIService {
               },
             ],
           };
-          await gapi.client.people.people.createContact({
+  
+          // Create the new contact
+          const createContactResponse = await gapi.client.people.people.createContact({
             resource: newContact,
           });
-          console.log(`Contact ${person.emailAddress} added successfully.`);
+          const newContactResourceName = createContactResponse.result.resourceName;
+  
+          // Add the contact to the "draw" label
+          if (newContactResourceName != undefined) {
+            await gapi.client.people.contactGroups.members.modify({
+              resourceName: drawLabel.resourceName ?? 'invalid_id',
+              resource: {
+                resourceNamesToAdd: [newContactResourceName],
+              },
+            });
+            console.log(`Contact ${person.emailAddress} added to "draw" successfully.`);
+          }
         }
       }
     } catch (err) {
       console.error(`Error adding contacts: ${err}`);
     }
+  }
+  
+  //used by the addPeopleToContacts method to verify if the application's label exists, and creates it if it doesn't
+  async getOrCreateLabel(): Promise<gapi.client.people.ContactGroup> {
+
+    const labelListResponse = await gapi.client.people.contactGroups.list();
+    const labelList = labelListResponse.result.contactGroups;
+    const drawLabel = labelList?.find((l) => l.name === 'draw');
+  
+    if (drawLabel === undefined) {
+      const newLabel = {
+        contactGroup: {
+          name: 'draw',
+        },
+      };
+      const createLabelResponse = await gapi.client.people.contactGroups.create({
+        resource: newLabel,
+      });
+      console.log(`Label created`);
+      return createLabelResponse.result;
+    }
+  
+    return drawLabel;
   }
 }

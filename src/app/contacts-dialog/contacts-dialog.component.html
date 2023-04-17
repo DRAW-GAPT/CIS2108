@@ -14,7 +14,7 @@
       </div>
     </div>
     <div class="buttons" mat-dialog-actions>
-      <button mat-raised-button color="warn">Yes</button>
+      <button mat-raised-button color="warn" (click)="addContacts()" [mat-dialog-close]="true">Yes</button>
       <button mat-raised-button color="primary" [mat-dialog-close]="true" cdkFocusInitial>Cancel</button>
     </div>
 </div>
