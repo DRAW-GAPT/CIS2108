@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { Sort } from '@angular/material/sort';
-import { CookieService } from 'ngx-cookie-service';
 import { PageSetting } from '../file-list/file-list.component';
 import { getFilesResult, GoogleAPIService } from '../google-api.service';
+import { SortSetting } from '../sort-by/sort-by.component';
 
 @Component({
   selector: 'app-list',
@@ -16,11 +16,12 @@ export class ListComponent {
 
   //todo this is a temp class - need to redo with proper async
   list$:gapi.client.drive.File[] = [];
+
   nextPageToken$:string|undefined=undefined;
   //store the id of the latest request
   getMoreFilesRequestID:number = 0;
 
-  fileList:gapi.client.drive.File[] = [];
+  fileList:gapi.client.drive.File[] = []; //TODO is this removable??
 
   pageSize:number = 100;
   pageNumber:number = 1;
@@ -46,7 +47,6 @@ export class ListComponent {
     await this.getMoreFilesAsNeeded();
   }
 
-
   columnNameToSortMap = new Map<string, string>([
     ["Name", "name"],
     ["Owner", ""],
@@ -63,7 +63,6 @@ export class ListComponent {
       s = s + " desc"
 
     this.sortSettings = s;
-
     this.list$=[];
     this.nextPageToken$=undefined;
 
@@ -73,6 +72,8 @@ export class ListComponent {
   async init() {    
     await this.getMoreFilesAsNeeded();
   }
+
+
 
   async getMoreFilesAsNeeded(){
     let filesNeeded:number = (this.pageNumber+2) * this.pageSize;
@@ -86,6 +87,7 @@ export class ListComponent {
     let requestID = this.getMoreFilesRequestID;
 
     let getFilesResult:getFilesResult = await this.googleAPIService.getFiles(this.list$,limit,this.filterQuery,this.sortSettings,this.nextPageToken$);
+    //if the request is the last request (ie most recent) keep it and filter using that request, else remove it (as it is older than the most recent)
     if(requestID == this.getMoreFilesRequestID){
       //only store the results from the last request that was sent.
       //if requestID != getMoreFilesRequestID, it means that the opeartion has been
@@ -94,8 +96,12 @@ export class ListComponent {
       this.nextPageToken$ = getFilesResult.nextPageToken;
       this.list$ = getFilesResult.files;
     }
+  }
 
+  treeSortSettings:SortSetting | undefined;
+  updateTreeSort(sortSettings:SortSetting){
+        console.log("treeSort DETECTED");
+    this.treeSortSettings = sortSettings;
   }
- 
-  }
+}
 

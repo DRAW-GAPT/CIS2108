@@ -1,0 +1,20 @@
+<div class="dialog">
+    <h2 mat-dialog-title>Are you sure you want to delete '{{data.name}}'?</h2>
+    <div mat-dialog-content class="content">
+      <p>The file will be placed in the recycling bin for <b>30 days</b> & will then be <b>permantently discarded.</b></p>
+      <p><b>People with access</b></p>
+      <div *ngFor="let p of data.permissions" class = "perm-container">
+        <img src="{{p.photoLink ?? 'https://lh3.googleusercontent.com/a/default-user=s64'}}" class="user-image"/>
+        <div>
+          {{p.displayName ?? 'Unknown user'}}
+          <br/>
+          {{p.emailAddress ?? 'Unknown email address'}}
+        </div>
+        <span class="role">{{capitaliseFirstLetter(p.role)}}</span>
+      </div>
+    </div>
+    <div class="buttons" mat-dialog-actions>
+      <button mat-raised-button color="warn">Yes</button>
+      <button mat-raised-button color="primary" [mat-dialog-close]="true" cdkFocusInitial>Cancel</button>
+    </div>
+</div>

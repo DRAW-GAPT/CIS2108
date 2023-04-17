@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FilterChipsComponent } from './filter-chips.component';
 
 describe('FilterChipsComponent', () => {

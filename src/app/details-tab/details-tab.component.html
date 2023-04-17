@@ -1,0 +1,45 @@
+<div class="container">
+    <mat-grid-list cols="2" rowHeight="11vw">
+        <mat-grid-tile>
+            <div class="details-tile">
+                <b>Owner</b><br/>
+                {{file.owners[0].displayName}}
+            </div>
+        </mat-grid-tile>
+    
+        <mat-grid-tile>
+            <div class="details-tile">
+                <b>Type</b><br/>
+                <div class="file-type-container">
+                    <img src={{file.iconLink}} class="file-icon">
+                    <div class="file-type">{{fileType(file.mimeType)}}</div>
+                </div>
+            </div>
+        </mat-grid-tile>
+    
+        <mat-grid-tile>
+            <div class="details-tile">
+                <b>Created</b><br/>
+                {{formatCreated(file.createdTime)}}
+            </div>
+        </mat-grid-tile>
+    
+        <mat-grid-tile>
+            <div class="details-tile">
+                <b>Last Modified</b><br/>
+                {{formatLastModified(file.modifiedTime, file.lastModifyingUser)}}
+            </div>
+        </mat-grid-tile>
+    
+        <mat-grid-tile>
+            <div class="details-tile">
+                <b>Location</b><br/>
+                    <div (click) = "updateParent(parent.parents[0])" [routerLink]="['/item', parent?.id]" class="location-container">
+                        <img src={{parent?.iconLink}}  class="location-icon"/>
+                        <div class="location-name">{{parent?.name}}</div>
+                        <!-- <mat-icon>open_in_new</mat-icon> -->
+                    </div>
+            </div>
+        </mat-grid-tile>
+      </mat-grid-list>
+</div>

@@ -1,0 +1,22 @@
+.parent{
+    margin-top: 3vh;
+    margin-left: 2vw;
+}
+.version-container{
+    display: flex;
+    flex-direction: row;
+    margin-top: 2vh;
+    align-items: center;
+}
+
+img{
+    border-radius: 50%;
+}
+
+.text-container{
+    margin-left: 1vw;
+}
+
+.current{
+    color: #2E84FC;
+}

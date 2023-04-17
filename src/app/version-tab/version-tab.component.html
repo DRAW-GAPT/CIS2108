@@ -1,0 +1,15 @@
+<div class="parent" *ngFor="let v of versions">
+    <div class="version-container">
+        <img src="{{v.lastModifyingUser?.photoLink ?? 'https://lh3.googleusercontent.com/a/default-user=s64'}}" />
+        <div class="text-container">
+            <span *ngIf="versions[0] === v" class="current">
+                <b>Current Version</b>
+                <br/>
+            </span>
+            <b>Last modified by: </b>{{formatLastModified(v.lastModifyingUser.displayName, v.modifiedTime)}}
+            <!-- <br/> -->
+            <!-- <b>Last modified by: </b>"{{v.lastModifyingUser?.displayName ?? 'Unknown user'}}" -->
+        </div>
+      
+    </div>
+</div>

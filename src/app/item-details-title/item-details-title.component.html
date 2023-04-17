@@ -1,0 +1,14 @@
+<div class="title-bar-container">
+    <mat-icon class="back-button" [routerLink]="['/list']">arrow_back</mat-icon>
+    <div class="file-icon-title" (click)="openFile(file)">
+        <img src={{file?.iconLink}} class="icon"/>
+        <h1>{{file?.name}}</h1>
+        <mat-icon>open_in_new</mat-icon>
+    </div>
+    <div class="buttons">
+        <button mat-fab color="primary" (click)="openShareDialog()"><mat-icon>person_add</mat-icon></button>
+        <button mat-fab color="primary" (click)="openDeleteDialog()" style="margin-left: 10px; margin-right: 20px;" ><mat-icon>delete</mat-icon></button>    
+    </div>
+    
+    
+</div>

@@ -25,7 +25,30 @@ import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatProgressSpinner, MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
+import {MatCardModule} from '@angular/material/card';
+import { RecentlyAccessedComponent } from './recently-accessed/recently-accessed.component';
+import {MatGridListModule} from '@angular/material/grid-list';
 import { MomentDateModule } from '@angular/material-moment-adapter';
+import { FiletreeComponent } from './filetree/filetree.component';
+import {MatTreeModule} from '@angular/material/tree';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatTabsModule} from '@angular/material/tabs';
+import { ItemDetailsComponent } from './item-details/item-details.component';
+import { ItemDetailsTitleComponent } from './item-details-title/item-details-title.component';
+import { ItemTabsComponent } from './item-tabs/item-tabs.component';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatDialogModule} from '@angular/material/dialog';
+import { DetailsTabComponent } from './details-tab/details-tab.component';
+import { ShareDialogComponent } from './share-dialog/share-dialog.component';
+import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
+import { SortByComponent } from './sort-by/sort-by.component';
+import { ActivityTabComponent } from './activity-tab/activity-tab.component';
+import { VersionTabComponent } from './version-tab/version-tab.component';
+import {MatListModule} from '@angular/material/list';
+
+
+
 
 
 @NgModule({
@@ -35,6 +58,17 @@ import { MomentDateModule } from '@angular/material-moment-adapter';
     ListComponent,
     FileListComponent,
     FilterChipsComponent,
+    RecentlyAccessedComponent,
+    FiletreeComponent,
+    ItemDetailsComponent,
+    ItemDetailsTitleComponent,
+    ItemTabsComponent,
+    DetailsTabComponent,
+    ShareDialogComponent,
+    DeleteDialogComponent,
+    SortByComponent,
+    ActivityTabComponent,
+    VersionTabComponent,
   ],
   imports: [
     BrowserModule,
@@ -55,9 +89,19 @@ import { MomentDateModule } from '@angular/material-moment-adapter';
     MatCheckboxModule,
     MatButtonToggleModule,
     MatAutocompleteModule,
+    FormsModule,
+    MatCardModule,
+    MatGridListModule,
     MatProgressSpinnerModule,
     FormsModule,
     MomentDateModule,
+    MatTreeModule,
+    MatProgressBarModule,
+    MatTooltipModule,
+    MatTabsModule,
+    MatSidenavModule,
+    MatDialogModule,
+    MatListModule
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]

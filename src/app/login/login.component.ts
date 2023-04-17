@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { CookieService } from 'ngx-cookie-service';
-import { environment } from '../../environments/environment';
 import { GoogleAPIService } from '../google-api.service';
-
 
 @Component({
   selector: 'app-login',
@@ -15,19 +12,14 @@ export class LoginComponent implements OnInit {
 
   constructor(public googleAPIService: GoogleAPIService, private router: Router) { }
 
-
-  // apiKey:string = this.goodleAPIService.getGoogleAPIKey();
-  // clientId:string = this.goodleAPIService.getGoogleClientID();
-
   async ngOnInit(){
     if(await this.googleAPIService.getCookie()){
       this.router.navigate(['list']);
     }
   }
   public showLogin(){
- 
+    //navigates to the list page
     this.googleAPIService.login(()=>{this.router.navigate(['list'])});
-      
     }
   }
   

@@ -1,17 +1,17 @@
+mat-form-field{
+    width: 100%;
+}
 mat-icon{
     vertical-align: bottom;
 }
-
 .selected-div{
     width: 20vh;
     height: 20vh;
 }
-
 .filter-input-container{
     display: flex;
     flex-direction: row;
 }
-
 .drop-down-item0{
     margin-right: 25px;
     vertical-align: bottom;
@@ -24,28 +24,24 @@ mat-icon{
     margin-right: 23px;
     vertical-align: bottom;
 }
-
 .checkbox-container {
     display: flex;
     flex-direction: column;
 }
-mat-form-field{
-    width: 100%;
-}
-
 .example-chip-list {
     width: 300px;
 }
-
 .picker-form, .hint{
     width: 270px;
     white-space: nowrap;
 }
-
 .email-input{
     overflow: hidden;
 }
-
 .drop-down-icon{
     padding-right: 10px;
 }
+.recently-accessed{
+    margin-top: 0.5vw;
+    margin-bottom: -1.5vw;
+  }
