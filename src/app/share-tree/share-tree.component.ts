@@ -38,6 +38,13 @@ export class ShareTreeComponent implements OnInit, AfterViewInit {
 
     const options = {
       directed: true,
+          edges: {
+            arrows: {
+              to: {
+                enabled: true
+              }
+            }
+          },
           nodes: {
                 shape: 'circularImage',
                 image: 'image',
