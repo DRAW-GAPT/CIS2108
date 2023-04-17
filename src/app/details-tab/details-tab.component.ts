@@ -50,6 +50,7 @@ export class DetailsTabComponent{
   }
 
   updateParent(id: string){
+    this.file = this.parent;
     getFile(this.googleApiService, id)
     .then((file) => {
       this.parent = file;
