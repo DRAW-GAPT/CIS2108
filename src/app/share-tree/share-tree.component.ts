@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, Input } from '@angular/core';
 import { DataSet } from 'vis-data';
 import { Network } from 'vis-network';
 
@@ -8,26 +8,26 @@ import { Network } from 'vis-network';
   styleUrls: ['./share-tree.component.scss']
 })
 
-export class ShareTreeComponent implements OnInit, AfterViewInit {
+export class ShareTreeComponent implements AfterViewInit {
+  @Input() permissions: any;
   @ViewChild('visNetwork', { static: false }) visNetwork!: ElementRef;
   private networkInstance: any;
 
   constructor() {}
 
-  ngOnInit(): void {}
- 
   ngAfterViewInit(): void {
-    // create an array with nodes
-    const nodes = new DataSet<any>([
-      { id: 1, label: 'Rianne Azzopardi\nOwner', image: 'https://www.hartz.com/wp-content/uploads/2022/04/small-dog-owners-1.jpg', title: 'rianneazzopardi@gmail.com' },
-      { id: 2, label: 'David Briffa\nEditor', image: 'https://lh3.googleusercontent.com/a-/ACB-R5RxStIkJMNjIGOm84bx6y3QhwGMPCh0e01HUWDwBto=s64', title: 'rianneazzopardi@gmail.com' },
-      { id: 3, label: 'Andrea Borg\nEditor', image: 'https://lh3.googleusercontent.com/a-/ACB-R5RxStIkJMNjIGOm84bx6y3QhwGMPCh0e01HUWDwBto=s64', title: 'rianneazzopardi@gmail.com' },
-      { id: 4, label: 'Wayne Borg\nEditor', image: 'https://lh3.googleusercontent.com/a-/ACB-R5RxStIkJMNjIGOm84bx6y3QhwGMPCh0e01HUWDwBto=s64' , title: 'rianneazzopardi@gmail.com'},
-      { id: 5, label: 'Peter Xuereb\nViewer', image: 'https://lh3.googleusercontent.com/a-/ACB-R5RxStIkJMNjIGOm84bx6y3QhwGMPCh0e01HUWDwBto=s64' , title: 'rianneazzopardi@gmail.com'},
-      { id: 6, label: 'Michel Camilleri\nViewer',image: 'https://lh3.googleusercontent.com/a-/ACB-R5RxStIkJMNjIGOm84bx6y3QhwGMPCh0e01HUWDwBto=s64' , title: 'rianneazzopardi@gmail.com'},
-    ]);
+    let temp: any[] = []
+    this.permissions.forEach((p: any, i: number) => {
+      let name = p.id === 'anyoneWithLink' ? "Anyone with link" : p.displayName || "Unknown user"
+      temp.push({
+        id: i, 
+        label: name + '\n' + capitaliseFirstLetter(p.role), 
+        image: p.photoLink ?? 'https://lh3.googleusercontent.com/a/default-user=s64', 
+        title: p.id === 'anyoneWithLink' ? "Anyone with link" : p.emailAddress || "Unknown email address"
+      })
+    });
+    const nodes = new DataSet<any>(temp);
  
-    // create an array with edges
     const edges = new DataSet<any>([
       { from: '1', to: '5' },
       { from: '1', to: '6' },
@@ -63,5 +63,7 @@ export class ShareTreeComponent implements OnInit, AfterViewInit {
   }
 }
 
-
-
+function capitaliseFirstLetter(s: string): string{
+  let temp = s.charAt(0).toUpperCase() + s.slice(1);
+  return temp
+}
