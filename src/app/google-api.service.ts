@@ -75,7 +75,7 @@ export class GoogleAPIService {
       //this.getRevisions("1bpf_-tYrJ15ObIXkmjK5KDo_QgdhsT2Zgapxt-aJZM4"); //andrea's shared with me
       //console.log(this.getRevisions("1NVWPmLDQTx7jduWSH6uPFMi3uBRw4vRgsRUV_ENLuqw")); //waynefile
       
-      //await this.addPeopleToContacts();
+      await this.addPeopleToContacts("1SOtm5imnlfwB-O10L9Q2EOdbexraPp94");
     })
   }
 
@@ -310,60 +310,58 @@ export class GoogleAPIService {
     return false;
   }
 
-  async addPeopleToContacts(): Promise<void> {
-
+  async addPeopleToContacts(fileId: string): Promise<void> {
     try {
-      const folderListResponse = await gapi.client.drive.files.list({
-        q: "mimeType='application/vnd.google-apps.folder'",
-        fields: 'nextPageToken, files(id, name)',
+      // Get a list of all people who have shared the file with you and people you've shared the file with
+      const permissionListResponse = await gapi.client.drive.permissions.list({
+        fileId: fileId,
+        fields: 'permissions(id,emailAddress,displayName)',
       });
-
-      const folderList = folderListResponse.result.files;
+      const permissionList = permissionListResponse.result.permissions;
+      const peopleList = permissionList?.filter(
+        (p) => p.id !== 'anyoneWithLink' && p.emailAddress !== ''
+      );
   
-      if (folderList != undefined) {
-        for (const folder of folderList) {
-          const folderId = folder.id;
+      // Add each person to your Google Contacts
+      if (peopleList != undefined) {
+        for (const person of peopleList) {
+          const contactListResponse = await gapi.client.people.people.connections.list({
+            resourceName: 'people/me',
+            personFields: 'emailAddresses',
+          });
+          const contactList = contactListResponse.result.connections;
   
-          // Get a list of all people who have shared the folder with you or people you've shared a folder with
-          if (folderId != undefined) {
-            const permissionListResponse = await gapi.client.drive.permissions.list({
-              fileId: folderId,
-              fields: 'permissions(id,emailAddress,displayName)',
-            });
-            const permissionList = permissionListResponse.result.permissions;
-            const peopleList = permissionList?.filter(
-              (p) => p.id !== 'anyoneWithLink' && p.emailAddress !== ''
-            );
-  
-            // Add each person to your Google Contacts
-            if (peopleList != undefined) {
-              for (const person of peopleList) {
-                const newContact: gapi.client.people.Person = {
-                  names: [
-                    {
-                      givenName: person.displayName ?? '',
-                    },
-                  ],
-                  emailAddresses: [
-                    {
-                      value: person.emailAddress!,
-                      type: 'home',
-                    },
-                  ],
-                };
-                
-                await gapi.client.people.people.createContact({
-                  resource: newContact,
-                });
-              console.log('Contacts added successfully.');
-            }
+          // Check if the contact already exists
+          const existingContact = contactList?.find(
+            (c) => c.emailAddresses?.find((e) => e.value === person.emailAddress) !== undefined
+          );
+          if (existingContact !== undefined) {
+            console.log(`Contact ${person.emailAddress} already exists.`);
+            continue;
           }
+  
+          // Add the new contact
+          const newContact: gapi.client.people.Person = {
+            names: [
+              {
+                givenName: person.displayName ?? '',
+              },
+            ],
+            emailAddresses: [
+              {
+                value: person.emailAddress!,
+                type: 'draw',
+              },
+            ],
+          };
+          await gapi.client.people.people.createContact({
+            resource: newContact,
+          });
+          console.log(`Contact ${person.emailAddress} added successfully.`);
         }
       }
-    }
     } catch (err) {
       console.error(`Error adding contacts: ${err}`);
+    }
   }
-         
-}
 }
