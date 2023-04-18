@@ -53,8 +53,42 @@ export class ShareTreeComponent implements AfterViewInit {
       },
       interaction: {
         dragNodes: false,
-        dragView: false,
+        dragView: true,
         zoomView: false,
+        beforeDrag: (data: any) => {
+          const node = data.nodes[0];
+          const newPosition = data.pointer.canvas;
+          const nodePosition = this.networkInstance.getPositions([node])[node];
+          const container = this.visNetwork.nativeElement;
+    
+          // calculate the container bounds, taking into account padding
+          const containerBounds = {
+            minX: 50,
+            minY: 50,
+            maxX: container.clientWidth - 50,
+            maxY: container.clientHeight - 50,
+          };
+    
+          // calculate the new node position after dragging
+          const newNodePosition = {
+            x: nodePosition.x + newPosition.x - data.event.clientX,
+            y: nodePosition.y + newPosition.y - data.event.clientY,
+          };
+    
+          // check if the new position is within the container bounds
+          if (
+            newNodePosition.x < containerBounds.minX ||
+            newNodePosition.y < containerBounds.minY ||
+            newNodePosition.x > containerBounds.maxX ||
+            newNodePosition.y > containerBounds.maxY
+          ) {
+            // if it's outside the bounds, return false to prevent dragging
+            return false;
+          }
+    
+          // if it's within the bounds, return true to allow dragging
+          return true;
+        },
       },
       layout: {
         hierarchical: {
@@ -63,10 +97,45 @@ export class ShareTreeComponent implements AfterViewInit {
           nodeSpacing: 100,
         },
       },
+    
     };
  
     const data = { nodes, edges };
     this.networkInstance = new Network(container.nativeElement, data, options);
+  
+    // Save the original position of the network
+    const originalPosition = this.networkInstance.getViewPosition();
+  
+    // Add mousedown event listener to the container element
+    container.nativeElement.addEventListener('mousedown', (event: MouseEvent) => {
+      // Check if the mousedown event occurred inside the container
+      const { left, top } = container.nativeElement.getBoundingClientRect();
+      const x = event.clientX - left;
+      const y = event.clientY - top;
+      const isInsideContainer = x >= 0 && x <= container.nativeElement.offsetWidth
+                            && y >= 0 && y <= container.nativeElement.offsetHeight;
+      
+      if (isInsideContainer) {
+        // Release the current dragging gesture
+        this.networkInstance.releaseFunction();
+      }
+    });
+  
+    // Add dragEnd event listener to reset the position if the network is dragged outside the container
+    this.networkInstance.on('dragEnd', (params: any) => {
+      const { x, y } = this.networkInstance.getViewPosition();
+      const { left, top } = container.nativeElement.getBoundingClientRect();
+      const offsetX = x - left;
+      const offsetY = y - top;
+      const isWithinContainer = offsetX >= 0 && offsetX <= container.nativeElement.offsetWidth
+                              && offsetY >= 0 && offsetY <= container.nativeElement.offsetHeight;
+      if (!isWithinContainer) {
+        this.networkInstance.setView(originalPosition);
+      }
+    });
+  
+  
+
   }
 
   zoomIn() {
