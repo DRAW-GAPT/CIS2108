@@ -10,12 +10,14 @@ import { Network } from 'vis-network';
 
 export class ShareTreeComponent implements AfterViewInit {
   @Input() permissions: any;
-  @ViewChild('visNetwork', { static: false }) visNetwork!: ElementRef;
+  @ViewChild('visNetwork', { static: true }) visNetwork!: ElementRef;
   private networkInstance: any;
 
   constructor() {}
 
   ngAfterViewInit(): void {
+    const container = this.visNetwork;
+
     let temp: any[] = []
     this.permissions.forEach((p: any, i: number) => {
       let name = p.id === 'anyoneWithLink' ? "Anyone with link" : p.displayName || "Unknown user"
@@ -45,13 +47,14 @@ export class ShareTreeComponent implements AfterViewInit {
         }
       },
       nodes: {
-            shape: 'circularImage',
-            image: 'image',
-            label: 'Label'
-        },
+        shape: 'circularImage',
+        image: 'image',
+        label: 'Label'
+      },
       interaction: {
-              dragNodes: false,
-              dragView: false
+        dragNodes: false,
+        dragView: false,
+        zoomView: false,
       },
       layout: {
         hierarchical: {
@@ -63,9 +66,17 @@ export class ShareTreeComponent implements AfterViewInit {
     };
  
     const data = { nodes, edges };
- 
-    const container = this.visNetwork;
     this.networkInstance = new Network(container.nativeElement, data, options);
+  }
+
+  zoomIn() {
+    const newScale = this.networkInstance.getScale() * 1.5;
+    this.networkInstance.moveTo({ scale: newScale });
+  }
+
+  zoomOut() {
+    const newScale = this.networkInstance.getScale() / 1.5;
+    this.networkInstance.moveTo({ scale: newScale });
   }
 }
 
@@ -73,3 +84,4 @@ function capitaliseFirstLetter(s: string): string{
   let temp = s.charAt(0).toUpperCase() + s.slice(1);
   return temp
 }
+
