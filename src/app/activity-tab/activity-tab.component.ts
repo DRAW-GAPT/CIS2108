@@ -31,8 +31,9 @@ export class ActivityTabComponent {
     this._transformer,
     node => node.level,
     node => node.expandable,
-    node => node.children,
+    node => Array.isArray(node.children) ? node.children : [],
   );
+  
 
   dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
   hasChild = (_: number, node: any) => node.expandable;
@@ -49,42 +50,46 @@ export class ActivityTabComponent {
   }
 
 
-  ngOnInit(): void{
-    //TODO replace parameter with current file
-    this.activities = this.googleApiService.listActivities(this.id)
-    .then((res: any) => {
-      console.log(res);
-      this.activities = this.formatActivities(res);
-      this.dataSource.data = this.activities;
-    })
-    .catch((error: any) => {
-      console.error(error);
-    });
+  ngOnInit(): void {
+    this.googleApiService.listActivities(this.id)
+      .then(async (res: any) => {
+        console.log(res);
+        const activities = await this.formatActivities(res);
+        this.dataSource.data = activities;
+      })
+      .catch((error: any) => {
+        console.error(error);
+      });
   }
 
-  formatActivities(activities: any[]): any{
+  async formatActivities(activities: any[]): Promise<any[]>{
     let temp: any[] = [];
-    // activities = [activities[0]];
-    activities.forEach(a => {
+  
+    for (const a of activities) {
       let date: string = formatTimestamp(a.timestamp);
+  
       if (a.primaryActionDetail["permissionChange"] !== undefined) {
+        const person = await this.googleApiService.getUserInfo(a.actors[0].user.knownUser.personName);
+  
         temp.push({
-          name: a.actors[0].user.knownUser.personName + " changed the share settings",
-          children: this.getChildren(a.primaryActionDetail.permissionChange), //expandable node, foreach in permissionChange => {key}: {user} ({role})
+          name: person + " changed the share settings",
+          children: this.getChildren(a.primaryActionDetail.permissionChange),
           date: date
         });
-      }
-      else{
+      } else {
         let verb: string | undefined = this.past_tense.get(Object.keys(a.primaryActionDetail)[0]);
-          if(verb !== undefined){
-            temp.push({
-              name: a.actors[0].user.knownUser.personName + " " + verb + " the item",
-              children: [], // node not expandable
-              date: date
-            });
-          }
+        const person = await this.googleApiService.getUserInfo(a.actors[0].user.knownUser.personName);
+
+        if (verb !== undefined) {
+          temp.push({
+            name: person + " " + verb + " the item",
+            children: [],
+            date: date
+          });
+        }
       }
-    });
+    }
+  
     return temp;
   }
 

@@ -266,21 +266,16 @@ export class GoogleAPIService {
 }
     
   //retrieves user info, requires the user to be in your contacts else only returns their profile picture
-  async getUserInfo(userId: string) {
-
+  async getUserInfo(userId: string): Promise<string | false> {
     const res = await gapi.client.people.people.get({
       resourceName: userId,
-      personFields: 'names,emailAddresses,photos'
+      personFields: 'names'
     });
   
-    if (res.status === 200 && res.result.names !== undefined && res.result.emailAddresses !== undefined && res.result.photos !== undefined) {
-      // const name = res.result.names[0].displayName;
-      // const emailAddresses = res.result.emailAddresses[0].value;
-      // const photo = res.result.photos[0].url;
-
-      return res.result;
-     }
-   return false;    
+    if (res.status === 200 && res.result.names !== undefined) {
+      return res.result.names[0].displayName || "";
+    }
+    return false;    
   }
 
   //Requests a list of file modifications that occured for the file with the id inputted as parameter
@@ -308,7 +303,9 @@ export class GoogleAPIService {
   //Adding users to your contacts is the only way this information can be gleaned due to Google's privacy policies
   async addPeopleToContacts(fileId: string): Promise<void> {
   
+
     try {
+      
       // Check if the label "draw" exists; create it if it doesn't
       const drawLabel = await this.getOrCreateLabel();
   
