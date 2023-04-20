@@ -46,6 +46,7 @@ import { SortByComponent } from './sort-by/sort-by.component';
 import { ActivityTabComponent } from './activity-tab/activity-tab.component';
 import { VersionTabComponent } from './version-tab/version-tab.component';
 import {MatListModule} from '@angular/material/list';
+import { CommonModule } from '@angular/common';
 
 
 
@@ -71,6 +72,7 @@ import {MatListModule} from '@angular/material/list';
     VersionTabComponent,
   ],
   imports: [
+    CommonModule,
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,

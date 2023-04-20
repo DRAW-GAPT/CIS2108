@@ -6,8 +6,7 @@ import {BehaviorSubject, merge, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import { GoogleAPIService } from '../google-api.service';
 import { firstTrue, getMax, getMin, truePromise } from '../util';
-import { SortByComponent, SortSetting } from '../sort-by/sort-by.component';
-import { NgModule } from '@angular/core';
+import { SortSetting } from '../sort-by/sort-by.component';
 
 const byteSize = require('byte-size')
 
@@ -42,8 +41,15 @@ export class FileNode{
 
 export class TreeDatabase {
 
+  roots:gapi.client.drive.File[] = []
+  nextPageToken?:string;
+
   constructor (public googleApiService:GoogleAPIService){
     
+  }
+
+  showGetMoreRoots(){
+    return this.nextPageToken != undefined;
   }
 
   /** Initial data from database */
@@ -62,12 +68,17 @@ export class TreeDatabase {
 
   async getRoots(_treeComponent: FiletreeComponent,reqID:number,filterQuery:string, orderBy:string|undefined) {
     
-
+    
     console.log("getting file samples for roots",reqID);
 
 
-    let files:gapi.client.drive.File[] = (await (this.googleApiService.getFiles([],500,filterQuery, orderBy))).files;
+    let fileReq = await (this.googleApiService.getFiles([],500,filterQuery, orderBy))
+    let files:gapi.client.drive.File[] = fileReq.files;
   
+    if(reqID == _treeComponent.latestRootsRequestID)
+      this.nextPageToken = fileReq.nextPageToken;
+
+
     console.log("getting roots from samples",reqID);
 
 
@@ -99,6 +110,10 @@ export class TreeDatabase {
         sorted.reverse();
       
     console.log("roots gotten",reqID);
+
+    //copy roots to keep a list of already shown roots.
+    if(reqID == _treeComponent.latestRootsRequestID)
+      this.roots = [...sorted]
 
   
     return sorted;
@@ -380,6 +395,8 @@ export class FiletreeComponent {
   orderBy:string | undefined;
   _sortOrder: SortSetting|undefined;
 
+  showGetMoreRoots: boolean = false;
+
   @Input ()
   public set sortOrder(value:SortSetting | undefined){
     this._sortOrder = value
@@ -451,6 +468,7 @@ export class FiletreeComponent {
 
     var startTime = performance.now()
     let data = await database.initialData(this,reqID,this._filterQuery, this.orderBy);
+    this.showGetMoreRoots = database.showGetMoreRoots();
     var endTime = performance.now()
     console.log(`roots took ${endTime - startTime} milliseconds`)
 
