@@ -25,6 +25,6 @@
       <mat-progress-spinner class = "spinner" *ngIf="node.isLoading" mode="indeterminate"/>
     </mat-tree-node>
   </mat-tree>
-  <div *ngIf="showGetMoreRoots == true">
-    <button >get more roots</button>
+  <div *ngIf="showGetMoreRoots && !loading">
+    <button (click)="getMoreRoots()">get more roots</button>
   </div>

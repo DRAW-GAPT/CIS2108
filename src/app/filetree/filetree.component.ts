@@ -40,6 +40,7 @@ export class FileNode{
 
 
 export class TreeDatabase {
+  
 
   roots:gapi.client.drive.File[] = []
   nextPageToken?:string;
@@ -61,9 +62,51 @@ export class TreeDatabase {
     
     return (await this.getRoots(_treeComponent, reqID, filterQuery, orderBy)).map(
 
-      //fixme
       f => new FileNode(f, 1, f.mimeType == "application/vnd.google-apps.folder"),
-    );;
+    );
+  }
+
+  async getMoreRoots(_treeComponent: FiletreeComponent,prevFiles:FileNode[],reqID:number,filterQuery:string, orderBy:string|undefined): Promise<FileNode[]> {
+    
+    let newRootCount = 0;
+
+    let fileNodes = [...prevFiles];
+    
+    while (this.nextPageToken && newRootCount < 2){
+      let fileReq = await (this.googleApiService.getFiles([],500,filterQuery, orderBy,this.nextPageToken))
+      let files:gapi.client.drive.File[] = fileReq.files;
+
+      if(reqID != _treeComponent.latestRootsRequestID)
+        //cancelled
+        return prevFiles;
+
+      this.nextPageToken = fileReq.nextPageToken;
+
+      console.log("getting roots from samples",reqID);
+
+
+      let roots = await Promise.all(files.map(f=>this.getRoot(_treeComponent,reqID,f)))
+    
+      console.log("uniq roots",reqID);
+
+
+      let uniqRoots = _.uniqBy(roots,'id');
+
+      let newRoots = _.filter(uniqRoots,(possibleNewRoot:gapi.client.drive.File) => {return !this.roots.some(r=>r.id == possibleNewRoot.id)});
+
+
+      newRootCount += newRoots.length;
+
+      this.roots.push(...newRoots);
+
+      fileNodes.push(...newRoots.map(f => new FileNode(f, 1, f.mimeType == "application/vnd.google-apps.folder")))
+
+      console.log("get more roots progress: "+newRootCount+" / " +2)
+    }
+
+    return fileNodes;
+
+
   }
 
   async getRoots(_treeComponent: FiletreeComponent,reqID:number,filterQuery:string, orderBy:string|undefined) {
@@ -382,6 +425,7 @@ export class DynamicDataSource implements DataSource<FileNode> {
 })
 
 export class FiletreeComponent {
+
   constructor(private database: TreeDatabase, googleApiService:GoogleAPIService) {
 
     this.treeControl = new FlatTreeControl<FileNode>(this.getLevel, this.isExpandable);
@@ -396,6 +440,8 @@ export class FiletreeComponent {
   _sortOrder: SortSetting|undefined;
 
   showGetMoreRoots: boolean = false;
+  loading: boolean = true;
+
 
   @Input ()
   public set sortOrder(value:SortSetting | undefined){
@@ -466,6 +512,8 @@ export class FiletreeComponent {
     this.latestRootsRequestID++;
     let reqID:number = this.latestRootsRequestID
 
+    this.loading = true;
+
     var startTime = performance.now()
     let data = await database.initialData(this,reqID,this._filterQuery, this.orderBy);
     this.showGetMoreRoots = database.showGetMoreRoots();
@@ -476,11 +524,34 @@ export class FiletreeComponent {
       //only accept data if it hasnt been superseeded by a newer version
      this.dataSource.data = data;
      console.log("accepted roots from ",reqID)
+     this.loading = false;
     } else{
       console.log("disposed roots from ",reqID)
 
     }
+  }
 
+  async getMoreRoots() {
+    this.latestRootsRequestID++;
+    let reqID:number = this.latestRootsRequestID
+
+    this.loading = true;
+
+    var startTime = performance.now()
+    let data = await this.database.getMoreRoots(this,this.dataSource.data,reqID,this._filterQuery, this.orderBy);
+    this.showGetMoreRoots = this.database.showGetMoreRoots();
+    var endTime = performance.now()
+    console.log(`more roots took ${endTime - startTime} milliseconds`)
+
+    if(reqID == this.latestRootsRequestID){
+      //only accept data if it hasnt been superseeded by a newer version
+     this.dataSource.data = data;
+     console.log("accepted more roots from ",reqID)
+     this.loading = false;
+    } else{
+      console.log("disposed more roots from ",reqID)
+
+    }
   }
 
   treeControl: FlatTreeControl<FileNode>;
