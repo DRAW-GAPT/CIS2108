@@ -46,6 +46,7 @@ import { SortByComponent } from './sort-by/sort-by.component';
 import { ActivityTabComponent } from './activity-tab/activity-tab.component';
 import { VersionTabComponent } from './version-tab/version-tab.component';
 import {MatListModule} from '@angular/material/list';
+import { ContactsDialogComponent } from './contacts-dialog/contacts-dialog.component';
 import { ShareTreeComponent } from './share-tree/share-tree.component';
 
 
@@ -70,6 +71,7 @@ import { ShareTreeComponent } from './share-tree/share-tree.component';
     SortByComponent,
     ActivityTabComponent,
     VersionTabComponent,
+    ContactsDialogComponent,
     ShareTreeComponent,
   ],
   imports: [
