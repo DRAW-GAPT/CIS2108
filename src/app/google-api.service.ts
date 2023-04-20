@@ -67,17 +67,6 @@ export class GoogleAPIService {
       await this.getCookie();
       resolve(a && b);
 
-
-      //this.getUserInfo("people/108047227550681835497"); //me
-      //console.log(this.getUserInfo("people/105228402161058122242")); //andrea
-      //console.log(this.getUserInfo("people/117534848934012919819")); //wayne
-
-      //this.getRevisions("1XtikHS01Kl-kKnT9HfLYgavSbknkd42r"); //mine
-      //this.getRevisions("1bpf_-tYrJ15ObIXkmjK5KDo_QgdhsT2Zgapxt-aJZM4"); //andrea's shared with me
-      //console.log(this.getRevisions("1NVWPmLDQTx7jduWSH6uPFMi3uBRw4vRgsRUV_ENLuqw")); //waynefile
-      
-
-
     })
   }
 
@@ -266,7 +255,7 @@ export class GoogleAPIService {
 }
     
   //retrieves user info, requires the user to be in your contacts else only returns their profile picture
-  async getUserInfo(userId: string): Promise<string | false> {
+  async getUserInfo(userId: string): Promise<string | undefined> {
     const res = await gapi.client.people.people.get({
       resourceName: userId,
       personFields: 'names'
@@ -275,9 +264,9 @@ export class GoogleAPIService {
     if (res.status === 200 && res.result.names !== undefined) {
       return res.result.names[0].displayName || "";
     }
-    return false;    
+    return undefined;
   }
-
+  
   //Requests a list of file modifications that occured for the file with the id inputted as parameter
   //Requires that you have access to that file 
   async getRevisions(fileId: string) {
@@ -302,7 +291,6 @@ export class GoogleAPIService {
   //Used by item-page in order to get access to information such as names and emails.
   //Adding users to your contacts is the only way this information can be gleaned due to Google's privacy policies
   async addPeopleToContacts(fileId: string): Promise<void> {
-  
 
     try {
       
@@ -394,7 +382,6 @@ export class GoogleAPIService {
       console.log(`Label created`);
       return createLabelResponse.result;
     }
-  
     return drawLabel;
   }
 }

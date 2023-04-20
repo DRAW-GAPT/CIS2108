@@ -62,6 +62,8 @@ export class ActivityTabComponent {
       });
   }
 
+  //used in conjunction with the userInfo method in the googleApiService in order to get user informartion through contacts
+  //people API requires users to be in your contacts before giving you access to their information 
   async formatActivities(activities: any[]): Promise<any[]>{
     let temp: any[] = [];
   
@@ -73,7 +75,7 @@ export class ActivityTabComponent {
   
         temp.push({
           name: person + " changed the share settings",
-          children: this.getChildren(a.primaryActionDetail.permissionChange),
+          children: await this.getChildren(a.primaryActionDetail.permissionChange),
           date: date
         });
       } else {
@@ -93,24 +95,29 @@ export class ActivityTabComponent {
     return temp;
   }
 
-  getChildren(a: any){
+  //works similarly to the formatActivities function, but for the child folders rather than the roots.
+  async getChildren(a: any) {
     let children: any[] = [];
-    for(const key in a){
-      a[key].forEach((permission: any) => {
-        let name = "Anyone with link";
-        if(permission.user !== undefined){ name = permission.user.knownUser.personName;}
-        children.push(
-          {
-            name: capitalizeFirst(key.replace("Permission", " permission")) + ": " + name + " (" + capitalizeFirst(permission.role) + ")",
-            children:[],
+    for (const key in a) {
+      for (const permission of a[key]) {
+        let id = '';
+        if (permission.user !== undefined && permission.user.knownUser !== undefined) {
+          id = permission.user.knownUser.personName;
+          console.log(permission.user.knownUser.personName)
+          const personName = await this.googleApiService.getUserInfo(permission.user.knownUser.personName);
+
+          children.push({
+            name: capitalizeFirst(key.replace("Permission", " permission")) + ": " + personName + " (" + capitalizeFirst(permission.role) + ")",
+            children: [],
             date: ''
-          }
-        );
-      });
+          });
+        }
+      }
+      return children;
     }
-    return children;
-  }
-}
+    return "Unknown user";
+  }   
+}  
 
 function formatTimestamp(date: string): string{
   let options: any = { day: "numeric", month: "long", year: "numeric", hour: "numeric", minute: "numeric"};
