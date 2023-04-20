@@ -255,17 +255,21 @@ export class GoogleAPIService {
 }
     
   //retrieves user info, requires the user to be in your contacts else only returns their profile picture
-  async getUserInfo(userId: string): Promise<string | undefined> {
+  async getUserInfo(userId: string): Promise<{ name: string, email?: string, photoUrl?: string }> {
     const res = await gapi.client.people.people.get({
       resourceName: userId,
-      personFields: 'names'
+      personFields: 'names,emailAddresses,photos'
     });
   
     if (res.status === 200 && res.result.names !== undefined) {
-      return res.result.names[0].displayName || "";
+      const name = res.result.names[0].displayName || "";
+      const email = res.result.emailAddresses ? res.result.emailAddresses[0].value : undefined;
+      const photoUrl = res.result.photos ? res.result.photos[0].url : undefined;
+      return { name, email, photoUrl };
     }
-    return undefined;
+    throw new Error('Failed to get user info');
   }
+  
   
   //Requests a list of file modifications that occured for the file with the id inputted as parameter
   //Requires that you have access to that file 

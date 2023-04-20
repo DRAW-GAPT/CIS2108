@@ -72,9 +72,9 @@ export class ActivityTabComponent {
   
       if (a.primaryActionDetail["permissionChange"] !== undefined) {
         const person = await this.googleApiService.getUserInfo(a.actors[0].user.knownUser.personName);
-  
+        
         temp.push({
-          name: person + " changed the share settings",
+          name: person.name + " changed the share settings",
           children: await this.getChildren(a.primaryActionDetail.permissionChange),
           date: date
         });
@@ -83,8 +83,10 @@ export class ActivityTabComponent {
         const person = await this.googleApiService.getUserInfo(a.actors[0].user.knownUser.personName);
 
         if (verb !== undefined) {
+        //console.log(person.email) TODO Bind these
+        //console.log(person.photoUrl)
           temp.push({
-            name: person + " " + verb + " the item",
+            name: person.name + " " + verb + " the item",
             children: [],
             date: date
           });
@@ -103,11 +105,12 @@ export class ActivityTabComponent {
         let id = '';
         if (permission.user !== undefined && permission.user.knownUser !== undefined) {
           id = permission.user.knownUser.personName;
-          console.log(permission.user.knownUser.personName)
-          const personName = await this.googleApiService.getUserInfo(permission.user.knownUser.personName);
+          const person = await this.googleApiService.getUserInfo(permission.user.knownUser.personName);
+          //console.log(person.email) TODO Bind these
+          //console.log(person.photoUrl)
 
           children.push({
-            name: capitalizeFirst(key.replace("Permission", " permission")) + ": " + personName + " (" + capitalizeFirst(permission.role) + ")",
+            name: capitalizeFirst(key.replace("Permission", " permission")) + ": " + person.name + " (" + capitalizeFirst(permission.role) + ")",
             children: [],
             date: ''
           });
