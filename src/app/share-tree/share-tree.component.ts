@@ -18,12 +18,13 @@ export class ShareTreeComponent implements AfterViewInit {
 
   @Input()
   set nodes(value: any) {
+    console.log("nodes setter")
+
     this._nodes = value;
     if (this.networkInstance) {
-      const nodes = new DataSet<any>(this._nodes);
-      this.networkInstance.setData({ nodes });
+      this.updateGraph();
     }
-  }
+  }  
 
   get edges(): any {
     return this._edges;
@@ -31,11 +32,21 @@ export class ShareTreeComponent implements AfterViewInit {
 
   @Input()
   set edges(value: any) {
+    console.log("edge setter")
+
     this._edges = value;
     if (this.networkInstance) {
-      const edges = new DataSet<any>(this._edges);
-      this.networkInstance.setData({ edges });
+      this.updateGraph();
     }
+  }
+
+  updateGraph(){
+    console.log("updateGraph")
+    if(!this.nodes || !this.edges)
+      return;
+    const nodes = new DataSet<any>(this._nodes);
+    const edges = new DataSet<any>(this.edges);
+    this.networkInstance.setData({ nodes,edges });
   }
 
   @ViewChild('visNetwork', { static: true }) visNetwork!: ElementRef;
@@ -44,7 +55,7 @@ export class ShareTreeComponent implements AfterViewInit {
   constructor() {}
 
   ngAfterViewInit(): void {
-    console.log(this._nodes, this._edges)
+    console.log(this.nodes, this._edges)
     const container = this.visNetwork;  
     const nodes = new DataSet<any>(this._nodes);
     const edges = new DataSet<any>(this._edges);
