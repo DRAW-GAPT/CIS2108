@@ -18,7 +18,9 @@ export class ActivityTabComponent {
       expandable: !!node.children && node.children.length > 0,
       name: node.name,
       level: level,
-      date: node.date
+      date: node.date,
+      image: node.image,
+      email: node.email
     };
   }
 
@@ -76,19 +78,22 @@ export class ActivityTabComponent {
         temp.push({
           name: person.name + " changed the share settings",
           children: await this.getChildren(a.primaryActionDetail.permissionChange),
-          date: date
+          date: date,
+          image: person.photoUrl,
+          email: person.email
         });
       } else {
         let verb: string | undefined = this.past_tense.get(Object.keys(a.primaryActionDetail)[0]);
         const person = await this.googleApiService.getUserInfo(a.actors[0].user.knownUser.personName);
 
         if (verb !== undefined) {
-        //console.log(person.email) TODO Bind these
-        //console.log(person.photoUrl)
+        //console.log(person.email)
           temp.push({
             name: person.name + " " + verb + " the item",
             children: [],
-            date: date
+            date: date,
+            image: person.photoUrl,
+            email: person.email
           });
         }
       }
@@ -106,13 +111,13 @@ export class ActivityTabComponent {
         if (permission.user !== undefined && permission.user.knownUser !== undefined) {
           id = permission.user.knownUser.personName;
           const person = await this.googleApiService.getUserInfo(permission.user.knownUser.personName);
-          //console.log(person.email) TODO Bind these
-          //console.log(person.photoUrl)
 
           children.push({
             name: capitalizeFirst(key.replace("Permission", " permission")) + ": " + person.name + " (" + capitalizeFirst(permission.role) + ")",
             children: [],
-            date: ''
+            date: '',
+            image: person.photoUrl,
+            email: person.email
           });
         }
       }
