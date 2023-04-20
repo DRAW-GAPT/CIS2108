@@ -16,18 +16,34 @@ export class ItemDetailsComponent {
   ) {}
 
   @Input() file: any;
+  nodes: any;
+  edges: any;
   sub: any;
   id: any;
 
-  ngOnInit() {
-    this.sub = this._Activatedroute.paramMap.subscribe((params) => {
+
+  async ngOnInit() {
+      this.sub = this._Activatedroute.paramMap.subscribe((params) => {
       this.id = params.get('id');
+      
       getFile(this.googleApiService, this.id)
       .then((file) => {
         this.file = file;
-        console.log(file.name);
       })
       .catch((error) => {
+        console.error(error);
+      });
+
+      this.googleApiService.listActivities(this.id)
+      .then(async (res: any) => {
+        let filtered = res.filter((obj: any) => obj.primaryActionDetail.permissionChange !== undefined);
+        filtered.sort((a: any, b: any) =>{
+          return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
+        })
+        this.nodes = this.getNodes(this.file)
+        this.edges = this.getEdges()        
+      })
+      .catch((error: any) => {
         console.error(error);
       });
     });
@@ -35,6 +51,30 @@ export class ItemDetailsComponent {
 
   ngOnDestroy() {
     if (this.sub) this.sub.unsubscribe();
+  }
+
+  getNodes(file: any): any{
+    let temp: any[] = []
+    file.permissions?.forEach((p: any, i: number) => {
+      let name = p.id === 'anyoneWithLink' ? "Anyone with link" : p.displayName || "Unknown user"
+      temp.push({
+        id: i, 
+        label: name + '\n' + (p.role), 
+        image: p.photoLink ?? 'https://lh3.googleusercontent.com/a/default-user=s64', 
+        title: p.id === 'anyoneWithLink' ? "Anyone with link" : p.emailAddress || "Unknown email address" 
+      })
+    });
+    return temp;
+  }
+
+  getEdges(): any{
+    return[
+      { from: '1', to: '5' },
+      { from: '1', to: '6' },
+      { from: '1', to: '3' },
+      { from: '3', to: '4' },
+      { from: '3', to: '2' }
+    ]
   }
 }
 

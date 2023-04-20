@@ -9,35 +9,45 @@ import { Network } from 'vis-network';
 })
 
 export class ShareTreeComponent implements AfterViewInit {
-  @Input() permissions: any;
+  private _nodes: any;
+  private _edges: any;
+  
+  get nodes(): any {
+    return this._nodes;
+  }
+
+  @Input()
+  set nodes(value: any) {
+    this._nodes = value;
+    if (this.networkInstance) {
+      const nodes = new DataSet<any>(this._nodes);
+      this.networkInstance.setData({ nodes });
+    }
+  }
+
+  get edges(): any {
+    return this._edges;
+  }
+
+  @Input()
+  set edges(value: any) {
+    this._edges = value;
+    if (this.networkInstance) {
+      const edges = new DataSet<any>(this._edges);
+      this.networkInstance.setData({ edges });
+    }
+  }
+
   @ViewChild('visNetwork', { static: true }) visNetwork!: ElementRef;
   private networkInstance: any;
 
   constructor() {}
 
   ngAfterViewInit(): void {
-    const container = this.visNetwork;
-
-    let temp: any[] = []
-    this.permissions.forEach((p: any, i: number) => {
-      let name = p.id === 'anyoneWithLink' ? "Anyone with link" : p.displayName || "Unknown user"
-      temp.push({
-        id: i, 
-        label: name + '\n' + capitaliseFirstLetter(p.role), 
-        image: p.photoLink ?? 'https://lh3.googleusercontent.com/a/default-user=s64', 
-        title: p.id === 'anyoneWithLink' ? "Anyone with link" : p.emailAddress || "Unknown email address"      })
-    });
-  
-    const nodes = new DataSet<any>(temp);
- 
-    const edges = new DataSet<any>([
-      { from: '1', to: '5' },
-      { from: '1', to: '6' },
-      { from: '1', to: '3' },
-      { from: '3', to: '4' },
-      { from: '3', to: '2' },
-    ]);
-
+    console.log(this._nodes, this._edges)
+    const container = this.visNetwork;  
+    const nodes = new DataSet<any>(this._nodes);
+    const edges = new DataSet<any>(this._edges);
     const options = {
       edges: {
         arrows: {
@@ -133,9 +143,6 @@ export class ShareTreeComponent implements AfterViewInit {
         this.networkInstance.setView(originalPosition);
       }
     });
-  
-  
-
   }
 
   zoomIn() {
