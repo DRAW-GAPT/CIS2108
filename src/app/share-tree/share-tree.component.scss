@@ -1,0 +1,26 @@
+#tree {
+    width: 90vw;
+    height: 80vh;
+}
+.button-container{
+    display: flex;
+    flex-direction: row;
+}
+
+button{
+    color: black;
+    background-color: lightgray;
+    width: 3vw;
+    height: 3vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: lightgray;
+    border-radius: 1vw;
+    border-color: lightgray;
+    margin-right: 0.5vw;
+}
+
+.mat-icon{
+    font-size: 2vw !important;
+}

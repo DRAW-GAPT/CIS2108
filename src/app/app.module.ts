@@ -47,6 +47,7 @@ import { ActivityTabComponent } from './activity-tab/activity-tab.component';
 import { VersionTabComponent } from './version-tab/version-tab.component';
 import {MatListModule} from '@angular/material/list';
 import { ContactsDialogComponent } from './contacts-dialog/contacts-dialog.component';
+import { ShareTreeComponent } from './share-tree/share-tree.component';
 
 
 
@@ -71,6 +72,7 @@ import { ContactsDialogComponent } from './contacts-dialog/contacts-dialog.compo
     ActivityTabComponent,
     VersionTabComponent,
     ContactsDialogComponent,
+    ShareTreeComponent,
   ],
   imports: [
     BrowserModule,
