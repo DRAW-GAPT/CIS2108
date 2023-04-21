@@ -171,5 +171,22 @@ export class FilterChipsComponent {
     this.updateFilterQuery.emit(subqueries.map(s=>"("+s+")").join(" and "))
   } 
 
+  clearFilters() {
+    this.owners = [];
+    this.sharedWith = [];
+    this.permissionsSelected = [];
+    this.startDate = null;
+    this.endDate = null;
+    this.searchTerm = undefined;
+
+    this.isCheckedOwner = false;
+    this.isCheckedWriter = false;
+    this.isCheckedReader = false;
+  
+    this.updateFilterQuery.emit('');
+    this._adapter.setLocale(this._locale);
+  }
+  
+
 }
 
