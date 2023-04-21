@@ -1,21 +1,31 @@
-<mat-tree [dataSource]="dataSource" [treeControl]="treeControl" style="background-color: #F8F9FA;">
+<mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
     
     <!-- Non-expandable nodes -->
-    <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+    <mat-tree-node
+    *matTreeNodeDef="let node" 
+    matTreeNodePadding 
+    matTooltip={{node.email}}     
+    matTooltipPosition="left">
       <button mat-icon-button disabled></button>
+      <img src={{node.image}}/>
       {{node.name}}
       <br/>
       {{node.date}}
     </mat-tree-node>
 
     <!-- Expandable nodes -->
-    <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+    <mat-tree-node 
+    *matTreeNodeDef="let node;when: hasChild" 
+    matTreeNodePadding 
+    matTooltip={{node.email}}
+    matTooltipPosition="left">
       <button mat-icon-button matTreeNodeToggle
               [attr.aria-label]="'Toggle ' + node.name">
         <mat-icon class="mat-icon-rtl-mirror">
           {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
         </mat-icon>
       </button>
+      <img src={{node.image}}/>
       {{node.name}}
       <br/>
       {{node.date}}
