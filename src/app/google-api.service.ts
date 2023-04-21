@@ -236,7 +236,7 @@ export class GoogleAPIService {
     try {
       response = await gapi.client.driveactivity.activity.query({
         resource: {
-          pageSize: 10,
+          pageSize: 30, //TODO Make infinite
           itemName: "items/" + fileId
 
         }
@@ -272,7 +272,7 @@ export class GoogleAPIService {
       console.error(error);
     }
     
-    // Return default "unknown user" object
+    // Return unknown user if the person isn't in your contact list and a default photo
     return { 
       name: "Unknown user",
       photoUrl: "https://lh3.googleusercontent.com/a/default-user=s64"
