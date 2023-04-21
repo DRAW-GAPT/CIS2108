@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, Input } from '@angular/core';
+import { forEach } from 'lodash';
 import { DataSet } from 'vis-data';
 import { Network } from 'vis-network';
 
@@ -70,7 +71,7 @@ export class ShareTreeComponent implements AfterViewInit {
       nodes: {
         shape: 'circularImage',
         image: 'image',
-        label: 'Label'
+        label: 'Label',
       },
       interaction: {
         dragNodes: false,
