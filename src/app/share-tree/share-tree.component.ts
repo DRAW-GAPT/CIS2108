@@ -45,6 +45,9 @@ export class ShareTreeComponent implements AfterViewInit {
     console.log("updateGraph")
     if(!this.nodes || !this.edges)
       return;
+    this.nodes.forEach((n: any) => {
+      if(n.outline === "dashed") {  n.shapeProperties = {borderDashes: [5, 5]} }
+    });
     const nodes = new DataSet<any>(this._nodes);
     const edges = new DataSet<any>(this.edges);
     this.networkInstance.setData({ nodes,edges });
