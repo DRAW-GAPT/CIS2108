@@ -91,7 +91,7 @@ export class FilterChipsComponent {
     this.updateFilter();
 
   }
-  
+
   removeShared(shared: String): void {
     const index = this.sharedWith.indexOf(shared);
     if (index >= 0) {
@@ -170,5 +170,6 @@ export class FilterChipsComponent {
     }
     this.updateFilterQuery.emit(subqueries.map(s=>"("+s+")").join(" and "))
   } 
+
 }
 
