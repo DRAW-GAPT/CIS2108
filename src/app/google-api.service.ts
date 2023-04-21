@@ -256,19 +256,29 @@ export class GoogleAPIService {
     
   //retrieves user info, requires the user to be in your contacts else only returns their profile picture
   async getUserInfo(userId: string): Promise<{ name: string, email?: string, photoUrl?: string }> {
-    const res = await gapi.client.people.people.get({
-      resourceName: userId,
-      personFields: 'names,emailAddresses,photos'
-    });
-  
-    if (res.status === 200 && res.result.names !== undefined) {
-      const name = res.result.names[0].displayName || "";
-      const email = res.result.emailAddresses ? res.result.emailAddresses[0].value : undefined;
-      const photoUrl = res.result.photos ? res.result.photos[0].url : undefined;
-      return { name, email, photoUrl };
+    try {
+      const res = await gapi.client.people.people.get({
+        resourceName: userId,
+        personFields: 'names,emailAddresses,photos'
+      });
+    
+      if (res.status === 200 && res.result.names !== undefined) {
+        const name = res.result.names[0].displayName || "";
+        const email = res.result.emailAddresses ? res.result.emailAddresses[0].value : undefined;
+        const photoUrl = res.result.photos ? res.result.photos[0].url : undefined;
+        return { name, email, photoUrl };
+      }
+    } catch (error) {
+      console.error(error);
     }
-    throw new Error('Failed to get user info');
+    
+    // Return default "unknown user" object
+    return { 
+      name: "Unknown user",
+      photoUrl: "https://lh3.googleusercontent.com/a/default-user=s64"
+    };
   }
+  
   
   
   //Requests a list of file modifications that occured for the file with the id inputted as parameter

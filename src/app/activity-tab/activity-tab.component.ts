@@ -66,15 +66,16 @@ export class ActivityTabComponent {
 
   //used in conjunction with the userInfo method in the googleApiService in order to get user informartion through contacts
   //people API requires users to be in your contacts before giving you access to their information 
-  async formatActivities(activities: any[]): Promise<any[]>{
-    let temp: any[] = [];
-  
-    for (const a of activities) {
-      let date: string = formatTimestamp(a.timestamp);
-  
-      if (a.primaryActionDetail["permissionChange"] !== undefined) {
-        const person = await this.googleApiService.getUserInfo(a.actors[0].user.knownUser.personName);
-        
+ async formatActivities(activities: any[]): Promise<any[]>{
+  let temp: any[] = [];
+
+  for (const a of activities) {
+    let date: string = formatTimestamp(a.timestamp);
+
+    if (a.primaryActionDetail["permissionChange"] !== undefined) {
+      const person = await this.googleApiService.getUserInfo(a.actors[0].user.knownUser.personName);
+      
+      if (person !== undefined) {
         temp.push({
           name: person.name + " changed the share settings",
           children: await this.getChildren(a.primaryActionDetail.permissionChange),
@@ -83,24 +84,33 @@ export class ActivityTabComponent {
           email: person.email
         });
       } else {
-        let verb: string | undefined = this.past_tense.get(Object.keys(a.primaryActionDetail)[0]);
-        const person = await this.googleApiService.getUserInfo(a.actors[0].user.knownUser.personName);
-
-        if (verb !== undefined) {
-        //console.log(person.email)
-          temp.push({
-            name: person.name + " " + verb + " the item",
-            children: [],
-            date: date,
-            image: person.photoUrl,
-            email: person.email
-          });
-        }
+        temp.push({
+          name: "Unknown user changed the share settings",
+          children: await this.getChildren(a.primaryActionDetail.permissionChange),
+          date: date,
+          image: "",
+          email: ""
+        });
       }
+    } else {
+      let verb: string | undefined = this.past_tense.get(Object.keys(a.primaryActionDetail)[0]);
+      const person = await this.googleApiService.getUserInfo(a.actors[0].user.knownUser.personName);
+
+      if (person !== undefined) {
+        temp.push({
+          name: person.name + " " + verb + " the item",
+          children: [],
+          date: date,
+          image: person.photoUrl,
+          email: person.email
+        });
+      } 
     }
-  
-    return temp;
   }
+
+  return temp;
+}
+
 
   //works similarly to the formatActivities function, but for the child folders rather than the roots.
   async getChildren(a: any) {
