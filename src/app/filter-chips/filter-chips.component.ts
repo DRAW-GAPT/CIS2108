@@ -183,13 +183,13 @@ export class FilterChipsComponent {
     this.isCheckedWriter = false;
     this.isCheckedReader = false;
   
-    this.updateFilterQuery.emit('');
+    this.updateFilter();
     this._adapter.setLocale(this._locale);
   }
 
   clearSearch(){
-    this.searchTerm = undefined;
-    this.updateFilterQuery.emit('');
+    this.searchTerm = "";
+    this.updateFilter();
   }
   
  
