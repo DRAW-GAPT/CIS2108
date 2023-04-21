@@ -46,7 +46,11 @@ export class ShareTreeComponent implements AfterViewInit {
     if(!this.nodes || !this.edges)
       return;
     this.nodes.forEach((n: any) => {
-      if(n.outline === "dashed") {  n.shapeProperties = {borderDashes: [5, 5]} }
+      if(n.outline === "dashed") {  
+        n.shapeProperties = {borderDashes: [5, 5, 5, 5]} 
+        n.borderWidth = 5
+        n.color = "black"
+      }
     });
     const nodes = new DataSet<any>(this._nodes);
     const edges = new DataSet<any>(this.edges);
