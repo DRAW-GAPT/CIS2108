@@ -36,11 +36,7 @@ export class ItemDetailsComponent {
 
       this.googleApiService.listActivities(this.id)
       .then(async (res: any) => {
-        let filtered = res.filter((obj: any) => obj.primaryActionDetail.permissionChange !== undefined);
-        filtered.sort((a: any, b: any) =>{
-          return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
-        })
-        this.nodes = this.getNodes(this.file)
+        this.nodes = this.getNodes(res)
         this.edges = this.getEdges()        
       })
       .catch((error: any) => {
@@ -53,28 +49,89 @@ export class ItemDetailsComponent {
     if (this.sub) this.sub.unsubscribe();
   }
 
-  getNodes(file: any): any{
-    let temp: any[] = []
-    file.permissions?.forEach((p: any, i: number) => {
-      let name = p.id === 'anyoneWithLink' ? "Anyone with link" : p.displayName || "Unknown user"
-      temp.push({
-        id: i, 
-        label: name + '\n' + (p.role), 
-        image: p.photoLink ?? 'https://lh3.googleusercontent.com/a/default-user=s64', 
-        title: p.id === 'anyoneWithLink' ? "Anyone with link" : p.emailAddress || "Unknown email address" 
-      })
+  getNodes(activities: any): any{
+    // activities contains only permission changes and is sorted by least recent 
+    let filtered = this.formatActivities(activities)
+    let nodes = new Map<string, any>();
+  
+    filtered.forEach((activity: any) => {
+      // get actors[0] -> all users who shared the item
+      // fetch details using a.actors[0].user.knownUser.personName
+      if (!nodes.has(activity.actors[0].user.knownUser.personName)) {
+        nodes.set(activity.actors[0].user.knownUser.personName, 
+          {
+            id: activity.actors[0].user.knownUser.personName,
+            label: 'LABEL' + '\nOwner', 
+            image: 'PFP',
+            title: 'TITLE',
+            outline: 'solid'
+          }
+        )
+      }
+  
+      // iterating over recipients of shares
+      for(const key in activity.primaryActionDetail.permissionChange){
+          activity.primaryActionDetail.permissionChange[key].forEach((permission: any) => {
+              if(permission.user === undefined){
+            nodes.set("anyone",
+              {
+                id: "anyone",
+                label: 'Anyone with link',
+                image: 'https://lh3.googleusercontent.com/a/default-user=s64',
+                title: 'Anyone with the link can access this item',
+                outline: 'solid'
+              }
+            )
+          }
+          else if(permission.user.knownUser.personName){
+            // fetch user details using permission.user.knownUser.personName
+            nodes.set(permission.user.knownUser.personName,
+              {
+                id: permission.user.knownUser.personName,
+                label: 'LABEL' + '\n' + permission.role,
+                image: 'PFP',
+                title: 'emailaddress@gmail.com',
+                outline: 'solid'
+              }
+            )
+          }
+          })
+      }
+  
     });
-    return temp;
+    // handles unshared files
+    if(Array.from(nodes.values()).length === 0){
+      // fetch data
+      nodes.set(activities[0].actors[0].user.knownUser.personName, 
+        {
+          id: activities[0].actors[0].user.knownUser.personName,
+          label: 'LABEL' + '\nOwner', 
+          image: 'PFP',
+          title: 'TITLE',
+          outline: 'solid'
+        }
+      )
+    }
+    return Array.from(nodes.values());
   }
+  
 
   getEdges(): any{
     return[
-      { from: '1', to: '2' },
-      { from: '1', to: '3' },
-      { from: '1', to: '3' },
-      { from: '3', to: '4' },
-      { from: '2', to: '3' }
+      // { from: '1', to: '2' },
+      // { from: '1', to: '3' },
+      // { from: '1', to: '3' },
+      // { from: '3', to: '4' },
+      // { from: '2', to: '3' }
     ]
+  }
+
+  formatActivities(arr: any): any{
+    let filtered = arr.filter((obj: any) => obj.primaryActionDetail.permissionChange !== undefined);
+    filtered.sort((a: any, b: any) =>{
+      return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
+    })
+    return filtered
   }
 }
 
