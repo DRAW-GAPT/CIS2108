@@ -177,7 +177,7 @@ export class FilterChipsComponent {
     this.permissionsSelected = [];
     this.startDate = null;
     this.endDate = null;
-    this.searchTerm = undefined;
+    
 
     this.isCheckedOwner = false;
     this.isCheckedWriter = false;
@@ -186,7 +186,12 @@ export class FilterChipsComponent {
     this.updateFilterQuery.emit('');
     this._adapter.setLocale(this._locale);
   }
-  
 
+  clearSearch(){
+    this.searchTerm = undefined;
+    this.updateFilterQuery.emit('');
+  }
+  
+ 
 }
 
