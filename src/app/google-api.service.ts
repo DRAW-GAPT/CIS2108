@@ -236,7 +236,7 @@ export class GoogleAPIService {
     try {
       response = await gapi.client.driveactivity.activity.query({
         resource: {
-          pageSize: 30, //TODO Make infinite
+          pageSize: 1000, 
           itemName: "items/" + fileId
 
         }
