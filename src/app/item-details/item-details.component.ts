@@ -93,7 +93,7 @@ export class ItemDetailsComponent {
       
             nodes.set(permission.user.knownUser.personName, {
               id: permission.user.knownUser.personName,
-              label: person.name + '\n' + permission.role,
+              label: person.name + '\n' + this.capitaliseFirstLetter(permission.role),
               image: person.photoUrl,
               title: person.email,
               role: permission.role
@@ -167,6 +167,12 @@ export class ItemDetailsComponent {
     console.log(edges)
     return edges;
   }
+
+  capitaliseFirstLetter(s: string): string{
+    let temp = s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+    return temp
+  }
+
   updateNodeOutlines(edges: any){
     this.nodes.forEach((n: any) => {
       if(n.role !== 'Owner'){
@@ -244,5 +250,4 @@ async function getFile(googleApiService: GoogleAPIService, id: string) : Promise
   }
   return file;
 }
-
 

@@ -168,8 +168,4 @@ export class ShareTreeComponent implements AfterViewInit {
   }
 }
 
-function capitaliseFirstLetter(s: string): string{
-  let temp = s.charAt(0).toUpperCase() + s.slice(1);
-  return temp
-}
 
