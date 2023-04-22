@@ -12,6 +12,7 @@ import { Network } from 'vis-network';
 export class ShareTreeComponent implements AfterViewInit {
   private _nodes: any;
   private _edges: any;
+  isLoading: boolean = true
   
   get nodes(): any {
     return this._nodes;
@@ -119,12 +120,14 @@ export class ShareTreeComponent implements AfterViewInit {
           nodeSpacing: 100,
         },
       },
-    
+      
     };
  
     const data = { nodes, edges };
     this.networkInstance = new Network(container.nativeElement, data, options);
-  
+    
+    this.isLoading = false;
+    
     // Save the original position of the network
     const originalPosition = this.networkInstance.getViewPosition();
   
@@ -155,6 +158,8 @@ export class ShareTreeComponent implements AfterViewInit {
         this.networkInstance.setView(originalPosition);
       }
     });
+
+    
   }
 
   zoomIn() {

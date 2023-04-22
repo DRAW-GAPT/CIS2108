@@ -12,6 +12,7 @@ export class ActivityTabComponent {
   @Input() id: any;
   activities: any;
   past_tense: Map<string, string> = new Map();
+  isLoading: boolean = true;
 
   private _transformer = (node: any, level: number) => {
     return {
@@ -61,9 +62,11 @@ export class ActivityTabComponent {
         const activities = await this.formatActivities(res,pageIndex,pageSize);
         const remainingActivities = activities.slice(pageSize);
         this.dataSource.data = activities;
+        this.isLoading = false;
       })
       .catch((error: any) => {
         console.error(error);
+        this.isLoading = false;
       });
   }
 
