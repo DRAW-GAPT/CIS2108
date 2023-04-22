@@ -66,7 +66,6 @@ export class ItemDetailsComponent {
             label: person.name + '\nOwner', 
             image: person.photoUrl,
             title: person.email,
-            outline: 'solid'
           }
         )
       }
@@ -84,7 +83,6 @@ export class ItemDetailsComponent {
               label: 'Anyone with link',
               image: 'https://lh3.googleusercontent.com/a/default-user=s64',
               title: 'Anyone with the link can access this item',
-              outline: 'solid'
             });
 
             //actual users
@@ -96,7 +94,6 @@ export class ItemDetailsComponent {
               label: person.name + '\n' + permission.role,
               image: person.photoUrl,
               title: person.email,
-              outline: 'solid'
             });
           }
         }
@@ -139,7 +136,7 @@ export class ItemDetailsComponent {
             edges.push({from: sharer, to: 'anyone'});
           }
           else if(key === "removedPermissions" && change.user === undefined){
-            this.updateNodeOutline('anyone', "dashed")
+            this.updateNodeOutline('anyone', true)
             this.updateEdgesOutline(sharer, "anyone", true, edges)
 
           }
@@ -151,12 +148,12 @@ export class ItemDetailsComponent {
             }
             // user's access permissions have been edited (not removed)
             else if(key === "addedPermissions" && this.isSink(recipient, edges)){
-              this.updateNodeOutline(recipient, "solid")
+              this.updateNodeOutline(recipient, false)
               this.updateEdgesOutline(sharer, recipient, false, edges)
             }
             // user's access has been removed
             else if (key === "removedPermissions"){
-              this.updateNodeOutline(recipient, "dashed")
+              this.updateNodeOutline(recipient, true)
               this.updateEdgesOutline(sharer, recipient, true, edges)
             }
           }
@@ -175,9 +172,18 @@ export class ItemDetailsComponent {
     return isSink
   }
 
-  updateNodeOutline(id: string, outline: string): void{
+  updateNodeOutline(id: string, dashed: boolean): void{
     this.nodes.forEach((n: any) => {
-      if(n.id === id){ n.outline = outline }
+      if(n.id === id){
+          if(dashed){
+            n.borderWidth = 5
+            n.shapeProperties = {borderDashes: [5, 5, 5, 5]} 
+          }
+          else{
+            n.borderWidth = 1
+            n.shapeProperties = {borderDashes: false}
+          }
+      }
     });
   }
 
