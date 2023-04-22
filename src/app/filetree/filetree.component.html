@@ -28,7 +28,7 @@
   <div style="display: flex; justify-content: center; align-items: center;">
     <mat-spinner *ngIf="loading" [diameter]="30"/>
   </div>
-  <p>The Hierarchy View is loading... </p>
+  <p *ngIf="loading" >The Hierarchy View is loading... </p>
   <div *ngIf="showGetMoreRoots && !loading">
-    <button (click)="getMoreRoots()">get more roots</button>
+    <button class="center" mat-stroked-button color="accent" (click)="getMoreRoots()">Get more roots</button>
   </div>
