@@ -66,6 +66,7 @@ export class ItemDetailsComponent {
             label: person.name + '\nOwner', 
             image: person.photoUrl,
             title: person.email,
+            role: 'Owner'
           }
         )
       }
@@ -83,6 +84,7 @@ export class ItemDetailsComponent {
               label: 'Anyone with link',
               image: 'https://lh3.googleusercontent.com/a/default-user=s64',
               title: 'Anyone with the link can access this item',
+              role: 'anyone'
             });
 
             //actual users
@@ -94,6 +96,7 @@ export class ItemDetailsComponent {
               label: person.name + '\n' + permission.role,
               image: person.photoUrl,
               title: person.email,
+              role: permission.role
             });
           }
         }
@@ -111,7 +114,7 @@ export class ItemDetailsComponent {
           label: person.name + '\nOwner', 
           image: person.photoUrl,
           title: person.email,
-          outline: 'solid'
+          role: 'Owner'
         }
       )
     }
@@ -136,41 +139,57 @@ export class ItemDetailsComponent {
             edges.push({from: sharer, to: 'anyone'});
           }
           else if(key === "removedPermissions" && change.user === undefined){
-            this.updateNodeOutline('anyone', true)
             this.updateEdgesOutline(sharer, "anyone", true, edges)
 
           }
           else{
             const recipient = change.user.knownUser.personName ?? "undefined"
             // item has been shared with a new user
-            if(key === "addedPermissions" && !this.isSink(recipient, edges)){
+            if(key === "addedPermissions" && this.edgeExists(sharer, recipient, edges) === false){
               edges.push({from: sharer, to: recipient})
             }
             // user's access permissions have been edited (not removed)
-            else if(key === "addedPermissions" && this.isSink(recipient, edges)){
-              this.updateNodeOutline(recipient, false)
+            else if(key === "addedPermissions" && this.edgeExists(sharer, recipient, edges)){
               this.updateEdgesOutline(sharer, recipient, false, edges)
             }
             // user's access has been removed
             else if (key === "removedPermissions"){
-              this.updateNodeOutline(recipient, true)
               this.updateEdgesOutline(sharer, recipient, true, edges)
             }
           }
         }
       }
     }
+
+    
+    this.updateNodeOutlines(edges)
     console.log(this.nodes)
+    console.log(edges)
     return edges;
   }
-
-  isSink(id: string, edges: any): boolean{
-    let isSink: boolean = false;
-    edges.forEach((e: any) => {
-      if(e.to === id){ isSink = true; }
+  updateNodeOutlines(edges: any){
+    this.nodes.forEach((n: any) => {
+      if(n.role !== 'Owner'){
+        n.borderWidth = 5
+        n.shapeProperties = {borderDashes: [5, 5, 5, 5]} 
+      }
+      edges.forEach((e: any) => {
+        if((e.to === n.id && !e.dashes)){
+          n.borderWidth = 1
+          delete n.shapeProperties;
+        }
+      });
     });
-    return isSink
   }
+
+  edgeExists(sharer: string, recipient: string, edges: any): boolean{
+    let exists: boolean = false
+    edges.forEach((e: any) => {
+      if(e.from === sharer && e.to === recipient){ exists = true }
+    });
+    return exists
+  }
+
 
   updateNodeOutline(id: string, dashed: boolean): void{
     this.nodes.forEach((n: any) => {
@@ -181,7 +200,7 @@ export class ItemDetailsComponent {
           }
           else{
             n.borderWidth = 1
-            n.shapeProperties = {borderDashes: false}
+            delete n.shapeProperties;
           }
       }
     });
@@ -194,7 +213,7 @@ export class ItemDetailsComponent {
           e.dashes = [5, 5]
         }
         else{
-          e.dashes = false
+          delete e.dashes
         }
       }
     });
