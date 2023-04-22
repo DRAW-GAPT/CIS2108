@@ -13,6 +13,8 @@ export class ActivityTabComponent {
   activities: any;
   past_tense: Map<string, string> = new Map();
   isLoading: boolean = true;
+  displayedColumns: string[] = ['node'];
+
 
   private _transformer = (node: any, level: number) => {
     return {
@@ -21,7 +23,8 @@ export class ActivityTabComponent {
       level: level,
       date: node.date,
       image: node.image,
-      email: node.email
+      email: node.email,
+      hasParent: node.hasParent
     };
   }
 
@@ -91,7 +94,8 @@ export class ActivityTabComponent {
             children: await this.getChildren(a.primaryActionDetail.permissionChange),
             date: date,
             image: person.photoUrl,
-            email: person.email
+            email: person.email,
+            hasParent: false
           });
         } else {
           temp.push({
@@ -99,7 +103,8 @@ export class ActivityTabComponent {
             children: await this.getChildren(a.primaryActionDetail.permissionChange),
             date: date,
             image: "",
-            email: ""
+            email: "",
+            hasParent: true
           });
         }
       } else {
@@ -112,7 +117,8 @@ export class ActivityTabComponent {
             children: [],
             date: date,
             image: person.photoUrl,
-            email: person.email
+            email: person.email,
+            hasParent: false
           });
         } 
       }
@@ -136,7 +142,18 @@ export class ActivityTabComponent {
             children: [],
             date: '',
             image: person.photoUrl,
-            email: person.email
+            email: person.email,
+            hasParent: true
+          });
+        }
+        else{
+          children.push({
+            name: capitalizeFirst(key.replace("Permission", " permission")) + ": " + 'Anyone with link' + " (" + capitalizeFirst(permission.role) + ")",
+            children: [],
+            date: '',
+            image: 'https://lh3.googleusercontent.com/a/default-user=s64',
+            email: '',
+            hasParent: true
           });
         }
       }

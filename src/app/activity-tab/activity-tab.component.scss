@@ -5,12 +5,17 @@ img{
     margin-right: 1vw;
 }
 
-.mat-tree-node{
-    margin-bottom: 3vh;
-}
-
-.mat-tree{
+table, th, td {
     background-color: #F8F9FA;
+    border: none;
+    border-collapse: collapse;
+}
+  
+td{
+    margin-bottom: 3vh;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .center {
@@ -18,5 +23,11 @@ img{
     justify-content: center;
     align-items: center;
    
+}
+
+.info-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
   
