@@ -29,6 +29,7 @@
         display: flex;
         align-items: center;
         margin-bottom: 10px;
+        position: fixed;
     }
     
     .legend span {
@@ -81,11 +82,16 @@
 
     .center {
         display: flex;
-        justify-content: center;
-        align-items: center;
-       
+        flex-direction: row;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%)
     }
     
-    
-      
-    
+    .mat-progress-spinner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
