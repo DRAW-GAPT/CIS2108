@@ -1,3 +1,7 @@
+<div class="center">
+  <mat-progress-spinner [diameter]="30" *ngIf="isLoading" mode="indeterminate"></mat-progress-spinner>
+</div>
+
 <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
     
     <!-- Non-expandable nodes -->
