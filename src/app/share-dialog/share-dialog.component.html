@@ -14,14 +14,14 @@
           {{p.id === "anyoneWithLink" ? "" : p.emailAddress ?? 'Unknown email address'}}
         </div>
         <mat-form-field appearance="fill">
-          <mat-label>{{capitaliseFirstLetter(p.role)}}</mat-label>
+          <!-- <mat-label>{{capitaliseFirstLetter(p.role)}}</mat-label> -->
           <mat-select>
             <mat-option *ngFor="let r of ['Writer', 'Viewer', 'Commenter']" [value]="capitaliseFirstLetter(p.role)">
               {{r}}
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <button class="remove-user" mat-mini-fab	color="warn"><mat-icon>close</mat-icon></button>
+        <button class="remove-user" mat-mini-fab matTooltip="Remove user"	color="warn"><mat-icon>close</mat-icon></button>
       </div>
     </div>
     <div mat-dialog-actions class="buttons">
