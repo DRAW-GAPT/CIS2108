@@ -134,10 +134,11 @@ export class ItemDetailsComponent {
         let changeType = activity.primaryActionDetail.permissionChange[key];
         for (let i = 0; i < changeType.length; i++) {
           const change = changeType[i];
-          // link settings change
+          // enabled link sharing
           if (key === "addedPermissions" && change.user === undefined) {
             edges.push({from: sharer, to: 'anyone'});
           }
+          // disabled link sharing
           else if(key === "removedPermissions" && change.user === undefined){
             this.updateEdgesOutline(sharer, "anyone", true, edges)
 
@@ -148,12 +149,16 @@ export class ItemDetailsComponent {
             if(key === "addedPermissions" && this.edgeExists(sharer, recipient, edges) === false){
               edges.push({from: sharer, to: recipient})
             }
+            // existing's user permission has been removed by a user who didn't give them permission
+            else if(key === "removedPermissions" && this.edgeExists(sharer, recipient, edges) === false){
+              edges.push({from: sharer, to: recipient, dashes: [5,5]})
+            }
             // user's access permissions have been edited (not removed)
             else if(key === "addedPermissions" && this.edgeExists(sharer, recipient, edges)){
               this.updateEdgesOutline(sharer, recipient, false, edges)
             }
-            // user's access has been removed
-            else if (key === "removedPermissions"){
+            // user's access has been removed by the person who gave them permissions
+            else if (key === "removedPermissions"  && this.edgeExists(sharer, recipient, edges) === true){
               this.updateEdgesOutline(sharer, recipient, true, edges)
             }
           }
@@ -180,9 +185,13 @@ export class ItemDetailsComponent {
         n.shapeProperties = {borderDashes: [5, 5, 5, 5]} 
       }
       edges.forEach((e: any) => {
-        if((e.to === n.id && !e.dashes)){
+        if(e.to === n.id && !e.dashes){
           n.borderWidth = 1
           delete n.shapeProperties;
+        }
+        else if (e.to === n.id && e.dashes){
+          n.borderWidth = 5
+          n.shapeProperties = {borderDashes: [5, 5, 5, 5]} 
         }
       });
     });
@@ -194,22 +203,6 @@ export class ItemDetailsComponent {
       if(e.from === sharer && e.to === recipient){ exists = true }
     });
     return exists
-  }
-
-
-  updateNodeOutline(id: string, dashed: boolean): void{
-    this.nodes.forEach((n: any) => {
-      if(n.id === id){
-          if(dashed){
-            n.borderWidth = 5
-            n.shapeProperties = {borderDashes: [5, 5, 5, 5]} 
-          }
-          else{
-            n.borderWidth = 1
-            delete n.shapeProperties;
-          }
-      }
-    });
   }
 
   updateEdgesOutline(sharer: string, recipient: string, dashed: boolean, edges: any): void{
