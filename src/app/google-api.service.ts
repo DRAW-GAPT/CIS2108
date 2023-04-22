@@ -228,7 +228,8 @@ export class GoogleAPIService {
   }
 
   async listActivities(fileId:string) {
-
+    await this.allInited;
+    await this.confirmLogin();
     await this.gapiInited;
     await this.gisInited;
 
