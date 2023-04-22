@@ -140,6 +140,8 @@ export class ItemDetailsComponent {
           }
           else if(key === "removedPermissions" && change.user === undefined){
             this.updateNodeOutline('anyone', "dashed")
+            this.updateEdgesOutline(sharer, "anyone", true, edges)
+
           }
           else{
             const recipient = change.user.knownUser.personName ?? "undefined"
@@ -150,10 +152,12 @@ export class ItemDetailsComponent {
             // user's access permissions have been edited (not removed)
             else if(key === "addedPermissions" && this.isSink(recipient, edges)){
               this.updateNodeOutline(recipient, "solid")
+              this.updateEdgesOutline(sharer, recipient, false, edges)
             }
             // user's access has been removed
             else if (key === "removedPermissions"){
               this.updateNodeOutline(recipient, "dashed")
+              this.updateEdgesOutline(sharer, recipient, true, edges)
             }
           }
         }
@@ -174,6 +178,19 @@ export class ItemDetailsComponent {
   updateNodeOutline(id: string, outline: string): void{
     this.nodes.forEach((n: any) => {
       if(n.id === id){ n.outline = outline }
+    });
+  }
+
+  updateEdgesOutline(sharer: string, recipient: string, dashed: boolean, edges: any): void{
+    edges.forEach((e: any) => {
+      if(e.from === sharer && e.to === recipient){
+        if(dashed){
+          e.dashes = [5, 5]
+        }
+        else{
+          e.dashes = false
+        }
+      }
     });
   }
   
