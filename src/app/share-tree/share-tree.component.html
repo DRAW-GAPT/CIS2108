@@ -6,13 +6,17 @@
         <mat-icon>zoom_out</mat-icon>
     </button>
 </div>
-<!-- <mat-progress-spinner *ngIf="isLoading" mode="indeterminate"></mat-progress-spinner> -->
+<div class="center" *ngIf="isLoading">
+    <mat-progress-spinner [diameter]="30"  mode="indeterminate"></mat-progress-spinner>
+    <p style="margin-left: 10px">The Share Tree is loading...</p>
+    
+</div>
 
 <div id="tree" #visNetwork></div>
 <div class="legend">
     <span class="solid"></span> Added Access
     <span class="dotted"></span> Removed Access
-    <div class="solid-node"></div> Access 
+    <div class="solid-node"></div> AddedAccess 
     <div class="dotted-node"></div>No Access 
  </div>
   

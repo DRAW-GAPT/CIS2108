@@ -49,6 +49,7 @@ export class ShareTreeComponent implements AfterViewInit {
     const nodes = new DataSet<any>(this._nodes);
     const edges = new DataSet<any>(this.edges);
     this.networkInstance.setData({ nodes,edges });
+    this.isLoading = false;
   }
 
   @ViewChild('visNetwork', { static: true }) visNetwork!: ElementRef;
@@ -125,8 +126,6 @@ export class ShareTreeComponent implements AfterViewInit {
  
     const data = { nodes, edges };
     this.networkInstance = new Network(container.nativeElement, data, options);
-    
-    this.isLoading = false;
     
     // Save the original position of the network
     const originalPosition = this.networkInstance.getViewPosition();
