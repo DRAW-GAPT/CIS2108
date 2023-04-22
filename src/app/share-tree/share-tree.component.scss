@@ -46,4 +46,39 @@
     .legend .dotted {
         border-bottom: 2px dotted #2196f3;
     }
+      
+    .solid-node,
+    .dotted-node {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        margin-right: 5px;
+        margin-left: 5px;
+    }
+      
+    .solid-node {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #2196f3;
+        border-radius: 50%;
+        margin-left: 5px;
+    }
+    
+    .solid-node::before {
+        content: "";
+        display: block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid #fff;
+        border-radius: 50%;
+    }
+      
+    .dotted-node {
+        border: 2px dashed  #2196f3;
+    }
+    
+    
+      
     
