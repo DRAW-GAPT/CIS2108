@@ -15,8 +15,10 @@ img{
 
 .center {
     display: flex;
-    justify-content: center;
-    align-items: center;
-   
+    flex-direction: row;
+    position: fixed;
+    top: 50%;
+    left: 75%;
+    transform: translate(-50%, -50%)
 }
   
