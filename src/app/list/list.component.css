@@ -6,3 +6,7 @@
     display: flex; 
     justify-content: space-between;
 }
+.recently-accessed{
+    margin-top: 0.5vw;
+    margin-bottom: -1.5vw;
+  }

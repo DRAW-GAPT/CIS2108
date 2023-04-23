@@ -49,11 +49,8 @@ import {MatListModule} from '@angular/material/list';
 import { CommonModule } from '@angular/common';
 import { ContactsDialogComponent } from './contacts-dialog/contacts-dialog.component';
 import { ShareTreeComponent } from './share-tree/share-tree.component';
-
-
-
-
-
+import {GuidedTourModule, GuidedTourService} from 'ngx-guided-tour';
+import { TourGuideComponent } from './tour-guide/tour-guide.component';
 
 @NgModule({
   declarations: [
@@ -75,6 +72,7 @@ import { ShareTreeComponent } from './share-tree/share-tree.component';
     VersionTabComponent,
     ContactsDialogComponent,
     ShareTreeComponent,
+    TourGuideComponent,
   ],
   imports: [
     CommonModule,
@@ -108,9 +106,10 @@ import { ShareTreeComponent } from './share-tree/share-tree.component';
     MatTabsModule,
     MatSidenavModule,
     MatDialogModule,
-    MatListModule
+    MatListModule,
+    GuidedTourModule,
   ],
-  providers: [CookieService],
+  providers: [CookieService, GuidedTourService],
   bootstrap: [AppComponent]
 })
 export class AppModule { 
