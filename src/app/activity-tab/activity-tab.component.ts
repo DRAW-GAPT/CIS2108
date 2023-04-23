@@ -139,6 +139,16 @@ export class ActivityTabComponent {
             email: person.email
           });
         }
+        else{
+          children.push({
+            name: capitalizeFirst(key.replace("Permission", " permission")) + ": " + 'Anyone with link' + " (" + capitalizeFirst(permission.role) + ")",
+            children: [],
+            date: '',
+            image: 'https://lh3.googleusercontent.com/a/default-user=s64',
+            email: '',
+            hasParent: true
+          });
+        }
       }
       return children;
     }
