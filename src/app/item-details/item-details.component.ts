@@ -81,7 +81,7 @@ export class ItemDetailsComponent {
           if (permission.user === undefined) {
             nodes.set("anyone", {
               id: "anyone",
-              label: 'Anyone with link',
+              label: 'Anyone with link' + '\n' + this.capitaliseFirstLetter(permission.role),
               image: 'https://lh3.googleusercontent.com/a/default-user=s64',
               title: 'Anyone with the link can access this item',
               role: 'anyone'
