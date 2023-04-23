@@ -91,7 +91,7 @@ export class FilterChipsComponent {
     this.updateFilter();
 
   }
-  
+
   removeShared(shared: String): void {
     const index = this.sharedWith.indexOf(shared);
     if (index >= 0) {
@@ -170,5 +170,28 @@ export class FilterChipsComponent {
     }
     this.updateFilterQuery.emit(subqueries.map(s=>"("+s+")").join(" and "))
   } 
+
+  clearFilters() {
+    this.owners = [];
+    this.sharedWith = [];
+    this.permissionsSelected = [];
+    this.startDate = null;
+    this.endDate = null;
+    
+
+    this.isCheckedOwner = false;
+    this.isCheckedWriter = false;
+    this.isCheckedReader = false;
+  
+    this.updateFilter();
+    this._adapter.setLocale(this._locale);
+  }
+
+  clearSearch(){
+    this.searchTerm = "";
+    this.updateFilter();
+  }
+  
+ 
 }
 

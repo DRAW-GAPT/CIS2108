@@ -3,7 +3,7 @@
     <div mat-dialog-content class="content">
       <p>The file will be placed in the recycling bin for <b>30 days</b> & will then be <b>permantently discarded.</b></p>
       <p><b>People with access</b></p>
-      <div *ngFor="let p of data.permissions" class = "perm-container">
+      <div *ngFor="let p of data.permissions" class = "perm-container" aria-label="The people with access" alt="The people with access">
         <img src="{{p.photoLink ?? 'https://lh3.googleusercontent.com/a/default-user=s64'}}" class="user-image"/>
         <div>
           {{p.id === "anyoneWithLink" ? "Anyone with link" : p.displayName || "Unknown user"}}
@@ -14,7 +14,7 @@
       </div>
     </div>
     <div class="buttons" mat-dialog-actions>
-      <button mat-raised-button color="warn">Yes</button>
-      <button mat-raised-button color="primary" [mat-dialog-close]="true" cdkFocusInitial>Cancel</button>
+      <button mat-raised-button color="warn" aria-label="Button to delete file" alt="Button to delete file">Yes</button>
+      <button mat-raised-button color="primary" aria-label="Button to close the pop up" alt="Button to close the pop up" [mat-dialog-close]="true" cdkFocusInitial>Cancel</button>
     </div>
 </div>
