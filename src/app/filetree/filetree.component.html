@@ -25,3 +25,10 @@
       <mat-progress-spinner class = "spinner" *ngIf="node.isLoading" mode="indeterminate"/>
     </mat-tree-node>
   </mat-tree>
+  <div style="display: flex; justify-content: center; align-items: center;">
+    <mat-spinner *ngIf="loading" [diameter]="30"/>
+  </div>
+  <p *ngIf="loading" >The Hierarchy View is loading... </p>
+  <div *ngIf="showGetMoreRoots && !loading">
+    <button class="center" mat-stroked-button color="accent" (click)="getMoreRoots()">Get more roots</button>
+  </div>
