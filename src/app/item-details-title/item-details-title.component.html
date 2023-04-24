@@ -6,10 +6,9 @@
         <mat-icon aria-label="Button to open in new tab" alt="Button to open in new tab" matTooltip="Open in New Tab">open_in_new</mat-icon>
     </div>
     <div class="buttons">
-        <button mat-fab color="primary" aria-label="Button to share item with other people" alt="Button to share item with other peopl" matTooltip="Share With" (click)="openShareDialog()"><mat-icon>person_add</mat-icon></button>
-        <button mat-fab color="primary" aria-label="Button to add contacts" alt="Button to add contacts" matTooltip="Add Contacts" (click)="openContactsDialog()" style="margin-left: 10px;" ><mat-icon>contacts</mat-icon></button> 
-        <button mat-fab color="primary" aria-label="Button to delete item" alt="Button to delete item" matTooltip="Delete" (click)="openDeleteDialog()" style="margin-left: 10px; margin-right: 20px;" ><mat-icon>delete</mat-icon></button>
-            
+        <button mat-fab color="primary" (click)="openShareDialog()" ><mat-icon>person_add</mat-icon></button>
+        <button mat-fab color="primary" (click)="openContactsDialog()" style="margin-left: 10px;" ><mat-icon>contacts</mat-icon></button> 
+        <button mat-fab color="primary" (click)="openDeleteDialog()" style="margin-left: 10px; margin-right: 100px;" ><mat-icon>delete</mat-icon></button>        
     </div>
     
     

@@ -1,3 +1,4 @@
+
 .icon {
     margin-right: 8px;
 }
@@ -6,3 +7,16 @@
     display: flex; 
     justify-content: space-between;
 }
+.recently-accessed{
+    margin-top: 0.5vw;
+    margin-bottom: -1.5vw;
+  }
+
+  .center-content {
+    position: absolute;
+    top: 5.4vh;
+    right: 5.4vh;
+    transform: translate(0, -50%);
+  }
+  
+  

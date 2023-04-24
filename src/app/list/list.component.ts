@@ -1,8 +1,10 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Sort } from '@angular/material/sort';
 import { PageSetting } from '../file-list/file-list.component';
 import { getFilesResult, GoogleAPIService } from '../google-api.service';
 import { SortSetting } from '../sort-by/sort-by.component';
+import {Orientation, TourStep, GuidedTour, OrientationConfiguration, GuidedTourService } from 'ngx-guided-tour';
+
 
 @Component({
   selector: 'app-list',
@@ -10,6 +12,40 @@ import { SortSetting } from '../sort-by/sort-by.component';
   styleUrls: ['./list.component.css']
 })
 export class ListComponent {
+  public dashboardTour: GuidedTour = {
+    tourId: 'home-tour',
+    useOrb: false,
+    steps: [
+          {
+            title: 'Home Page',
+            content: 'This is your homepage. Here you can see your files/folder (as a tree or as a list), filter the files/folder, view your most recently accessed, etc.',
+        },
+        {
+            title: 'Search and Filters',
+            selector: '.search-bar',
+            content: 'You can search for a file using this search bar.\nYou can also filter among your files/folders by owner, permissions, date and who you shared the item using these filters.',
+            orientation: Orientation.Bottom
+        },
+        {
+          title: 'Recently accessed files/folders',
+          selector: '.recently',
+          content: 'These are your top 5 recently accessed files.',
+          orientation: Orientation.Bottom
+        },
+        {
+          title: 'List or Tree View',
+          selector: '.tab-bar',
+          content: 'You can display your files/folders as either a list or as a tree by clicking on either of these tabs.\n Click on either of these files/folders to display their details and share tree.',
+          orientation: Orientation.Top
+        }
+    ]
+};
+
+
+public startTour(): void {
+  this.guidedTourService.startTour(this.dashboardTour);
+}
+  
 
   //to allow using math in html
   Math = Math;
@@ -29,9 +65,10 @@ export class ListComponent {
 
   filterQuery:string = "";
 
-  constructor(public googleAPIService: GoogleAPIService){
-    this.init();
+  constructor(public googleAPIService: GoogleAPIService, private guidedTourService: GuidedTourService){
   }
+
+
 
   updateQuery(filter: string){
     this.filterQuery = filter;

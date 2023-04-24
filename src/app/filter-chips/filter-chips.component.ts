@@ -5,6 +5,8 @@ import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
 import * as _ from 'lodash';
 import { filter, update } from 'lodash';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import {Orientation, TourStep, GuidedTour, OrientationConfiguration, GuidedTourService } from 'ngx-guided-tour';
+import { ListComponent } from '../list/list.component';
 
 export const DATE_FORMAT = {
   parse: {
@@ -28,6 +30,7 @@ export const DATE_FORMAT = {
 })
 export class FilterChipsComponent {
 
+
   constructor(private _adapter: DateAdapter<any>,
     @Inject(MAT_DATE_LOCALE) private _locale: string,
   ) {}
@@ -42,6 +45,7 @@ export class FilterChipsComponent {
   startDate:  Date | null = null;
   endDate : Date | null = null;
   searchTerm: string | undefined;
+  
 
   //methods to handle input received from the 'Owner' filter
   addOwner(event: MatChipInputEvent): void {
