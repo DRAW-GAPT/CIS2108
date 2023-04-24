@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { GoogleAPIService } from '../google-api.service';
+import {Orientation, TourStep, GuidedTour, OrientationConfiguration, GuidedTourService } from 'ngx-guided-tour';
 
 
 @Component({
@@ -9,11 +10,65 @@ import { GoogleAPIService } from '../google-api.service';
   styleUrls: ['./item-details.component.scss']
 })
 export class ItemDetailsComponent {
+
+  public itemDetailsTour: GuidedTour = {
+    tourId: 'home-tour',
+    useOrb: false,
+    steps: [
+        {
+            title: 'Item Details page',
+            content: 'Here you have all the details related to your file/folder, i.e. the item\'s share tree and activity, details, versions in the tabs.',
+        },
+        {
+            title: 'Back button and Document Name',
+            selector: '.title',
+            content: 'The back button leads you back to the hompage.\n If you click on the document name, the file/folder will be opened.',
+            orientation: Orientation.Bottom
+        },
+        {
+          title: 'Share With, Add to Contacts and Delete Item buttons Part 1/2',
+          selector: '.title',
+          content: 'Through these buttons you will be able to share this item with other people, add all the other users of the item to contacts and delete the item.',
+          orientation: Orientation.Bottom
+        },
+        {
+          title: 'Add to Contacts Part 2/2',
+          content: 'It is important to note that to view the share tree with all of its features, you first need to click on the add to contacts button!',
+        },
+        {
+          title: 'Share Tree Part 1/2',
+          selector: '.share-tree',
+          content: 'Here you will be able to see who shared this item with whom. Kindly refer to the legend to see what is the difference between a dotted line/solid line and a dotted node/solid node.',
+          highlightPadding: 0.1,
+          orientation: Orientation.Center
+        },
+        {
+          title: 'Share Tree Part 2/2',
+          content: 'You can also zoom in and zoom out as well as drag the tree.',
+        },
+        {
+          title: 'Details, activity and versions',
+          content: 'You can display your file/folder details by clicking on the arrow. A drawer will open Then by clicking on the different tabs, you will display your desired information.',
+        }
+
+        
+    ]
+};
+
+public startTour(): void {
+  this.guidedTourService.startTour(this.itemDetailsTour);
+}
+
   constructor(
     private _Activatedroute: ActivatedRoute,
     private _router: Router,
-    public googleApiService: GoogleAPIService
-  ) {}
+    public googleApiService: GoogleAPIService,
+    private guidedTourService: GuidedTourService
+  ) {
+    //   setTimeout(() => {
+    //     this.guidedTourService.startTour(this.dashboardTour);
+    // }, 1000); 
+  }
 
   @Input() file: any;
   nodes: any;

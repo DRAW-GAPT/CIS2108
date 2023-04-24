@@ -5,16 +5,15 @@ import { getFilesResult, GoogleAPIService } from '../google-api.service';
 import { SortSetting } from '../sort-by/sort-by.component';
 import {Orientation, TourStep, GuidedTour, OrientationConfiguration, GuidedTourService } from 'ngx-guided-tour';
 
+
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.css']
 })
 export class ListComponent {
-  title = 'ngx-guided-tour-demo';
-
   public dashboardTour: GuidedTour = {
-    tourId: 'purchases-tour',
+    tourId: 'home-tour',
     useOrb: false,
     steps: [
           {
@@ -67,9 +66,6 @@ public startTour(): void {
   filterQuery:string = "";
 
   constructor(public googleAPIService: GoogleAPIService, private guidedTourService: GuidedTourService){
-    //   setTimeout(() => {
-    //     this.guidedTourService.startTour(this.dashboardTour);
-    // }, 1000); 
   }
 
 
