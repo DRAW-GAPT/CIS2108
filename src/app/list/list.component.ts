@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Sort } from '@angular/material/sort';
 import { PageSetting } from '../file-list/file-list.component';
 import { getFilesResult, GoogleAPIService } from '../google-api.service';
@@ -42,7 +42,8 @@ export class ListComponent {
     ]
 };
 
-public restartTour(): void {
+
+public startTour(): void {
   this.guidedTourService.startTour(this.dashboardTour);
 }
   
@@ -66,9 +67,9 @@ public restartTour(): void {
   filterQuery:string = "";
 
   constructor(public googleAPIService: GoogleAPIService, private guidedTourService: GuidedTourService){
-      setTimeout(() => {
-        this.guidedTourService.startTour(this.dashboardTour);
-    }, 1000); 
+    //   setTimeout(() => {
+    //     this.guidedTourService.startTour(this.dashboardTour);
+    // }, 1000); 
   }
 
 
