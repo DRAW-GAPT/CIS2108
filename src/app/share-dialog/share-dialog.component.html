@@ -6,7 +6,7 @@
         <input matInput>
       </mat-form-field>
       <p><b>People with access</b></p>
-      <div *ngFor="let p of data.permissions" class = "perm-container">
+      <div *ngFor="let p of data.permissions" class = "perm-container" aria-label="People with access" alt="People with access">
         <img src="{{p.photoLink ?? 'https://lh3.googleusercontent.com/a/default-user=s64'}}" class="user-image"/>
         <div>
           {{p.id === "anyoneWithLink" ? "Anyone with link" : p.displayName || "Unknown user"}}
@@ -14,21 +14,21 @@
           {{p.id === "anyoneWithLink" ? "" : p.emailAddress ?? 'Unknown email address'}}
         </div>
         <mat-form-field appearance="fill">
-          <mat-label>{{capitaliseFirstLetter(p.role)}}</mat-label>
+          <!-- <mat-label>{{capitaliseFirstLetter(p.role)}}</mat-label> -->
           <mat-select>
             <mat-option *ngFor="let r of ['Writer', 'Viewer', 'Commenter']" [value]="capitaliseFirstLetter(p.role)">
               {{r}}
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <button class="remove-user" mat-mini-fab	color="warn"><mat-icon>close</mat-icon></button>
+        <button class="remove-user" mat-mini-fab matTooltip="Remove user"	color="warn"><mat-icon>close</mat-icon></button>
       </div>
     </div>
     <div mat-dialog-actions class="buttons">
-      <button style="color: #2E84FC;" mat-button>
+      <button style="color: #2E84FC;" mat-button aria-label="Button to copy link of item" alt="Button to copy link of item">
         <mat-icon>link</mat-icon>
         Copy link
       </button>
-      <button color="primary" style="margin-left: 30px;" mat-raised-button [mat-dialog-close]="true" cdkFocusInitial>Done</button>
+      <button color="primary" style="margin-left: 30px;" aria-label="Button to close pop up" alt="Button to close pop up" mat-raised-button [mat-dialog-close]="true" cdkFocusInitial>Done</button>
     </div>
 </div>
