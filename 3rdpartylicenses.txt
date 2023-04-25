@@ -196,6 +196,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 ngx-cookie-service
 MIT
 
+ngx-guided-tour
+MIT
+
 rxjs
 Apache-2.0
                                Apache License
