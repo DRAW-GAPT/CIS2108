@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { GoogleAPIService } from '../google-api.service';
 import {Orientation, TourStep, GuidedTour, OrientationConfiguration, GuidedTourService } from 'ngx-guided-tour';
+import { CookieService } from 'ngx-cookie-service';
 
 
 @Component({
@@ -56,10 +57,12 @@ export class ItemDetailsComponent {
 };
 
 public startTour(): void {
+  this.createDetailsCookie();
   this.guidedTourService.startTour(this.itemDetailsTour);
 }
 
   constructor(
+    private cookie: CookieService,
     private _Activatedroute: ActivatedRoute,
     private _router: Router,
     public googleApiService: GoogleAPIService,
@@ -98,6 +101,10 @@ public startTour(): void {
         console.error(error);
       });
     });
+
+    if(!this.cookie.get("detailsCookie")){
+      this.startTour();
+      }
   }
 
   ngOnDestroy() {
@@ -289,6 +296,15 @@ public startTour(): void {
     })
     return filtered
   }
+
+  createDetailsCookie() {
+    const date = new Date();
+
+    date.setTime(date.getTime() + (100 * 365 * 24 * 60 * 60 * 1000)); // set to 100 years from now
+    const expires = "expires=" + date.toUTCString();
+    document.cookie = "detailsCookie=detailsCookie; " + expires + "; path=/";
+  }
+  
 }
 
 async function getFile(googleApiService: GoogleAPIService, id: string) : Promise<gapi.client.drive.File>{

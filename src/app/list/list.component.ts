@@ -148,7 +148,7 @@ public startTour(): void {
     this.treeSortSettings = sortSettings;
   }
 
-  public createListCookie() {
+  createListCookie() {
     const date = new Date();
 
     date.setTime(date.getTime() + (100 * 365 * 24 * 60 * 60 * 1000)); // set to 100 years from now
