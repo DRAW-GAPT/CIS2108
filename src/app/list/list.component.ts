@@ -4,6 +4,7 @@ import { PageSetting } from '../file-list/file-list.component';
 import { getFilesResult, GoogleAPIService } from '../google-api.service';
 import { SortSetting } from '../sort-by/sort-by.component';
 import {Orientation, TourStep, GuidedTour, OrientationConfiguration, GuidedTourService } from 'ngx-guided-tour';
+import { CookieService } from 'ngx-cookie-service';
 
 
 @Component({
@@ -43,6 +44,8 @@ export class ListComponent {
 
 
 public startTour(): void {
+  this.createListCookie();
+
   this.guidedTourService.startTour(this.dashboardTour);
 }
   
@@ -65,10 +68,14 @@ public startTour(): void {
 
   filterQuery:string = "";
 
-  constructor(public googleAPIService: GoogleAPIService, private guidedTourService: GuidedTourService){
+  constructor(private cookie: CookieService,public googleAPIService: GoogleAPIService, private guidedTourService: GuidedTourService){
   }
 
-
+  ngOnInit(): void {
+    if(!this.cookie.get("listCookie")){
+    this.startTour();
+    }
+  }
 
   updateQuery(filter: string){
     this.filterQuery = filter;
@@ -140,5 +147,14 @@ public startTour(): void {
         console.log("treeSort DETECTED");
     this.treeSortSettings = sortSettings;
   }
+
+  public createListCookie() {
+    const date = new Date();
+
+    date.setTime(date.getTime() + (100 * 365 * 24 * 60 * 60 * 1000)); // set to 100 years from now
+    const expires = "expires=" + date.toUTCString();
+    document.cookie = "listCookie=listCookie; " + expires + "; path=/";
+  }
+  
 }
 
