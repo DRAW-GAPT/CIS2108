@@ -66,7 +66,7 @@ public startTour(): void {
   pageNumber:number = 1;
   sortSettings:string|undefined = undefined;
 
-  filterQuery:string = "";
+  filterQuery:string = "trashed=false";
 
   constructor(private cookie: CookieService,public googleAPIService: GoogleAPIService, private guidedTourService: GuidedTourService){
   }

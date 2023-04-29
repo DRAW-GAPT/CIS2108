@@ -192,7 +192,7 @@ export class FilterChipsComponent {
   }
 
   clearSearch(){
-    this.searchTerm = "";
+    this.searchTerm = "trashed=false";
     this.updateFilter();
   }
   

@@ -193,6 +193,7 @@ export class GoogleAPIService {
             'pageSize': 5,
             'fields': 'files(id, name, iconLink , owners, lastModifyingUser, createdTime, modifiedTime)',
             'orderBy': 'createdTime desc',
+            'q':'trashed=false'
           });
           if(response.result.files)
           recentFiles = [...recentFiles,...response.result.files];
