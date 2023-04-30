@@ -70,7 +70,6 @@ export class GoogleAPIService {
    */
   gapiLoaded(resolve: (value: boolean | PromiseLike<boolean>) => void) {
     gapi.load('client', ()=>this.initializeGapiClient(resolve));
-    
   }
 
   /**
@@ -83,9 +82,6 @@ export class GoogleAPIService {
        discoveryDocs: DISCOVERY_DOCS,
     });
 
-    //gapi.client.driveactivity.
-
-    
     resolve(true);
   }
 
@@ -165,7 +161,6 @@ export class GoogleAPIService {
 
     await this.allInited;
     await this.confirmLogin();
-
     
       try {
           let response = await gapi.client.drive.files.get({
@@ -177,7 +172,6 @@ export class GoogleAPIService {
         //todo, error handling
         return null;
       }
-    
   }
     //method used to fetch the top 5 most recently modified files and their attributes for use in the header cards
   async getMostRecent(recentFiles:gapi.client.drive.File[]):Promise<getRecentFilesResult>{
@@ -225,9 +219,6 @@ export class GoogleAPIService {
 
   async listActivities(fileId:string) {
     await this.allInited;
-    await this.confirmLogin();
-    await this.gapiInited;
-    await this.gisInited;
 
     let response;
     try {
