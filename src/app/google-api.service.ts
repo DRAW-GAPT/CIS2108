@@ -21,11 +21,6 @@ const SCOPES =
   'https://www.googleapis.com/auth/drive.activity.readonly ' +
   'https://www.googleapis.com/auth/userinfo.profile ' +
   'https://www.googleapis.com/auth/contacts ' +
-  'https://www.googleapis.com/auth/directory.readonly ' +
-  'https://www.googleapis.com/auth/profile.emails.read ' +
-  'https://www.googleapis.com/auth/user.emails.read ' +
-  'https://www.googleapis.com/auth/userinfo.email ' + 
-  'https://www.googleapis.com/auth/userinfo.profile ' +
   'https://www.googleapis.com/auth/drive.readonly';
 
 const googleAPIKey:string = environment.googleAPIKey;
