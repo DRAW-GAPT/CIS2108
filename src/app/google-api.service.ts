@@ -217,6 +217,7 @@ export class GoogleAPIService {
     }, expiryTime);
   }
 
+  //returns a list of permission-related activity performed on a file
   async listActivities(fileId:string) {
     await this.allInited;
 
@@ -381,7 +382,6 @@ export class GoogleAPIService {
       const createLabelResponse = await gapi.client.people.contactGroups.create({
         resource: newLabel,
       });
-      console.log(`Label created`);
       return createLabelResponse.result;
     }
     return drawLabel;

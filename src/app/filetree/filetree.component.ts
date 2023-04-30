@@ -1,9 +1,9 @@
-import {CollectionViewer, SelectionChange, DataSource} from '@angular/cdk/collections';
-import {FlatTreeControl} from '@angular/cdk/tree';
-import {Component, Injectable, Input} from '@angular/core';
+import { CollectionViewer, SelectionChange, DataSource } from '@angular/cdk/collections';
+import { FlatTreeControl } from '@angular/cdk/tree';
+import { Component, Injectable, Input } from '@angular/core';
 import * as _ from 'lodash';
-import {BehaviorSubject, merge, Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import { BehaviorSubject, merge, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { GoogleAPIService } from '../google-api.service';
 import { firstTrue, getMax, getMin, truePromise } from '../util';
 import { SortSetting } from '../sort-by/sort-by.component';
@@ -24,7 +24,6 @@ const byteSize = require('byte-size')
 
 export class FileNode{
   constructor(
-
     public file:gapi.client.drive.File,
     public level = 1,
     public expandable = false,
@@ -38,16 +37,14 @@ export class FileNode{
  */
 @Injectable({providedIn: 'root'})
 
-
 export class TreeDatabase {
   
-
   roots:gapi.client.drive.File[] = []
   nextPageToken?:string;
 
-  constructor (public googleApiService:GoogleAPIService){
-    
-  }
+  constructor (
+    public googleApiService:GoogleAPIService
+    ) {}
 
   showGetMoreRoots(){
     return this.nextPageToken != undefined;
@@ -69,7 +66,6 @@ export class TreeDatabase {
   async getMoreRoots(_treeComponent: FiletreeComponent,prevFiles:FileNode[],reqID:number,filterQuery:string, orderBy:string|undefined): Promise<FileNode[]> {
     
     let newRootCount = 0;
-
     let fileNodes = [...prevFiles];
     
     while (this.nextPageToken && newRootCount < 2){
@@ -158,7 +154,6 @@ export class TreeDatabase {
     if(reqID == _treeComponent.latestRootsRequestID)
       this.roots = [...sorted]
 
-  
     return sorted;
   }
   
@@ -200,8 +195,6 @@ export class TreeDatabase {
     } 
   }
 
-
-
   isExpandable(node: gapi.client.drive.File): boolean {
     return node.mimeType == "application/vnd.google-apps.folder";
   }
@@ -210,10 +203,8 @@ export class TreeDatabase {
     if(root.mimeType != "application/vnd.google-apps.folder")
       return []
   
-  
     let items = await this.googleApiService.getFiles([],-1,"('"+root.id+"' in parents) AND (mimeType = 'application/vnd.google-apps.folder' OR("+filterQuery+"))", sortOrder);
   
-
     //promise.all is used to execute all of them in parallell
     let filterResults:boolean[] = await Promise.all(items.files.map(f=>this.showItem(_treeComponent,reqID, f,filterQuery)));
     console.log("got results from filter")
@@ -230,7 +221,6 @@ export class TreeDatabase {
 
     let sortValues:number[] = await Promise.all(filtered.map(f=>this.getSortValue(_treeComponent,reqID, f,filterQuery)));
 
-      
     let sorted:gapi.client.drive.File[] = 
     
       _.chain(filtered)
@@ -250,7 +240,6 @@ export class TreeDatabase {
   }
 
   async showItem(_treeComponent: FiletreeComponent,reqID:number,item:gapi.client.drive.File,filterQuery:string):Promise<boolean>{
-
 
     //if request is not still valid return false as we will get discarded anyways
     if(reqID != _treeComponent.latestRootsRequestID)
@@ -446,8 +435,6 @@ export class FiletreeComponent {
   @Input ()
   public set sortOrder(value:SortSetting | undefined){
     this._sortOrder = value
-   
-    console.log("SETTER DETECTED");
     this.dataSource.data = [];
     let orderBy = "";
 
@@ -505,7 +492,6 @@ export class FiletreeComponent {
   public knownRootsCache:Map<string,Promise<gapi.client.drive.File>> = new Map();
   //stores the sort values of the files and folders that we already know of
   public sortValueCache:Map<string,Promise<Number>> = new Map();
-
 
 
   async setInitialData(database: TreeDatabase){

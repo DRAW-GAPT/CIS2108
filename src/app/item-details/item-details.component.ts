@@ -18,12 +18,12 @@ export class ItemDetailsComponent {
     steps: [
         {
             title: 'Item Details page',
-            content: 'Here you have all the details related to your file/folder, i.e. the item\'s share tree and activity, details, versions in the tabs.',
+            content: 'Here you have all the details related to your file/folder, i.e. the item\'s share tree and activity, details, and versions.',
         },
         {
             title: 'Back button and Document Name',
             selector: '.title',
-            content: 'The back button leads you back to the hompage.\n If you click on the document name, the file/folder will be opened.',
+            content: 'The back button leads you back to the hompage.\n If you click on the document name, the file/folder will be opened in your drive.',
             orientation: Orientation.Bottom
         },
         {
@@ -49,7 +49,7 @@ export class ItemDetailsComponent {
         },
         {
           title: 'Details, activity and versions',
-          content: 'You can display your file/folder details by clicking on the arrow. A drawer will open Then by clicking on the different tabs, you will display your desired information.',
+          content: 'You can display your file/folder details by clicking on the arrow. A drawer will open by clicking on the different tabs, and display your desired information.',
         }
 
         
@@ -297,6 +297,8 @@ public startTour(): void {
     return filtered
   }
 
+  //sets a cookie so that the tutorial is only displayed the first time the website is loaded
+  //tutorial may still be initiated by pressing the ? button present on the page 
   createDetailsCookie() {
     const date = new Date();
 

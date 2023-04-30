@@ -19,7 +19,7 @@ export class ListComponent {
     steps: [
           {
             title: 'Home Page',
-            content: 'This is your homepage. Here you can see your files/folder (as a tree or as a list), filter the files/folder, view your most recently accessed, etc.',
+            content: 'This is your homepage. Here you can see your files/folders (as a tree or as a list), filter the files/folder, view your most recently accessed, etc.',
         },
         {
             title: 'Search and Filters',
@@ -30,7 +30,7 @@ export class ListComponent {
         {
           title: 'Recently accessed files/folders',
           selector: '.recently',
-          content: 'These are your top 5 recently accessed files.',
+          content: 'These are your 5 most recently accessed files.',
           orientation: Orientation.Bottom
         },
         {
@@ -45,11 +45,9 @@ export class ListComponent {
 
 public startTour(): void {
   this.createListCookie();
-
   this.guidedTourService.startTour(this.dashboardTour);
 }
   
-
   //to allow using math in html
   Math = Math;
 
@@ -60,7 +58,7 @@ public startTour(): void {
   //store the id of the latest request
   getMoreFilesRequestID:number = 0;
 
-  fileList:gapi.client.drive.File[] = []; //TODO is this removable??
+  fileList:gapi.client.drive.File[] = []; 
 
   pageSize:number = 100;
   pageNumber:number = 1;
@@ -117,8 +115,6 @@ public startTour(): void {
     await this.getMoreFilesAsNeeded();
   }
 
-
-
   async getMoreFilesAsNeeded(){
     let filesNeeded:number = (this.pageNumber+2) * this.pageSize;
     await this.getMoreFiles(filesNeeded);      
@@ -148,6 +144,8 @@ public startTour(): void {
     this.treeSortSettings = sortSettings;
   }
 
+  //sets a cookie so that the home page tutorial is only shown the first time a user opens the site
+  //tutorial may still be opened by pressing the ? button present on the page
   createListCookie() {
     const date = new Date();
 

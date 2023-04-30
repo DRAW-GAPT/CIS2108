@@ -157,8 +157,6 @@ export class ShareTreeComponent implements AfterViewInit {
         this.networkInstance.setView(originalPosition);
       }
     });
-
-    
   }
 
   zoomIn() {

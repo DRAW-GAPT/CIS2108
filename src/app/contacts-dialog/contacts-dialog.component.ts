@@ -1,5 +1,5 @@
-import {Component, EventEmitter, Inject, OnInit, Output} from '@angular/core';
-import {MatDialog, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { Component, Inject} from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { GoogleAPIService } from '../google-api.service';
 
 @Component({
