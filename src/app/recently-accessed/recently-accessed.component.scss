@@ -1,6 +1,5 @@
 .example-card {
   max-width: 18vw;
-  height:15vw;
   overflow:hidden;
 }
 
@@ -12,18 +11,30 @@
   background-size: cover;
 }
 
+.recentHolder{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: top;
+}
+
+.recentFile{
+  flex-grow: 1;
+}
+
 
 .cardImage{
-  height:2vw;
-  width:2vw;
+  height: 32px;
+  width: auto;
   display: block;
   margin-left: auto;
   margin-right: auto;
+  image-rendering: pixelated;
 }
 
 .cardImageContainer{
   background-color: #EFEEF1 ;
-  height: 5vh;
+  height: 32;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -31,8 +42,8 @@
 
 
 mat-card-title{
-  height: 1.5vw;
-  font-size: 1vw;
+  height: fit-content;
+  font-size: 1rem;
   max-width: 15vw;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -40,7 +51,7 @@ mat-card-title{
 }
 
 mat-card-subtitle{
-  font-size: 0.8vw;
+  font-size: 0.8rem;
   margin-top: 3vh;
   margin-bottom: 3.5vh;
 
@@ -48,7 +59,6 @@ mat-card-subtitle{
 
 .example-card{
   width:24vw;
-  height:15vw;
   overflow:hidden;
 }
 

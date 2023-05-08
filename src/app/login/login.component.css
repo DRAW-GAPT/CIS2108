@@ -43,7 +43,7 @@
 
 h2{
     position: relative;
-    font-size: 200%;
+    font-size: 2rem;
     padding-bottom: 5%;
     transform: translateY(-60%);
 }
@@ -51,7 +51,7 @@ h2{
 button{
     position: relative;
     margin-bottom: 5%;
-    font-size: 2vw;
+    font-size: 1rem;
     padding: 2% 5%;
     white-space: nowrap;
     transform: translateY(-60%);
