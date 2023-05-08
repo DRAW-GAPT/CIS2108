@@ -10,26 +10,27 @@
     button{
         color: black;
         background-color: lightgray;
-        width: 3vw;
-        height: 3vw;
+        padding: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
         border: lightgray;
-        border-radius: 1vw;
+        border-radius: 5px;
         border-color: lightgray;
         margin-right: 0.5vw;
-    }
-
-    .mat-icon{
-        font-size: 1.5vw !important;
+        font-size: large;
     }
 
     .legend {
         display: flex;
         align-items: center;
         margin-bottom: 10px;
-        position: fixed;
+        position: absolute;
+        bottom: 20px;
+        left: 50px;
+        border-color: black;
+        border-style: dashed;
+        padding: 10px;
     }
     
     .legend span {
