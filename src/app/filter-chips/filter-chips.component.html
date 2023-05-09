@@ -1,32 +1,38 @@
 <mat-form-field>
     <mat-icon matPrefix>search</mat-icon>
-    <input matInput placeholder="Search" [(ngModel)]="searchTerm" (input)="onSearch()">
+    <input matInput aria-label="Search bar" placeholder="Search" [(ngModel)]="searchTerm" (input)="onSearch()">
+    <button aria-label="Button that clears all search terms" alt="Button that clears all search terms" mat-icon-button matTooltip="Clear Search" matSuffix (click)="clearSearch()"><mat-icon style="margin-bottom: 3px;">close</mat-icon></button>
 </mat-form-field>
 
 <!--Container for Chips-->
-<mat-chip-listbox multiple selectable="false">
+<mat-chip-listbox multiple selectable="false" aria-label="Chip to filter by owner" alt="Chip to filter by owner">
     <mat-chip-option [matMenuTriggerFor]="ownersMenu" selected="{{this.owners.length > 0}}">
         Owner
         <mat-icon>keyboard_arrow_down</mat-icon>
     </mat-chip-option>
 
-    <mat-chip-option [matMenuTriggerFor]="permissions" selected="{{this.permissionsSelected.length > 0}}">
+    <mat-chip-option aria-label="Chip to filter by permissions" alt="Chip to filter by permissions" [matMenuTriggerFor]="permissions" selected="{{this.permissionsSelected.length > 0}}">
         Permissions
         <mat-icon>keyboard_arrow_down</mat-icon>
     </mat-chip-option>
     
-    <mat-chip-option  [matMenuTriggerFor]="date" selected="{{this.startDate != null && this.endDate != null}}">
+    <mat-chip-option aria-label="Chip to filter by date" alt="Chip to filter by date" [matMenuTriggerFor]="date" selected="{{this.startDate != null && this.endDate != null}}">
         Date
         <mat-icon>keyboard_arrow_down</mat-icon>     
     </mat-chip-option>
 
-    <mat-chip-option [matMenuTriggerFor]="shared" selected="{{this.sharedWith.length > 0}}">
+    <mat-chip-option aria-label="Chip to filter by who you shared an item with" alt="Chip to filter by who you shared an item with" [matMenuTriggerFor]="shared" selected="{{this.sharedWith.length > 0}}">
         Shared with 
         <mat-icon>keyboard_arrow_down</mat-icon>
     </mat-chip-option>
+
+    <mat-chip-option aria-label="Chip to clear all filters" alt="Chip to clear all filters" (click)="clearFilters()">
+        Clear All
+        <mat-icon>close</mat-icon>
+    </mat-chip-option>
+
 </mat-chip-listbox>
-<h2 class="recently-accessed">Recently Accessed</h2> 
-    
+
 <!---Chip that handles input for the 'Owner' filter, textbox that expects email accounts-->
 <mat-menu #ownersMenu="matMenu" multiple>
     <mat-form-field class="example-chip-list" appearance="fill" (click)="$event.stopPropagation()">
@@ -54,7 +60,7 @@
 <!---Chip that handles input for the 'Shared' filter, textbox that expects email accounts-->
 <mat-menu id="shared" #shared="matMenu" multiple>
     <mat-form-field class="example-chip-list" appearance="fill" (click)="$event.stopPropagation()">
-        <mat-chip-grid #sharedGrid aria-label="Enter email address..">
+        <mat-chip-grid #sharedGrid aria-label="Enter email address.." alt="Enter email address">
             <mat-chip-row *ngFor="let shared of sharedWith"
                           (removed)="removeShared(shared)"
                           [editable]="true"
@@ -77,15 +83,15 @@
   
 <!---Chip that handles input for the 'Permissions' filter, dropdown menu with checkboxes for 'Owner', 'Editor', or 'Reader' permissions-->
 <mat-menu #permissions="matMenu" multiple appearance="fill" class="permissionbox">
-    <mat-checkbox value="owner" [(ngModel)]="isCheckedOwner" (change)="onCheckboxChange($event)" (click)="$event.stopPropagation()">
+    <mat-checkbox value="owner" alt="Owner" [(ngModel)]="isCheckedOwner" (change)="onCheckboxChange($event)" (click)="$event.stopPropagation()">
         <span class="drop-down-item0">Owner</span>
         <mat-icon class="drop-down-icon">star</mat-icon> 
     </mat-checkbox><br>
-    <mat-checkbox value="writer" [(ngModel)]="isCheckedWriter" (change)="onCheckboxChange($event)" (click)="$event.stopPropagation()">
+    <mat-checkbox value="writer" alt="Writer" [(ngModel)]="isCheckedWriter" (change)="onCheckboxChange($event)" (click)="$event.stopPropagation()">
         <span class="drop-down-item1">Editor</span>
         <mat-icon class="drop-down-icon">edit</mat-icon> 
     </mat-checkbox><br>
-    <mat-checkbox value="reader" [(ngModel)]="isCheckedReader"(change)="onCheckboxChange($event)" (click)="$event.stopPropagation()">
+    <mat-checkbox value="reader" alt="Viewer" [(ngModel)]="isCheckedReader"(change)="onCheckboxChange($event)" (click)="$event.stopPropagation()">
         <span class="drop-down-item2">Viewer</span>
         <mat-icon class="drop-down-icon">remove_red_eye</mat-icon> 
     </mat-checkbox><br>
@@ -100,7 +106,7 @@
             <input matEndDate placeholder="End date" [(ngModel)]="endDate" (dateChange)="onDateChange()">
         </mat-date-range-input>
         <mat-hint class="hint">DD/MM/YYYY – DD/MM/YYYY</mat-hint>
-        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker-toggle aria-label="Date Picker" alt="Date Picker" matIconSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-date-range-picker #picker></mat-date-range-picker>
     </mat-form-field>
 </mat-menu>

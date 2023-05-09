@@ -1,0 +1,20 @@
+<div class="dialog">
+    <h2 mat-dialog-title>These users will be added to your Contact List.</h2>
+    <div mat-dialog-content class="content">
+      <p>This will be done so that all users' details are displayed in the tabs and tree</p>
+      <p><b>People with access</b></p>
+      <div *ngFor="let p of data.permissions" class = "perm-container" aria-label="People with access" alt="People with access">
+        <img src="{{p.photoLink ?? 'https://lh3.googleusercontent.com/a/default-user=s64'}}" class="user-image"/>
+        <div>
+          {{p.id === "anyoneWithLink" ? "Anyone with link" : p.displayName || "Unknown user"}}
+          <br/>
+          {{p.id === "anyoneWithLink" ? "" : p.emailAddress ?? 'Unknown email address'}}
+        </div>
+        <span class="role">{{capitaliseFirstLetter(p.role)}}</span>
+      </div>
+    </div>
+    <div class="buttons" mat-dialog-actions>
+      <button mat-raised-button color="warn" (click)="addContacts()" aria-label="Button to add contacts" alt="Button to add contacts" [mat-dialog-close]="true">Yes</button>
+      <button mat-raised-button color="primary" [mat-dialog-close]="true" aria-label="Button to close pop up" alt="Button to close pop up " cdkFocusInitial>Cancel</button>
+    </div>
+</div>

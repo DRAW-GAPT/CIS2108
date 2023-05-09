@@ -1,8 +1,11 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Sort } from '@angular/material/sort';
 import { PageSetting } from '../file-list/file-list.component';
 import { getFilesResult, GoogleAPIService } from '../google-api.service';
 import { SortSetting } from '../sort-by/sort-by.component';
+import {Orientation, TourStep, GuidedTour, OrientationConfiguration, GuidedTourService } from 'ngx-guided-tour';
+import { CookieService } from 'ngx-cookie-service';
+
 
 @Component({
   selector: 'app-list',
@@ -10,7 +13,41 @@ import { SortSetting } from '../sort-by/sort-by.component';
   styleUrls: ['./list.component.css']
 })
 export class ListComponent {
+  public dashboardTour: GuidedTour = {
+    tourId: 'home-tour',
+    useOrb: false,
+    steps: [
+          {
+            title: 'Home Page',
+            content: 'This is your homepage. Here you can see your files/folders (as a tree or as a list), filter the files/folder, view your most recently accessed, etc.',
+        },
+        {
+            title: 'Search and Filters',
+            selector: '.search-bar',
+            content: 'You can search for a file using this search bar.\nYou can also filter among your files/folders by owner, permissions, date and who you shared the item using these filters.',
+            orientation: Orientation.Bottom
+        },
+        {
+          title: 'Recently accessed files/folders',
+          selector: '.recently',
+          content: 'These are your 5 most recently accessed files.',
+          orientation: Orientation.Bottom
+        },
+        {
+          title: 'List or Tree View',
+          selector: '.tab-bar',
+          content: 'You can display your files/folders as either a list or as a tree by clicking on either of these tabs.\n Click on either of these files/folders to display their details and share tree.',
+          orientation: Orientation.Top
+        }
+    ]
+};
 
+
+public startTour(): void {
+  this.createListCookie();
+  this.guidedTourService.startTour(this.dashboardTour);
+}
+  
   //to allow using math in html
   Math = Math;
 
@@ -21,16 +58,21 @@ export class ListComponent {
   //store the id of the latest request
   getMoreFilesRequestID:number = 0;
 
-  fileList:gapi.client.drive.File[] = []; //TODO is this removable??
+  fileList:gapi.client.drive.File[] = []; 
 
   pageSize:number = 100;
   pageNumber:number = 1;
   sortSettings:string|undefined = undefined;
 
-  filterQuery:string = "";
+  filterQuery:string = "trashed=false";
 
-  constructor(public googleAPIService: GoogleAPIService){
-    this.init();
+  constructor(private cookie: CookieService,public googleAPIService: GoogleAPIService, private guidedTourService: GuidedTourService){
+  }
+
+  ngOnInit(): void {
+    if(!this.cookie.get("listCookie")){
+    this.startTour();
+    }
   }
 
   updateQuery(filter: string){
@@ -73,8 +115,6 @@ export class ListComponent {
     await this.getMoreFilesAsNeeded();
   }
 
-
-
   async getMoreFilesAsNeeded(){
     let filesNeeded:number = (this.pageNumber+2) * this.pageSize;
     await this.getMoreFiles(filesNeeded);      
@@ -103,5 +143,16 @@ export class ListComponent {
         console.log("treeSort DETECTED");
     this.treeSortSettings = sortSettings;
   }
+
+  //sets a cookie so that the home page tutorial is only shown the first time a user opens the site
+  //tutorial may still be opened by pressing the ? button present on the page
+  createListCookie() {
+    const date = new Date();
+
+    date.setTime(date.getTime() + (100 * 365 * 24 * 60 * 60 * 1000)); // set to 100 years from now
+    const expires = "expires=" + date.toUTCString();
+    document.cookie = "listCookie=listCookie; " + expires + "; path=/";
+  }
+  
 }
 

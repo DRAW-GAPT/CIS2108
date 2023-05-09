@@ -3,3 +3,11 @@
     display: flex;
     flex-direction: column;
 }
+
+.center-content {
+    position: absolute;
+    top: 20vh;
+    right: 10vh;
+    transform: translate(0, -50%);
+    z-index: 1;
+}

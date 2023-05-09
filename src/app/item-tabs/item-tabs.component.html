@@ -1,6 +1,6 @@
 <div class="parent">
-  <div class="side-toggle" (click)="showTabs = !showTabs">
-    <mat-icon>
+  <div class="side-toggle" aria-label="Button to open item information" alt="Button to open item information" (click)="showTabs = !showTabs">
+    <mat-icon matTooltip="Item Information">
       {{showTabs? 'arrow_forward_ios' : 'arrow_back_ios'}}
     </mat-icon>
   </div>

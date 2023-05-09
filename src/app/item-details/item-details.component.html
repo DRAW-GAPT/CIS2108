@@ -1,4 +1,14 @@
 <div class="parent">
-    <app-item-details-title [file]="file"/>
-    <app-item-tabs [file]="file"/> 
+    <div class="title">
+        <app-item-details-title [file]="file"/>
+    </div>
+
+    <button class="center-content"  (click)="startTour()" mat-fab color="primary" aria-label="Help button" alt="Help button">
+        <mat-icon>question_mark</mat-icon>
+      </button>
+
+    <div style="display: flex; flex-direction: row; justify-content: space-around;">
+        <app-share-tree class="share-tree" [nodes]="nodes" [edges]="edges"/>
+        <app-item-tabs class = "details" [file]="file"/> 
+    </div>
 </div>

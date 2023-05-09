@@ -5,6 +5,8 @@ import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
 import * as _ from 'lodash';
 import { filter, update } from 'lodash';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import {Orientation, TourStep, GuidedTour, OrientationConfiguration, GuidedTourService } from 'ngx-guided-tour';
+import { ListComponent } from '../list/list.component';
 
 export const DATE_FORMAT = {
   parse: {
@@ -28,7 +30,8 @@ export const DATE_FORMAT = {
 })
 export class FilterChipsComponent {
 
-  constructor(private _adapter: DateAdapter<any>,
+  constructor(
+    private _adapter: DateAdapter<any>,
     @Inject(MAT_DATE_LOCALE) private _locale: string,
   ) {}
 
@@ -42,10 +45,12 @@ export class FilterChipsComponent {
   startDate:  Date | null = null;
   endDate : Date | null = null;
   searchTerm: string | undefined;
+  
 
   //methods to handle input received from the 'Owner' filter
   addOwner(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
+
     if (value) {
       this.owners.push(value);
     }
@@ -65,6 +70,7 @@ export class FilterChipsComponent {
 
   editOwner(owner: String, event: MatChipEditedEvent) {
     const value = event.value.trim();
+
     //Remove email if reduced to nothing
     if (!value) {
       this.removeOwner(owner);
@@ -91,7 +97,7 @@ export class FilterChipsComponent {
     this.updateFilter();
 
   }
-  
+
   removeShared(shared: String): void {
     const index = this.sharedWith.indexOf(shared);
     if (index >= 0) {
@@ -146,6 +152,7 @@ export class FilterChipsComponent {
   }
 
   //sends query to google api according to the search terms entered into the filter (in google-api.service.ts 'q')
+  //note the join at the end in case multiple filters are applied
   updateFilter(){
     let subqueries:string[] = ["trashed=false"];
     if(this.owners.length > 0){
@@ -170,5 +177,27 @@ export class FilterChipsComponent {
     }
     this.updateFilterQuery.emit(subqueries.map(s=>"("+s+")").join(" and "))
   } 
+
+  //used by the clear button to remove all currently applied filters
+  clearFilters() {
+    this.owners = [];
+    this.sharedWith = [];
+    this.permissionsSelected = [];
+    this.startDate = null;
+    this.endDate = null;
+    this.isCheckedOwner = false;
+    this.isCheckedWriter = false;
+    this.isCheckedReader = false;
+  
+    this.updateFilter();
+    this._adapter.setLocale(this._locale);
+  }
+
+  clearSearch(){
+    this.searchTerm = "trashed=false";
+    this.updateFilter();
+  }
+  
+ 
 }
 

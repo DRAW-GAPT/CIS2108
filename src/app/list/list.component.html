@@ -1,8 +1,17 @@
-<app-filter-chips (updateFilterQuery)="updateQuery($event)"/>
-<app-recently-accessed/>
+
+<div class="search-bar">
+  <app-filter-chips  (updateFilterQuery)="updateQuery($event)"/>
+</div>
+
+<button class="center-content"  (click)="startTour()" mat-mini-fab color="primary" aria-label="Help button" alt="Help button">
+  <mat-icon>question_mark</mat-icon>
+</button>
+
+<h2 class="recently-accessed">Recently Accessed</h2> 
+<app-recently-accessed class="recently"/>
 <mat-tab-group class="tab-bar" dynamicHeight preserveContent>
     <mat-tab>
-      <ng-template mat-tab-label>
+      <ng-template mat-tab-label aria-label="Tab to display in tabular form " alt="Tab to display in tabular form">
         <mat-icon class="example-tab-icon">view_list</mat-icon>
         Table View
       </ng-template>
@@ -18,7 +27,7 @@
     </mat-tab>
   
     <mat-tab>
-      <ng-template mat-tab-label>
+      <ng-template mat-tab-label aria-label="Tab to display in tree form " alt="Tab to display in tree form">
         <mat-icon class="icon">lan</mat-icon>
         Hierarchy View 
       </ng-template>
@@ -34,3 +43,4 @@
     </mat-tab>
   </mat-tab-group>
 
+ <ngx-guided-tour></ngx-guided-tour>

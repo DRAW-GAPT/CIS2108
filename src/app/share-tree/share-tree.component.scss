@@ -1,0 +1,98 @@
+    #tree {
+        width: 90vw;
+        height: 80vh;
+    }
+    .button-container{
+        display: flex;
+        flex-direction: row;
+    }
+
+    button{
+        color: black;
+        background-color: lightgray;
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: lightgray;
+        border-radius: 5px;
+        border-color: lightgray;
+        margin-right: 0.5vw;
+        font-size: large;
+    }
+
+    .legend {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        position: absolute;
+        bottom: 20px;
+        left: 50px;
+        border-color: black;
+        border-style: dashed;
+        padding: 10px;
+    }
+    
+    .legend span {
+        display: inline-block;
+        width: 20px;
+        height: 2px;
+        margin-right: 5px;
+        margin-left: 5px;
+    }
+    
+    .legend .solid {
+        background-color: #2196f3;
+    }
+    
+    .legend .dotted {
+        border-bottom: 2px dotted #2196f3;
+    }
+      
+    .solid-node,
+    .dotted-node {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        margin-right: 5px;
+        margin-left: 5px;
+    }
+      
+    .solid-node {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #2196f3;
+        border-radius: 50%;
+        margin-left: 5px;
+    }
+    
+    .solid-node::before {
+        content: "";
+        display: block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid #fff;
+        border-radius: 50%;
+    }
+      
+    .dotted-node {
+        border: 2px dashed  #2196f3;
+    }
+
+    .center {
+        display: flex;
+        flex-direction: row;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%)
+    }
+    
+    .mat-progress-spinner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }

@@ -1,0 +1,25 @@
+<div class="button-container">
+    <button matTooltip="Zoom In" (click)="zoomIn()">
+        <mat-icon>zoom_in</mat-icon>
+    </button>
+    <button matTooltip="Zoom Out" (click)="zoomOut()">
+        <mat-icon>zoom_out</mat-icon>
+    </button>
+</div>
+
+<div class="center" *ngIf="isLoading">
+    <mat-progress-spinner [diameter]="30"  mode="indeterminate"></mat-progress-spinner>
+    <p style="margin-left: 10px">The Share Tree is loading...</p>
+</div>
+
+<div id="tree" #visNetwork>
+</div>
+
+<div class="legend">
+    Legend:
+    <span class="solid"></span> Added Access
+    <span class="dotted"></span> Removed Access
+    <div class="solid-node"></div> Added Access 
+    <div class="dotted-node"></div>No Access 
+ </div>
+  

@@ -10,10 +10,10 @@ export interface SortSetting{
   templateUrl: './sort-by.component.html',
   styleUrls: ['./sort-by.component.scss']
 })
+
 export class SortByComponent {
   selectedValue!: string;
   sortOrder: string = "asc";
-
   options: string[] = ["Date Created", "Last Modified", "Modified by Me", "Shared with Me", "Viewed by Me"]
   
   @Output() notifySortChanged:EventEmitter<SortSetting> = new EventEmitter<SortSetting>();
@@ -22,6 +22,5 @@ export class SortByComponent {
       selectedValue : this.selectedValue,
       sortOrder : this.sortOrder
     });
-
   }
 }
