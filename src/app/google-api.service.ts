@@ -21,11 +21,6 @@ const SCOPES =
   'https://www.googleapis.com/auth/drive.activity.readonly ' +
   'https://www.googleapis.com/auth/userinfo.profile ' +
   'https://www.googleapis.com/auth/contacts ' +
-  'https://www.googleapis.com/auth/directory.readonly ' +
-  'https://www.googleapis.com/auth/profile.emails.read ' +
-  'https://www.googleapis.com/auth/user.emails.read ' +
-  'https://www.googleapis.com/auth/userinfo.email ' + 
-  'https://www.googleapis.com/auth/userinfo.profile ' +
   'https://www.googleapis.com/auth/drive.readonly';
 
 const googleAPIKey:string = environment.googleAPIKey;
@@ -75,7 +70,6 @@ export class GoogleAPIService {
    */
   gapiLoaded(resolve: (value: boolean | PromiseLike<boolean>) => void) {
     gapi.load('client', ()=>this.initializeGapiClient(resolve));
-    
   }
 
   /**
@@ -88,9 +82,6 @@ export class GoogleAPIService {
        discoveryDocs: DISCOVERY_DOCS,
     });
 
-    //gapi.client.driveactivity.
-
-    
     resolve(true);
   }
 
@@ -170,7 +161,6 @@ export class GoogleAPIService {
 
     await this.allInited;
     await this.confirmLogin();
-
     
       try {
           let response = await gapi.client.drive.files.get({
@@ -182,7 +172,6 @@ export class GoogleAPIService {
         //todo, error handling
         return null;
       }
-    
   }
     //method used to fetch the top 5 most recently modified files and their attributes for use in the header cards
   async getMostRecent(recentFiles:gapi.client.drive.File[]):Promise<getRecentFilesResult>{
@@ -228,11 +217,9 @@ export class GoogleAPIService {
     }, expiryTime);
   }
 
+  //returns a list of permission-related activity performed on a file
   async listActivities(fileId:string) {
     await this.allInited;
-    await this.confirmLogin();
-    await this.gapiInited;
-    await this.gisInited;
 
     let response;
     try {
@@ -395,7 +382,6 @@ export class GoogleAPIService {
       const createLabelResponse = await gapi.client.people.contactGroups.create({
         resource: newLabel,
       });
-      console.log(`Label created`);
       return createLabelResponse.result;
     }
     return drawLabel;

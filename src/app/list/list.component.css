@@ -9,8 +9,12 @@
 }
 .recently-accessed{
     margin-top: 0.5vw;
-    margin-bottom: -1.5vw;
-  }
+}
+
+app-recently-accessed{
+  height: auto;
+  display: block;
+}
 
   .center-content {
     position: absolute;

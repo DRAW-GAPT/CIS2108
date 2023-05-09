@@ -1,6 +1,5 @@
-import { Component, Input, OnInit} from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { GoogleAPIService } from '../google-api.service';
-
 
 @Component({
   selector: 'app-details-tab',
@@ -60,7 +59,6 @@ export class DetailsTabComponent{
     });
   }
 }
-
 
 async function getFile(googleApiService: GoogleAPIService, id: string) : Promise<gapi.client.drive.File>{
   let file : any =  await googleApiService.getFile(id);

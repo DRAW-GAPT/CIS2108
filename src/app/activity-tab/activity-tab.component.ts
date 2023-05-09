@@ -1,7 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { GoogleAPIService } from '../google-api.service';
-import {FlatTreeControl} from '@angular/cdk/tree';
-import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
+import { FlatTreeControl } from '@angular/cdk/tree';
+import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 
 @Component({
   selector: 'app-activity-tab',
@@ -56,7 +56,6 @@ export class ActivityTabComponent {
   ngOnInit(): void {
     this.googleApiService.listActivities(this.id)
       .then(async (res: any) => {
-        console.log(res);
         const pageSize = 10;
         const pageIndex = 0;
         const activities = await this.formatActivities(res,pageIndex,pageSize);

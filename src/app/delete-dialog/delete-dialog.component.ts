@@ -1,5 +1,5 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {MatDialog, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-delete-dialog',
@@ -7,7 +7,8 @@ import {MatDialog, MAT_DIALOG_DATA} from '@angular/material/dialog';
   styleUrls: ['./delete-dialog.component.scss']
 })
 export class DeleteDialogComponent {
-  constructor(@Inject(MAT_DIALOG_DATA) public data: {
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: {
     id: string, 
     permissions: any[],
     name: string

@@ -1,7 +1,7 @@
-import {LiveAnnouncer} from '@angular/cdk/a11y';
-import {AfterViewInit, Component, ViewChild, Input, EventEmitter, Output} from '@angular/core';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
+import { Component, ViewChild, Input, EventEmitter, Output } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
-import {MatSort, Sort} from '@angular/material/sort';
+import { MatSort, Sort } from '@angular/material/sort';
 const byteSize = require('byte-size')
 
 export interface PageSetting{
@@ -29,7 +29,9 @@ export class FileListComponent {
   pageNumber: number = 0;
   headers: string[] = ['Name', 'Owner', 'Last Modified', 'Size']
 
-  constructor(private _liveAnnouncer: LiveAnnouncer) {}
+  constructor(
+    private _liveAnnouncer: LiveAnnouncer
+    ) {}
 
   onPageSettingsChange($event: PageEvent) {
     this.pageNumber = $event.pageIndex; 

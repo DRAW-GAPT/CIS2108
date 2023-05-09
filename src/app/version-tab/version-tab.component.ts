@@ -6,9 +6,11 @@ import { GoogleAPIService } from '../google-api.service';
   templateUrl: './version-tab.component.html',
   styleUrls: ['./version-tab.component.scss']
 })
+
 export class VersionTabComponent {
   @Input() id: any;
   versions: any
+
   constructor(
     public googleApiService: GoogleAPIService
   ) {}
@@ -21,7 +23,6 @@ export class VersionTabComponent {
       this.versions.sort((a: any, b: any) =>{
         return new Date(b.modifiedTime).getTime() - new Date(a.modifiedTime).getTime();
       })
-
     })
     .catch((error: any) => {
       console.error(error);
@@ -32,6 +33,7 @@ export class VersionTabComponent {
     let options: any = { day: "numeric", month: "long", year: "numeric", hour: "numeric", minute: "numeric"};
     let dt: string =  new Date(date).toLocaleDateString(undefined, options);
     let name = "Unknown user";
+    
     if(user){ name = user; }
     return name + " on " + dt;
   }

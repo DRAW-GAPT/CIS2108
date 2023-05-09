@@ -8,9 +8,10 @@ import { getRecentFilesResult, GoogleAPIService } from '../google-api.service';
 })
 export class RecentlyAccessedComponent{
 
-  constructor(public googleAPIService: GoogleAPIService) {
-    this.init();
-   }
+  constructor(
+    public googleAPIService: GoogleAPIService
+    ) 
+    { this.init(); }
 
   recentList$:gapi.client.drive.File[] = [];
   documents: any[] = [];
@@ -19,6 +20,7 @@ export class RecentlyAccessedComponent{
     await this.getMostRecentFiles();
   }
  
+  //displays the 5 most recently accessed files as cards at the top of the page
   async getMostRecentFiles(){
     const result = await this.googleAPIService.getMostRecent(this.recentList$);
     this.recentList$ = result.files;
