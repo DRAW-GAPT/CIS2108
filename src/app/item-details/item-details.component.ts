@@ -45,7 +45,7 @@ export class ItemDetailsComponent {
         },
         {
           title: 'Share Tree Part 2/2',
-          content: 'You can also zoom in and zoom out as well as drag the tree.',
+          content: 'You can also zoom in and zoom out as well as drag the tree. To let go of the tree, you have to double click.',
         },
         {
           title: 'Details, activity and versions',
