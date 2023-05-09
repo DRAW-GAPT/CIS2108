@@ -423,7 +423,7 @@ export class FiletreeComponent {
     this.setInitialData(database)
   }
 
-  __sortDebug = true;
+  __sortDebug = false;
   
   orderBy:string | undefined;
   _sortOrder: SortSetting|undefined;
