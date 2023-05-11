@@ -153,6 +153,5 @@ public startTour(): void {
     const expires = "expires=" + date.toUTCString();
     document.cookie = "listCookie=listCookie; " + expires + "; path=/";
   }
-  
 }
 
