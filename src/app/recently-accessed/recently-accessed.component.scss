@@ -22,7 +22,6 @@
   flex-grow: 1;
 }
 
-
 .cardImage{
   height: 32px;
   width: auto;
@@ -60,5 +59,12 @@ mat-card-subtitle{
 .example-card{
   width:24vw;
   overflow:hidden;
+}
+
+.last-modified-by{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width:23vw;
 }
 

@@ -364,6 +364,8 @@ export class GoogleAPIService {
     } catch (err) {
       console.error(`Error adding contacts: ${err}`);
     }
+    location.reload();
+
   }
   
   //used by the addPeopleToContacts method to verify if the application's label exists, and creates it if it doesn't
